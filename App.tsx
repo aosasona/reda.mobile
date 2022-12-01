@@ -16,7 +16,7 @@ import NativeBaseIcon from "./components/NativeBaseIcon";
 
 // Define the config
 const config = {
-  useSystemColorMode: false,
+  useSystemColorMode: true,
   initialColorMode: "dark",
 };
 
