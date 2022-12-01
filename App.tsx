@@ -1,87 +1,118 @@
-import React from "react";
 import {
-  Text,
-  Link,
-  HStack,
-  Center,
-  Heading,
-  Switch,
-  useColorMode,
-  NativeBaseProvider,
-  extendTheme,
-  VStack,
-  Box,
-} from "native-base";
-import NativeBaseIcon from "./components/NativeBaseIcon";
+	Poppins_100Thin,
+	Poppins_100Thin_Italic,
+	Poppins_200ExtraLight,
+	Poppins_200ExtraLight_Italic,
+	Poppins_300Light,
+	Poppins_300Light_Italic,
+	Poppins_400Regular,
+	Poppins_400Regular_Italic,
+	Poppins_500Medium,
+	Poppins_500Medium_Italic,
+	Poppins_600SemiBold,
+	Poppins_600SemiBold_Italic,
+	Poppins_700Bold,
+	Poppins_700Bold_Italic,
+	Poppins_800ExtraBold,
+	Poppins_800ExtraBold_Italic,
+	Poppins_900Black,
+	Poppins_900Black_Italic,
+	useFonts,
+} from '@expo-google-fonts/poppins';
+import {AntDesign, Ionicons} from "@expo/vector-icons";
+import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
+import {NavigationContainer} from '@react-navigation/native';
+import * as SplashScreen from 'expo-splash-screen';
+import {StatusBar} from "expo-status-bar";
+import {Icon, NativeBaseProvider, useColorMode} from "native-base";
+import React, {useEffect, useState} from "react";
+import {iconOptions, screenOptions} from "./config/tabs";
+import {extendedTheme} from "./config/theme";
+import tabs from "./constants/tabs";
+import DownloadsStack from "./stacks/Downloads";
+import HomeStack from "./stacks/Home";
+import SettingsStack from "./stacks/Settings";
+import {colorModeManager} from "./utils/color";
 
-// Define the config
-const config = {
-  useSystemColorMode: true,
-  initialColorMode: "dark",
-};
+(async () => await SplashScreen.preventAutoHideAsync())();
 
-// extend the theme
-export const theme = extendTheme({ config });
-type MyThemeType = typeof theme;
-declare module "native-base" {
-  interface ICustomTheme extends MyThemeType {}
-}
+
+const Tab = createBottomTabNavigator();
+
 export default function App() {
-  return (
-    <NativeBaseProvider>
-      <Center
-        _dark={{ bg: "blueGray.900" }}
-        _light={{ bg: "blueGray.50" }}
-        px={4}
-        flex={1}
-      >
-        <VStack space={5} alignItems="center">
-          <NativeBaseIcon />
-          <Heading size="lg">Welcome to NativeBase</Heading>
-          <HStack space={2} alignItems="center">
-            <Text>Edit</Text>
-            <Box
-              _web={{
-                _text: {
-                  fontFamily: "monospace",
-                  fontSize: "sm",
-                },
-              }}
-              px={2}
-              py={1}
-              _dark={{ bg: "blueGray.800" }}
-              _light={{ bg: "blueGray.200" }}
-            >
-              App.js
-            </Box>
-            <Text>and save to reload.</Text>
-          </HStack>
-          <Link href="https://docs.nativebase.io" isExternal>
-            <Text color="primary.500" underline fontSize={"xl"}>
-              Learn NativeBase
-            </Text>
-          </Link>
-          <ToggleDarkMode />
-        </VStack>
-      </Center>
-    </NativeBaseProvider>
-  );
-}
+	const {colorMode} = useColorMode();
+	const [appIsReady, setAppIsReady] = useState(false);
+	let [fontsLoaded] = useFonts({
+		Poppins_100Thin,
+		Poppins_100Thin_Italic,
+		Poppins_200ExtraLight,
+		Poppins_200ExtraLight_Italic,
+		Poppins_300Light,
+		Poppins_300Light_Italic,
+		Poppins_400Regular,
+		Poppins_400Regular_Italic,
+		Poppins_500Medium,
+		Poppins_500Medium_Italic,
+		Poppins_600SemiBold,
+		Poppins_600SemiBold_Italic,
+		Poppins_700Bold,
+		Poppins_700Bold_Italic,
+		Poppins_800ExtraBold,
+		Poppins_800ExtraBold_Italic,
+		Poppins_900Black,
+		Poppins_900Black_Italic,
+	});
 
-// Color Switch Component
-function ToggleDarkMode() {
-  const { colorMode, toggleColorMode } = useColorMode();
-  return (
-    <HStack space={2} alignItems="center">
-      <Text>Dark</Text>
-      <Switch
-        isChecked={colorMode === "light"}
-        onToggle={toggleColorMode}
-        aria-label={
-          colorMode === "light" ? "switch to dark mode" : "switch to light mode"
-        }
-      />
-      <Text>Light</Text>
-    </HStack>
-  );
+	useEffect(() => {
+		if (fontsLoaded) {
+			setAppIsReady(true);
+		}
+	}, [fontsLoaded]);
+
+	useEffect(() => {
+		(async () => {
+			if (appIsReady) {
+				await SplashScreen.hideAsync();
+			}
+		})();
+	}, [appIsReady]);
+
+
+	if (!fontsLoaded) {
+		return null;
+	}
+
+	return (
+	  <NativeBaseProvider theme={extendedTheme} colorModeManager={colorModeManager}>
+		  <StatusBar style={colorMode === "dark" ? "light" : "dark"}/>
+		  <NavigationContainer>
+			  <Tab.Navigator>
+				  <Tab.Screen
+					name={tabs.HOME}
+					component={HomeStack}
+					options={{
+						tabBarIcon: ({focused}) => <Icon as={AntDesign} name="home" size={6} color={iconOptions(colorMode, focused)}/>,
+						...screenOptions(colorMode),
+					}}
+				  />
+				  <Tab.Screen
+					name={tabs.DOWNLOADS}
+					component={DownloadsStack}
+					options={{
+						tabBarIcon: ({focused}) => <Icon as={AntDesign} name="download" size={6} color={iconOptions(colorMode, focused)}/>,
+						...screenOptions(colorMode),
+					}}
+				  />
+				  <Tab.Screen
+					name={tabs.SETTINGS}
+					component={SettingsStack}
+					options={{
+						tabBarIcon: ({focused}) => <Icon as={Ionicons} name="settings-outline" size={6} color={iconOptions(colorMode, focused)}/>,
+						...screenOptions(colorMode),
+					}}
+				  />
+			  </Tab.Navigator>
+		  </NavigationContainer>
+	  </NativeBaseProvider>
+	);
 }
