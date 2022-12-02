@@ -7,8 +7,8 @@ import React from "react";
 import {iconOptions, screenOptions} from "../config/tabs";
 import tabs from "../constants/tabs";
 import ImportStack from "../screens/Import";
-import HomeStack from "./Home";
-import SettingsStack from "./Settings";
+import HomeStack from "./HomeStack";
+import SettingsStack from "./SettingsStack";
 
 export default function MainStack() {
 	const {colorMode} = useColorMode();
@@ -18,7 +18,7 @@ export default function MainStack() {
 	  <>
 		  <StatusBar style={colorMode === "dark" ? "light" : "dark"}/>
 		  <NavigationContainer>
-			  <Tab.Navigator>
+			  <Tab.Navigator initialRouteName={tabs.HOME} backBehavior="history">
 				  <Tab.Screen
 					name={tabs.HOME}
 					component={HomeStack}
@@ -32,7 +32,7 @@ export default function MainStack() {
 					component={ImportStack}
 					options={{
 						tabBarIcon: ({focused}) => (
-						  <Box bg={colorMode == "dark" ? "white" : "muted.900"} p={focused ? 6 : 4} rounded="full">
+						  <Box bg={colorMode == "dark" ? "white" : "muted.900"} p={focused ? 3 : 4} rounded="full">
 							  <Icon as={AntDesign} name="plus" size={6} color={colorMode !== "dark" ? "white" : "muted.900"}/>
 						  </Box>),
 						...screenOptions(colorMode),

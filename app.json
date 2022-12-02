@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "reda",
+    "name": "Reda",
     "slug": "reda",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -17,7 +17,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.wytehq.reda"
     },
     "android": {
       "adaptiveIcon": {
@@ -27,6 +28,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4e9530b4-d841-4d6f-a817-760b156f95fe"
+      }
     }
   }
 }

@@ -23,6 +23,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import {NativeBaseProvider} from "native-base";
 import React, {useEffect} from "react";
 import {extendedTheme} from "./config/theme";
+import {GlobalContextProvider} from "./context/GlobalContext";
 import MainStack from "./stacks/MainStack";
 import {colorModeManager} from "./utils/color";
 
@@ -64,8 +65,10 @@ export default function App() {
 	}
 
 	return (
-	  <NativeBaseProvider theme={extendedTheme} colorModeManager={colorModeManager}>
-		  <MainStack/>
-	  </NativeBaseProvider>
+	  <GlobalContextProvider>
+		  <NativeBaseProvider theme={extendedTheme} colorModeManager={colorModeManager}>
+			  <MainStack/>
+		  </NativeBaseProvider>
+	  </GlobalContextProvider>
 	);
 }

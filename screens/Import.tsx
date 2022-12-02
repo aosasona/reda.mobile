@@ -1,7 +1,7 @@
 import {Actionsheet, Box, Button, Center, Input, ScrollView, Text, useDisclose, VStack} from "native-base";
 import {useState} from "react";
 
-export default function ImportStack() {
+export default function Import() {
 
 	const [URL, setURL] = useState("");
 

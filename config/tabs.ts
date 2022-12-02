@@ -12,10 +12,9 @@ export const screenOptions = (colorMode: ColorMode) => ({
 	tabBarHideOnKeyboard: true,
 	tabBarActiveTintColor: getSecondaryColor(colorMode),
 	tabBarInactiveTintColor: colorMode == "dark" ? colors.brand["faded-dark"] : colors.brand.faded,
-	headerShown: true,
+	headerShown: false,
 	headerTintColor: getSecondaryColor(colorMode),
 	headerTitleStyle: {
-		fontFamily: "Poppins",
 		fontSize: 20,
 	},
 	headerStyle: {
