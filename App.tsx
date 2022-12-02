@@ -19,29 +19,16 @@ import {
 	Poppins_900Black_Italic,
 	useFonts,
 } from '@expo-google-fonts/poppins';
-import {AntDesign, Ionicons} from "@expo/vector-icons";
-import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
-import {NavigationContainer} from '@react-navigation/native';
 import * as SplashScreen from 'expo-splash-screen';
-import {StatusBar} from "expo-status-bar";
-import {Icon, NativeBaseProvider, useColorMode} from "native-base";
-import React, {useEffect, useState} from "react";
-import {iconOptions, screenOptions} from "./config/tabs";
+import {NativeBaseProvider} from "native-base";
+import React, {useEffect} from "react";
 import {extendedTheme} from "./config/theme";
-import tabs from "./constants/tabs";
-import DownloadsStack from "./stacks/Downloads";
-import HomeStack from "./stacks/Home";
-import SettingsStack from "./stacks/Settings";
+import MainStack from "./stacks/MainStack";
 import {colorModeManager} from "./utils/color";
 
 (async () => await SplashScreen.preventAutoHideAsync())();
 
-
-const Tab = createBottomTabNavigator();
-
 export default function App() {
-	const {colorMode} = useColorMode();
-	const [appIsReady, setAppIsReady] = useState(false);
 	let [fontsLoaded] = useFonts({
 		Poppins_100Thin,
 		Poppins_100Thin_Italic,
@@ -64,18 +51,12 @@ export default function App() {
 	});
 
 	useEffect(() => {
-		if (fontsLoaded) {
-			setAppIsReady(true);
-		}
-	}, [fontsLoaded]);
-
-	useEffect(() => {
 		(async () => {
-			if (appIsReady) {
+			if (fontsLoaded) {
 				await SplashScreen.hideAsync();
 			}
-		})();
-	}, [appIsReady]);
+		})()
+	}, [fontsLoaded]);
 
 
 	if (!fontsLoaded) {
@@ -84,35 +65,7 @@ export default function App() {
 
 	return (
 	  <NativeBaseProvider theme={extendedTheme} colorModeManager={colorModeManager}>
-		  <StatusBar style={colorMode === "dark" ? "light" : "dark"}/>
-		  <NavigationContainer>
-			  <Tab.Navigator>
-				  <Tab.Screen
-					name={tabs.HOME}
-					component={HomeStack}
-					options={{
-						tabBarIcon: ({focused}) => <Icon as={AntDesign} name="home" size={6} color={iconOptions(colorMode, focused)}/>,
-						...screenOptions(colorMode),
-					}}
-				  />
-				  <Tab.Screen
-					name={tabs.DOWNLOADS}
-					component={DownloadsStack}
-					options={{
-						tabBarIcon: ({focused}) => <Icon as={AntDesign} name="download" size={6} color={iconOptions(colorMode, focused)}/>,
-						...screenOptions(colorMode),
-					}}
-				  />
-				  <Tab.Screen
-					name={tabs.SETTINGS}
-					component={SettingsStack}
-					options={{
-						tabBarIcon: ({focused}) => <Icon as={Ionicons} name="settings-outline" size={6} color={iconOptions(colorMode, focused)}/>,
-						...screenOptions(colorMode),
-					}}
-				  />
-			  </Tab.Navigator>
-		  </NavigationContainer>
+		  <MainStack/>
 	  </NativeBaseProvider>
 	);
 }

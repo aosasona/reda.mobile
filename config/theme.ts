@@ -1,13 +1,15 @@
 import {extendTheme} from "native-base";
 
 export const colors = {
+	"primary": "#FFD369",
 	brand: {
 		"light": "#EEEEEE",
 		"primary": "#FFD369",
 		"dark": "#393E46",
 		"dark-brand": "#222831",
-		"darker": "#101010",
-		"faded": "#9A9A9A",
+		"darker": "#0F0F0F",
+		"faded": "#A9A9A9",
+		"faded-dark": "#A9A9A955",
 	},
 }
 export const fontsConfig = {
@@ -62,6 +64,7 @@ export const componentsConfig = {
 		baseStyle: (props: any) => ({
 			_dark: {bg: colors.brand.darker},
 			_light: {bg: colors.brand.light},
+			px: 4,
 		}),
 	},
 	VStack: {

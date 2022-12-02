@@ -1,7 +1,7 @@
 const tabs = {
 	HOME: "Home",
 	SETTINGS: "Settings",
-	DOWNLOADS: "Downloads",
+	IMPORT: "Import file",
 }
 
 export default tabs

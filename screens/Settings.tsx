@@ -4,7 +4,7 @@ import {HStack, ScrollView, Switch, Text, useColorMode, VStack} from "native-bas
 export default function Settings() {
 	const {toggleColorMode, colorMode} = useColorMode();
 	return (
-	  <ScrollView px={3}>
+	  <ScrollView>
 
 		  <VStack rounded={10} mt={6}>
 			  <HStack justifyContent="space-between" alignItems="center" px={3} py={2.5}>
@@ -13,7 +13,7 @@ export default function Settings() {
 			  </HStack>
 		  </VStack>
 
-		  <Text textAlign="center" fontSize={13} color="gray.400" fontWeight={400} mt={16}>
+		  <Text textAlign="center" fontSize={13} color="gray.400" fontWeight={400} mt={10}>
 			  Version {constants?.manifest?.version}
 		  </Text>
 	  </ScrollView>
