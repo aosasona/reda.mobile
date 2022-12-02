@@ -25,7 +25,7 @@ import React, {useEffect} from "react";
 import {extendedTheme} from "./config/theme";
 import {GlobalContextProvider} from "./context/GlobalContext";
 import MainStack from "./stacks/MainStack";
-import {colorModeManager} from "./utils/color";
+import {colorModeManager} from "./utils/color.util";
 
 (async () => await SplashScreen.preventAutoHideAsync())();
 

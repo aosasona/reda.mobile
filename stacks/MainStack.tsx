@@ -6,7 +6,7 @@ import {Box, Icon, useColorMode} from "native-base";
 import React from "react";
 import {iconOptions, screenOptions} from "../config/tabs";
 import tabs from "../constants/tabs";
-import ImportStack from "../screens/Import";
+import ImportStack from "../stacks/ImportStack";
 import HomeStack from "./HomeStack";
 import SettingsStack from "./SettingsStack";
 
@@ -32,8 +32,8 @@ export default function MainStack() {
 					component={ImportStack}
 					options={{
 						tabBarIcon: ({focused}) => (
-						  <Box bg={colorMode == "dark" ? "white" : "muted.900"} p={focused ? 3 : 4} rounded="full">
-							  <Icon as={AntDesign} name="plus" size={6} color={colorMode !== "dark" ? "white" : "muted.900"}/>
+						  <Box bg={colorMode == "dark" ? "white" : "muted.900"} p={3} rounded={10}>
+							  <Icon as={AntDesign} name="plus" size={4} color={colorMode !== "dark" ? "white" : "muted.900"}/>
 						  </Box>),
 						...screenOptions(colorMode),
 						tabBarLabelStyle: {display: "none"},

@@ -1,5 +1,5 @@
 import {ColorMode} from "native-base";
-import {getPrimaryColor, getSecondaryColor} from "../utils/color";
+import {getPrimaryColor, getSecondaryColor} from "../utils/color.util";
 import {colors} from "./theme";
 
 

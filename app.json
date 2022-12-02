@@ -2,7 +2,7 @@
   "expo": {
     "name": "Reda",
     "slug": "reda",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -33,6 +33,14 @@
       "eas": {
         "projectId": "4e9530b4-d841-4d6f-a817-760b156f95fe"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-document-picker",
+        {
+          "iCloudContainerEnvironment": "Production"
+        }
+      ]
+    ]
   }
 }

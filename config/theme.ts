@@ -67,6 +67,13 @@ export const componentsConfig = {
 			px: 4,
 		}),
 	},
+	FlatList: {
+		baseStyle: (props: any) => ({
+			_dark: {bg: colors.brand.darker},
+			_light: {bg: colors.brand.light},
+			px: 4,
+		}),
+	},
 	VStack: {
 		baseStyle: (props: any) => ({
 			_light: {bg: "muted.200"},

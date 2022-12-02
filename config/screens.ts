@@ -1,5 +1,5 @@
 import {ColorMode} from "native-base";
-import {getPrimaryColor, getSecondaryColor} from "../utils/color";
+import {getPrimaryColor, getSecondaryColor} from "../utils/color.util";
 
 export const screenOptions = (colorMode: ColorMode) => ({
 	headerShown: true,

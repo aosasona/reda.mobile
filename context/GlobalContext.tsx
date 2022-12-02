@@ -1,4 +1,5 @@
-import {createContext, useReducer} from "react";
+import {createContext, useEffect, useReducer} from "react";
+import SettingsUtil from "../utils/settings.util";
 import {GlobalReducer} from "./GlobalReducer";
 
 export interface GlobalStateType {
@@ -17,9 +18,13 @@ const GlobalContextProvider = ({children}: any) => {
 		fontSize: 14,
 	}
 
-	const reducer = (state: GlobalStateType, action: any) => {}
-
 	const [reducerState, dispatch] = useReducer(GlobalReducer, initialState);
+
+	const settingsUtil = new SettingsUtil(dispatch);
+	useEffect(() => {
+		(async () => await settingsUtil.loadSettings())();
+	}, []);
+
 	return (
 	  <GlobalContext.Provider value={{
 		  state: reducerState,
