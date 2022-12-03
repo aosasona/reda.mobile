@@ -69,6 +69,10 @@ export default function Settings() {
 					_dark: {bg: "muted.900"},
 					_light: {bg: "muted.100"},
 				}}
+				_actionSheetBody={{
+					_dark: {bg: "muted.900"},
+					_light: {bg: "muted.100"},
+				}}
 				accessibilityLabel="Choose Font Size"
 				dropdownIcon={<Icon as={Entypo} name="chevron-small-down" size={5} color="muted.700"/>}
 			  >

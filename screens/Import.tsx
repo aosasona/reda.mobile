@@ -1,20 +1,16 @@
 import * as DocumentPicker from "expo-document-picker";
 import {DocumentResult} from "expo-document-picker";
-import {Box, Button, FlatList, Heading, Input, Text, VStack} from "native-base";
+import {Box, Button, FlatList, Flex, Heading, Input, ScrollView, Text, VStack} from "native-base";
 import {useState} from "react";
 import {Alert} from "react-native";
 import DownloadingCard from "../components/DownloadingCard";
+import CustomException from "../exceptions/CustomException";
+import {handleFilePick} from "../utils/file.util";
 
 
 export default function Import() {
 
-	const [downloadingList, setDownloadingList] = useState<any[]>([
-		{
-			name: "test-file-1.pdf",
-			progress: 0,
-			queuedAt: new Date(),
-		},
-	]);
+	const [downloadingList, setDownloadingList] = useState<any[]>([]);
 
 	const removeDownloadingItem = (index: number) => {
 		Alert.alert("Remove", "Are you sure you want to cancel this download?", [
@@ -31,18 +27,26 @@ export default function Import() {
 				},
 			},
 		]);
-
 	}
 
 
 	return (
-	  <FlatList
-		ListHeaderComponent={<ContentAboveList/>}
-		data={downloadingList}
-		renderItem={({item, index}) => <DownloadingCard item={item} index={index} onDelete={removeDownloadingItem}/>}
-		keyExtractor={(item, index) => index.toString()}
-		px={4}
-	  />
+	  <>
+		  {downloadingList.length > 0 ? <FlatList
+			  ListHeaderComponent={<ContentAboveList/>}
+			  data={downloadingList}
+			  renderItem={({item, index}) => <DownloadingCard item={item} index={index} onDelete={removeDownloadingItem}/>}
+			  keyExtractor={(item, index) => index.toString()}
+			  px={4}
+			/>
+			:
+			<ScrollView>
+				<ContentAboveList/>
+				<Flex h={24} flex={1} alignItems="center" justifyContent="center">
+					<Text color="red.500">No ongoing downloads</Text>
+				</Flex></ScrollView>
+		  }
+	  </>
 	)
 }
 
@@ -51,20 +55,20 @@ export function ContentAboveList() {
 	const [URL, setURL] = useState("");
 	const [file, setFile] = useState<DocumentResult>();
 
+
 	const triggerFilePicker = async () => {
 		try {
 			const result = await DocumentPicker.getDocumentAsync({
 				type: ["application/pdf", "application/msword"],
 				copyToCacheDirectory: true,
 			});
-			console.log(result);
 			if (result?.type === "success") {
-				setFile(result);
+				await handleFilePick(result);
 			}
 		}
-		catch (e) {
-			console.log(e);
-			Alert.alert("Error", "An error occurred while trying to pick a file");
+		catch (e: any) {
+			const msg = e instanceof CustomException ? e.message : "An error occurred";
+			Alert.alert("Error", msg);
 		}
 	}
 
