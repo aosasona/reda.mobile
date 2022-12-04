@@ -1,5 +1,6 @@
 import {Alert} from "react-native";
 import {ConfigKeys} from "../constants/config";
+import {FontFamiliesEnum} from "../constants/fonts";
 import {GlobalAction, GlobalActionType} from "../context/GlobalReducer";
 import {getAsyncStorage} from "./storage.util";
 
@@ -12,13 +13,19 @@ export default class SettingsUtil {
 
 	public loadSettings = async () => {
 		const fontSize = await getAsyncStorage(ConfigKeys.FONT_SIZE);
-		this.dispatch({type: GlobalActionType.LOAD_SETTINGS, payload: {fontSize}});
+		const fontFamily = await getAsyncStorage(ConfigKeys.FONT_FAMILY);
+		this.dispatch({type: GlobalActionType.LOAD_SETTINGS, payload: {fontSize, fontFamily}});
 	}
 
 	public setFontSize = (fontSize: string) => {
 		if (!isNaN(parseInt(fontSize))) {
 			this.dispatch({type: GlobalActionType.SET_FONT_SIZE, payload: parseInt(fontSize)})
 		}
+	}
+
+	public setFontFamily = (fontFamily: FontFamiliesEnum) => {
+		console.log(fontFamily);
+		this.dispatch({type: GlobalActionType.SET_FONT_FAMILY, payload: fontFamily})
 	}
 
 	public resetSettings = () => {

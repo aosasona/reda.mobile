@@ -1,23 +1,37 @@
 import {
-	Poppins_100Thin,
-	Poppins_100Thin_Italic,
-	Poppins_200ExtraLight,
-	Poppins_200ExtraLight_Italic,
-	Poppins_300Light,
-	Poppins_300Light_Italic,
-	Poppins_400Regular,
-	Poppins_400Regular_Italic,
-	Poppins_500Medium,
-	Poppins_500Medium_Italic,
-	Poppins_600SemiBold,
-	Poppins_600SemiBold_Italic,
-	Poppins_700Bold,
-	Poppins_700Bold_Italic,
-	Poppins_800ExtraBold,
-	Poppins_800ExtraBold_Italic,
-	Poppins_900Black,
-	Poppins_900Black_Italic,
+	AzeretMono_100Thin,
+	AzeretMono_200ExtraLight,
+	AzeretMono_300Light,
+	AzeretMono_400Regular,
+	AzeretMono_500Medium,
+	AzeretMono_600SemiBold,
+	AzeretMono_700Bold,
+	AzeretMono_800ExtraBold,
+	AzeretMono_900Black,
+} from '@expo-google-fonts/azeret-mono';
+import {Inter_100Thin, Inter_200ExtraLight, Inter_300Light, Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold, Inter_800ExtraBold, Inter_900Black} from '@expo-google-fonts/inter';
+import {
+	Outfit_100Thin,
+	Outfit_200ExtraLight,
+	Outfit_300Light,
+	Outfit_400Regular,
+	Outfit_500Medium,
+	Outfit_600SemiBold,
+	Outfit_700Bold,
+	Outfit_800ExtraBold,
+	Outfit_900Black,
 	useFonts,
+} from '@expo-google-fonts/outfit';
+import {
+	Poppins_100Thin,
+	Poppins_200ExtraLight,
+	Poppins_300Light,
+	Poppins_400Regular,
+	Poppins_500Medium,
+	Poppins_600SemiBold,
+	Poppins_700Bold,
+	Poppins_800ExtraBold,
+	Poppins_900Black,
 } from '@expo-google-fonts/poppins';
 import * as SplashScreen from 'expo-splash-screen';
 import {NativeBaseProvider} from "native-base";
@@ -26,29 +40,51 @@ import {extendedTheme} from "./config/theme";
 import {GlobalContextProvider} from "./context/GlobalContext";
 import MainStack from "./stacks/MainStack";
 import {colorModeManager} from "./utils/color.util";
+import {runMigration} from "./utils/database.util";
 
 (async () => await SplashScreen.preventAutoHideAsync())();
 
 export default function App() {
 	let [fontsLoaded] = useFonts({
+		Outfit_100Thin,
+		Outfit_200ExtraLight,
+		Outfit_300Light,
+		Outfit_400Regular,
+		Outfit_500Medium,
+		Outfit_600SemiBold,
+		Outfit_700Bold,
+		Outfit_800ExtraBold,
+		Outfit_900Black,
+
 		Poppins_100Thin,
-		Poppins_100Thin_Italic,
 		Poppins_200ExtraLight,
-		Poppins_200ExtraLight_Italic,
 		Poppins_300Light,
-		Poppins_300Light_Italic,
 		Poppins_400Regular,
-		Poppins_400Regular_Italic,
 		Poppins_500Medium,
-		Poppins_500Medium_Italic,
 		Poppins_600SemiBold,
-		Poppins_600SemiBold_Italic,
 		Poppins_700Bold,
-		Poppins_700Bold_Italic,
 		Poppins_800ExtraBold,
-		Poppins_800ExtraBold_Italic,
 		Poppins_900Black,
-		Poppins_900Black_Italic,
+
+		Inter_100Thin,
+		Inter_200ExtraLight,
+		Inter_300Light,
+		Inter_400Regular,
+		Inter_500Medium,
+		Inter_600SemiBold,
+		Inter_700Bold,
+		Inter_800ExtraBold,
+		Inter_900Black,
+
+		AzeretMono_100Thin,
+		AzeretMono_200ExtraLight,
+		AzeretMono_300Light,
+		AzeretMono_400Regular,
+		AzeretMono_500Medium,
+		AzeretMono_600SemiBold,
+		AzeretMono_700Bold,
+		AzeretMono_800ExtraBold,
+		AzeretMono_900Black,
 	});
 
 	useEffect(() => {
@@ -59,6 +95,10 @@ export default function App() {
 		})()
 	}, [fontsLoaded]);
 
+
+	useEffect(() => {
+		(async () => await runMigration())();
+	}, []);
 
 	if (!fontsLoaded) {
 		return null;
