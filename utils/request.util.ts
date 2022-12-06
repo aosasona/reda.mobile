@@ -5,6 +5,7 @@ const stringify = require('qs-stringify')
 export interface SearchParams {
 	title?: string;
 	author?: string;
+	limit?: number;
 	q?: string;
 	page?: number;
 }

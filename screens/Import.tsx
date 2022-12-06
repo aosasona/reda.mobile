@@ -5,6 +5,7 @@ import {useEffect, useState} from "react";
 import {Alert} from "react-native";
 import DownloadingCard from "../components/DownloadingCard";
 import MetaList from "../components/MetaList";
+import {ButtonProps, InputProps} from "../constants/props";
 import CustomException from "../exceptions/CustomException";
 import {deleteFile, File, handleFilePick} from "../utils/file.util";
 import {OpenLibraryService} from "../utils/request.util";
@@ -54,11 +55,28 @@ export default function Import() {
 	}
 
 	const searchForBook = async (filename: string) => {
-		const metadataResult = (await OpenLibraryService.search({title: filename}))["docs"];
+		const metadataResult = (await OpenLibraryService.search({title: filename, limit: 50}))["docs"];
 		setProcessed(true);
 		if (!metadataResult) throw new CustomException("Something went wrong while processing the file");
 		setAllMetadata(metadataResult);
 		setProcessed(false);
+	}
+
+	const showSkip = () => {
+		Alert.alert("Skip", "Metadata is taking too long, cancel operation?", [
+			{
+				text: "Cancel",
+				style: "cancel",
+			},
+			{
+				text: "OK",
+				style: "destructive",
+				onPress: () => {
+					nextStep();
+
+				},
+			},
+		]);
 	}
 
 	const triggerFilePicker = async () => {
@@ -77,6 +95,8 @@ export default function Import() {
 				await searchForBook(filename);
 				setLoadingFile(false);
 				setSearch(filename);
+			} else {
+				setLoadingFile(false);
 			}
 		}
 		catch (e: any) {
@@ -105,6 +125,7 @@ export default function Import() {
 	  previous={prevStep}
 	  triggerFilePicker={triggerFilePicker}
 	  loadingFile={loadingFile}
+	  setLoadingFile={setLoadingFile}
 	/>
 
 	return (
@@ -152,6 +173,7 @@ export function ContentAboveList({
 	previous,
 	triggerFilePicker,
 	loadingFile,
+	setLoadingFile,
 }: any) {
 
 	useEffect(() => {
@@ -161,12 +183,13 @@ export function ContentAboveList({
 	const {isOpen, onOpen, onClose} = useDisclose();
 
 	const resetStates = () => {
-		setStep(0);
 		setSearch("");
 		setURL("");
+		setLoadingFile(false);
 		setProcessed(false);
 		setMetadata(null);
 		setAllMetadata([]);
+		setStep(0);
 	}
 
 	const handleModalClose = () => {
@@ -191,11 +214,13 @@ export function ContentAboveList({
 			isOpen={isOpen}
 			next={next}
 			previous={previous}
+			file={file}
 			step={step}
 			setStep={setStep}
 			search={search}
 			setSearch={setSearch}
 			allMetadata={allMetadata}
+			currentMetadata={metadata}
 			handleModalClose={handleModalClose}
 			onMetadataSelect={onMetadataSelect}
 		  />
@@ -206,46 +231,34 @@ export function ContentAboveList({
 					  <Input
 						w="100%"
 						type="text"
-						variant="filled"
-						placeholder="https://"
-						fontSize={14}
-						borderWidth={0}
-						_light={{bg: "muted.200", _focus: {bg: "muted.200"}}}
-						_dark={{bg: "muted.900", _focus: {bg: "muted.900"}}}
-						py={3}
-						rounded={8}
+						placeholder="example.com"
 						onChangeText={setURL}
 						value={URL}
+						InputLeftElement={<Text ml={3} color="muted.400">https://</Text>}
 						InputRightElement={
 							<Button
 							  size="xs"
-							  rounded="none"
 							  w="1/6"
 							  h="full"
-							  _light={{bg: "muted.900", _text: {color: "muted.100"}}}
-							  _dark={{bg: "muted.100", _text: {color: "muted.900"}}}
-							  _pressed={{opacity: 0.8, bg: "muted.400"}}
 							  onPress={handleURLDownload}
 							  _text={{fontSize: 14, fontWeight: 500}}
+							  {...ButtonProps}
+							  rounded={0}
 							>
 								Go
 							</Button>
 						}
+						{...InputProps}
 					  />
 				  </Box>
 
 				  <Text color="muted.600" fontSize={16}>OR</Text>
 
 				  <Button
-					w="full" fontSize={12}
-					_light={{bg: "muted.900", _text: {color: "muted.100"}}}
-					_dark={{bg: "muted.100", _text: {color: "muted.900"}}}
-					_pressed={{opacity: 0.8, bg: "muted.400"}}
-					_loading={{bg: "muted.900", _text: {color: "muted.100"}}}
-					rounded={8}
-					py={3}
+					w="full"
 					onPress={triggerFilePicker}
 					isLoading={loadingFile}
+					{...ButtonProps}
 				  >
 					  Import from device
 				  </Button>

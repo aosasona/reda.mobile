@@ -70,6 +70,7 @@ export default function Settings() {
 			  </Pressable>
 			  <Pressable
 				{...PressableProps}
+				borderTopWidth={0}
 			  >
 				  <HStack alignItems="center" space={2} px={3} py={4}>
 					  <Icon as={Feather} name="trash-2" size={4} color="red.500"/>

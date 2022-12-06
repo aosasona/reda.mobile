@@ -1,24 +1,38 @@
 import {MaterialIcons} from "@expo/vector-icons";
-import {Icon, Input, ScrollView} from "native-base";
+import {Icon, Input, Pressable, ScrollView} from "native-base";
+import {useState} from "react";
+import {InputProps} from "../constants/props";
 
 export default function Home() {
+
+	const [search, setSearch] = useState("");
+
 	return (
 	  <ScrollView>
 		  <Input
 			type="text"
-			variant="filled"
 			placeholder="Search"
-			fontSize={14}
-			borderWidth={0}
-			_light={{bg: "muted.200", _focus: {bg: "muted.200"}}}
-			_dark={{bg: "muted.900", _focus: {bg: "muted.900"}}}
-			py={3}
+			onChangeText={setSearch}
+			value={search}
 			px={2}
 			mt={4}
-			rounded={8}
+			InputRightElement={
+				search ?
+				  <Pressable _pressed={{opacity: 0.5}} p={4} onPress={() => setSearch("")}>
+					  <Icon
+						as={MaterialIcons}
+						name="cancel"
+						size={5}
+						_dark={{color: "muted.800"}}
+						_light={{color: "muted.400"}}
+					  />
+				  </Pressable>
+				  : <></>
+			}
 			InputLeftElement={
 				<Icon as={MaterialIcons} name="search" size="sm" ml={3} _dark={{color: "muted.600"}} _light={{color: "muted.400"}}/>
 			}
+			{...InputProps}
 		  />
 
 	  </ScrollView>

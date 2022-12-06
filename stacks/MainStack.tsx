@@ -32,7 +32,7 @@ export default function MainStack() {
 					component={ImportStack}
 					options={{
 						tabBarIcon: ({focused}) => (
-						  <Box bg={colorMode == "dark" ? "white" : "muted.900"} p={3} rounded={10}>
+						  <Box bg={colorMode == "dark" ? "white" : "muted.900"} p={4} rounded={8}>
 							  <Icon as={AntDesign} name="plus" size={4} color={colorMode !== "dark" ? "white" : "muted.900"}/>
 						  </Box>),
 						...screenOptions(colorMode),
