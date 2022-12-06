@@ -1,65 +1,97 @@
-import {Asset} from "expo-asset";
-import * as FileSystem from 'expo-file-system';
 import * as SQLite from "expo-sqlite";
-import {WebSQLDatabase} from "expo-sqlite";
+import {SQLError, SQLResultSet} from "expo-sqlite";
 
 const DATABASE_NAME = 'reda.db';
-const DATABASE_LOCATION = "../data/" + DATABASE_NAME;
-const DEVICE_DATABASE_LOCATION = FileSystem.documentDirectory + `SQLite/${DATABASE_NAME}`;
 
-const loadDatabaseFromAssets = async () => {
-
-	if (!(await FileSystem.getInfoAsync(FileSystem.documentDirectory + 'SQLite')).exists) {
-		await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'SQLite');
-	}
-	await FileSystem.downloadAsync(
-	  Asset.fromModule(require(DATABASE_LOCATION)).uri,
-	  DEVICE_DATABASE_LOCATION,
-	);
+enum SQLBoolean {
+	TRUE = 1,
+	FALSE = 0,
 }
 
-export const openDatabase = (): WebSQLDatabase => {
-	loadDatabaseFromAssets().then().catch((e) => {throw e})
-	return SQLite.openDatabase(DEVICE_DATABASE_LOCATION);
+export interface FileModel {
+	id: number;
+	name: string;
+	path: string;
+	size?: number;
+	created_at?: string;
 }
 
-const db = openDatabase();
-
-export const executeQuery = (query: string, params: any[] = []) => {
-	let result: any = [];
-
-	db.transaction((tx) => {
-		tx.executeSql(
-		  query,
-		  params,
-		  (_, {rows}) => {
-			  result = rows;
-			  console.log(JSON.stringify(rows))
-		  },
-		);
-	});
-
-	return result;
+export interface MetadataModel {
+	id: number;
+	file_id: number;
+	name: string;
+	image?: string;
+	description?: string;
+	author?: string;
+	chapters?: number;
+	current_page?: number;
+	total_pages?: number;
+	has_started?: SQLBoolean;
+	has_finished?: SQLBoolean;
+	created_at?: string;
+	updated_at?: string;
 }
 
-export const recordExists = async (table: string, key: string, value: string) => {
-	const query = `SELECT * FROM ${table} WHERE ${key} = ?`;
-	const result = executeQuery(query, [value]);
-	return (result as any).length > 0;
+
+const db = SQLite.openDatabase(DATABASE_NAME, "1.0", "Local data store for Reda");
+
+
+export const executeQuery = async (query: string, params: any[] = []): Promise<SQLResultSet | SQLError> => {
+
+	return new Promise((resolve, reject) => {
+		db.transaction((tx) => {
+			tx.executeSql(query, params, (_, res) => {
+				resolve(res);
+			});
+		}, (error) => reject(error));
+	})
 }
+
 
 export const runMigration = async () => {
-	db.transaction((tx) => {
-		tx.executeSql("CREATE TABLE IF NOT EXISTS files (id SERIAL PRIMARY KEY NOT NULL, name VARCHAR(255) NOT NULL, path VARCHAR(255) NOT NULL, size INTEGER NOT NULL, created_at TIMESTAMP NOT NULL DEFAULT NOW(), updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)");
-		tx.executeSql("CREATE TABLE metadata ( id INTEGER PRIMARY KEY AUTOINCREMENT, file_id INTEGER NOT NULL REFERENCES files(id) ON DELETE CASCADE, name STRING, image STRING NOT NULL DEFAULT '', description TEXT NOT NULL DEFAULT '', author STRING NOT NULL DEFAULT '', chapters INTEGER NOT NULL DEFAULT 0, pages INTEGER NOT NULL DEFAULT 0, created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)");
-		tx.executeSql("INSERT INTO metadata (name, image, description, author, chapters, pages) VALUES ('Reda', 'https://i.imgur.com/4Z0Z7Zm.png', 'Reda is a free and open source application that allows you to read your PDF files on your mobile device.', 'Reda Team', 0, 0)");
-		tx.executeSql("SELECT * FROM metadata", [], (_, {rows}) => console.log(JSON.stringify(rows)));
-	}, (e) => console.log(e), () => console.log("Migration completed"));
+
+	const enablePragma = `PRAGMA foreign_keys = ON;`;
+
+	const filesSQL = `
+		CREATE TABLE IF NOT EXISTS files (
+		    id				INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+		    name			TEXT NOT NULL,
+		    path			TEXT NOT NULL,
+		    size			INTEGER NOT NULL,
+		    created_at 		DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+		);`
+
+	const metadataSQL = `
+		CREATE TABLE IF NOT EXISTS metadata (
+			id 				INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+			file_id 			INTEGER NOT NULL, 
+			name 			TEXT NOT NULL DEFAULT 'Untitled', 
+			image 			TEXT NOT NULL DEFAULT '', 
+			description 	TEXT NOT NULL DEFAULT '', 
+			author 			TEXT NOT NULL DEFAULT '', 
+			chapters 		INTEGER NOT NULL DEFAULT 0, 
+			current_page	INTEGER NOT NULL DEFAULT 1,
+		    total_pages		INTEGER NOT NULL DEFAULT 1,
+		    has_started		BOOLEAN NOT NULL DEFAULT 0,
+		    has_finished		BOOLEAN NOT NULL DEFAULT 0,
+			created_at 		DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+			updated_at 		DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			FOREIGN KEY (file_id) REFERENCES files(id)
+		);`
+
+	db.transaction((tx: any) => {
+		tx.executeSql(enablePragma);
+		tx.executeSql(filesSQL);
+		tx.executeSql(metadataSQL);
+	}, (e: unknown) => console.log(e));
 }
 
 export const insert = async (table: string, data: any) => {
+
 	const keys = Object.keys(data);
 	const values = Object.values(data);
-	const query = `INSERT INTO ${table} (${keys.join(', ')}) VALUES (${values.map(() => '?').join(', ')});`;
-	return executeQuery(query, values);
+
+	const query = `INSERT INTO ${table} (${keys.join(", ")}) VALUES (${keys.map(() => "?").join(", ")});`;
+
+	return await executeQuery(query, values);
 }

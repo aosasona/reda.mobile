@@ -15,6 +15,7 @@ export const SelectProps = {
 	_light: {bg: "muted.100", color: "black", placeholderTextColor: "muted.900", _selectedItem: {bg: "muted.200"}},
 	_actionSheetContent: {_dark: {bg: "muted.900"}, _light: {bg: "muted.100"}},
 	_actionSheetBody: {_dark: {bg: "muted.900"}, _light: {bg: "muted.100"}},
+	_backdrop: {opacity: 0.8},
 }
 
 export const PressableProps = {
@@ -26,4 +27,9 @@ export const PressableProps = {
 	_pressed: {opacity: 0.5},
 	m: 0,
 	p: 0,
+}
+
+export const ActionSheetProps = {
+	_dark: {bg: "muted.900", color: "muted.100"},
+	_light: {bg: "muted.100", color: "muted.900"},
 }

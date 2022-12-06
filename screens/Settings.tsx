@@ -94,5 +94,3 @@ const SettingsSection = ({title, children}: { title: string, children: ReactNode
 	  </Box>
   </Box>
 )
-
-// <Switch size="sm" onTrackColor="brand.dark" onToggle={toggleColorMode} value={(colorMode === "dark")}/>
