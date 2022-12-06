@@ -14,6 +14,7 @@ export default function HomeStack() {
 	  <Stack.Navigator {...navigationConfig(colorMode)}>
 		  <Stack.Screen name={screens.HOME.screenName} component={Home} options={{
 			  headerTitle: screens.HOME.screenTitle,
+			  headerShown: false,
 		  }}/>
 	  </Stack.Navigator>
 	)

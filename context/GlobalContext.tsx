@@ -6,6 +6,7 @@ import {GlobalReducer} from "./GlobalReducer";
 export interface GlobalStateType {
 	fontSize: number;
 	fontFamily: FontFamiliesEnum;
+	deleteFilesAfterImport: boolean;
 }
 
 interface GlobalContextType {
@@ -19,6 +20,7 @@ const GlobalContextProvider = ({children}: any) => {
 	const initialState: GlobalStateType = {
 		fontSize: 14,
 		fontFamily: FontFamiliesEnum.OUTFIT,
+		deleteFilesAfterImport: true,
 	}
 
 	const [reducerState, dispatch] = useReducer(GlobalReducer, initialState);

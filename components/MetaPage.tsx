@@ -24,7 +24,7 @@ export default function MetaPage({data, file, next, previous}: { data: any, file
 		  <Pressable onPress={previous} _pressed={{opacity: 0.5}} mb={6} py={1}>
 			  <HStack alignItems="center">
 				  <Icon as={Entypo} name="chevron-left" size="sm" color="blue.600"/>
-				  <Text fontSize={18} color="blue.600">Back</Text>
+				  <Text fontSize={18} color="blue.600">Search</Text>
 			  </HStack>
 		  </Pressable>
 		  <HStack bg="transparent" w={width * 0.9} space={3}>

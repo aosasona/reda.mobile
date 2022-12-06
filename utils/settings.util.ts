@@ -14,7 +14,8 @@ export default class SettingsUtil {
 	public loadSettings = async () => {
 		const fontSize = await getAsyncStorage(ConfigKeys.FONT_SIZE);
 		const fontFamily = await getAsyncStorage(ConfigKeys.FONT_FAMILY);
-		this.dispatch({type: GlobalActionType.LOAD_SETTINGS, payload: {fontSize, fontFamily}});
+		const deleteFilesAfterImport = !!(Number(await getAsyncStorage(ConfigKeys.DELETE_FILES_AFTER_IMPORT)));
+		this.dispatch({type: GlobalActionType.LOAD_SETTINGS, payload: {fontSize, fontFamily, deleteFilesAfterImport}});
 	}
 
 	public setFontSize = (fontSize: string) => {
@@ -24,8 +25,12 @@ export default class SettingsUtil {
 	}
 
 	public setFontFamily = (fontFamily: FontFamiliesEnum) => {
-		console.log(fontFamily);
 		this.dispatch({type: GlobalActionType.SET_FONT_FAMILY, payload: fontFamily})
+	}
+
+	public setDeleteFilesAfterImport = (deleteFilesAfterImport: boolean) => {
+		const val = deleteFilesAfterImport ? 1 : 0;
+		this.dispatch({type: GlobalActionType.SET_DELETE_FILES_AFTER_IMPORT, payload: val})
 	}
 
 	public resetSettings = () => {

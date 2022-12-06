@@ -34,8 +34,9 @@ import {
 	Poppins_900Black,
 } from '@expo-google-fonts/poppins';
 import * as SplashScreen from 'expo-splash-screen';
-import {NativeBaseProvider} from "native-base";
+import {NativeBaseProvider, useColorMode} from "native-base";
 import React, {useEffect} from "react";
+import {Appearance} from "react-native";
 import {extendedTheme} from "./config/theme";
 import {GlobalContextProvider} from "./context/GlobalContext";
 import MainStack from "./stacks/MainStack";
@@ -45,6 +46,7 @@ import {runMigration} from "./utils/database.util";
 (async () => await SplashScreen.preventAutoHideAsync())();
 
 export default function App() {
+	const {toggleColorMode} = useColorMode();
 	let [fontsLoaded] = useFonts({
 		Outfit_100Thin,
 		Outfit_200ExtraLight,
@@ -87,6 +89,7 @@ export default function App() {
 		AzeretMono_900Black,
 	});
 
+
 	useEffect(() => {
 		(async () => {
 			if (fontsLoaded) {
@@ -97,8 +100,12 @@ export default function App() {
 
 
 	useEffect(() => {
+		Appearance.addChangeListener(({colorScheme}) => {
+			colorModeManager.set(colorScheme);
+		});
 		(async () => await runMigration())();
 	}, []);
+
 
 	if (!fontsLoaded) {
 		return null;

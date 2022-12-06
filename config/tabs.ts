@@ -21,6 +21,9 @@ export const screenOptions = (colorMode: ColorMode) => ({
 		backgroundColor: getPrimaryColor(colorMode),
 		shadowColor: "transparent",
 	},
+	tabBarLabelStyle: {
+		fontSize: 12,
+	},
 	tabBarStyle: {
 		backgroundColor: getPrimaryColor(colorMode),
 		borderTopWidth: 0,

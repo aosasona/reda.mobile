@@ -13,6 +13,7 @@ export default function ImportStack() {
 	  <Stack.Navigator {...navigationConfig(colorMode)}>
 		  <Stack.Screen name={screens.IMPORT.screenName} component={Import} options={{
 			  headerTitle: screens.IMPORT.screenTitle,
+			  headerShown: false,
 		  }}/>
 	  </Stack.Navigator>
 	)

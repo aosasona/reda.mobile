@@ -1,11 +1,10 @@
 export const HStackProps = {
-	_dark: {bg: "muted.900", borderColor: "muted.800"},
-	_light: {bg: "muted.100", borderColor: "muted.200"},
+	_dark: {borderColor: "muted.800"},
+	_light: {borderColor: "muted.200"},
 	justifyContent: "space-between",
 	alignItems: "center",
-	borderBottomWidth: 1,
-	px: 3,
-	py: 3,
+	px: 4,
+	py: 2.5,
 }
 
 export const SelectProps = {
@@ -20,10 +19,8 @@ export const SelectProps = {
 
 export const PressableProps = {
 	w: "100%",
-	_dark: {bg: "muted.900", borderColor: "muted.800"},
-	_light: {bg: "muted.100", borderColor: "muted.200"},
-	borderTopWidth: 1,
-	borderBottomWidth: 1,
+	_dark: {borderColor: "muted.800"},
+	_light: {borderColor: "muted.200"},
 	_pressed: {opacity: 0.5},
 	m: 0,
 	p: 0,
@@ -52,4 +49,9 @@ export const InputProps = {
 	_dark: {bg: "muted.900", _focus: {bg: "muted.900"}},
 	py: 5,
 	rounded: 8,
+}
+
+export const DividerProps = {
+	_dark: {bg: "muted.800"},
+	_light: {bg: "muted.200"},
 }

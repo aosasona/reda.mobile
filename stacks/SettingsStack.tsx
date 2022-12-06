@@ -13,6 +13,7 @@ export default function SettingsStack() {
 	  <Stack.Navigator {...navigationConfig(colorMode)}>
 		  <Stack.Screen name={screens.SETTINGS.screenName} component={Settings} options={{
 			  headerTitle: screens.SETTINGS.screenTitle,
+			  headerShown: false,
 		  }}/>
 	  </Stack.Navigator>
 	)

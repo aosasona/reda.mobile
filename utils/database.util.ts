@@ -9,7 +9,6 @@ enum SQLBoolean {
 }
 
 export interface FileModel {
-	id: number;
 	name: string;
 	path: string;
 	size?: number;
@@ -17,7 +16,6 @@ export interface FileModel {
 }
 
 export interface MetadataModel {
-	id: number;
 	file_id: number;
 	name: string;
 	image?: string;
@@ -83,7 +81,7 @@ export const runMigration = async () => {
 		tx.executeSql(enablePragma);
 		tx.executeSql(filesSQL);
 		tx.executeSql(metadataSQL);
-	}, (e: unknown) => console.log(e));
+	}, console.error);
 }
 
 export const insert = async (table: string, data: any) => {
@@ -94,4 +92,36 @@ export const insert = async (table: string, data: any) => {
 	const query = `INSERT INTO ${table} (${keys.join(", ")}) VALUES (${keys.map(() => "?").join(", ")});`;
 
 	return await executeQuery(query, values);
+}
+
+export const saveFile = async (file: FileModel, meta: MetadataModel) => {
+	try {
+		const savedFile = await insert('files', file) as SQLResultSet;
+		const {insertId} = savedFile;
+		const savedMeta = await insert('metadata', {...meta, file_id: insertId}) as SQLResultSet;
+		return {...savedFile, meta: savedMeta};
+	}
+	catch (e) {
+		throw e;
+	}
+}
+
+export const getFiles = async () => {
+	try {
+		const query = `SELECT * FROM files f INNER JOIN metadata m ON f.id = m.file_id;`;
+		return await executeQuery(query) as SQLResultSet | null;
+	}
+	catch (e) {
+		throw e;
+	}
+}
+
+export const getFile = async (id: number) => {
+	try {
+		const query = `SELECT * FROM files f INNER JOIN metadata m ON f.id = m.file_id WHERE f.id = ?;`;
+		return await executeQuery(query, [id]) as SQLResultSet | null;
+	}
+	catch (e) {
+		throw e;
+	}
 }

@@ -1,6 +1,6 @@
 import {Entypo} from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
-import {Box, Button, FlatList, Flex, Icon, Input, ScrollView, Text, useDisclose, VStack} from "native-base";
+import {Box, Button, FlatList, Heading, Icon, Input, Text, useDisclose, VStack} from "native-base";
 import {useEffect, useState} from "react";
 import {Alert} from "react-native";
 import DownloadingCard from "../components/DownloadingCard";
@@ -100,55 +100,51 @@ export default function Import() {
 			}
 		}
 		catch (e: any) {
-			console.log(e);
 			const msg = e instanceof CustomException ? e.message : "An error occurred";
 			Alert.alert("Error", msg);
 		}
 	}
 
-	const HeaderComponent = <ContentAboveList
-	  step={step}
-	  setStep={setStep}
-	  search={search}
-	  setSearch={setSearch}
-	  URL={URL}
-	  setURL={setURL}
-	  file={file}
-	  setFile={setFile}
-	  metadata={metadata}
-	  setMetadata={setMetadata}
-	  processed={processed}
-	  setProcessed={setProcessed}
-	  allMetadata={allMetadata}
-	  setAllMetadata={setAllMetadata}
-	  next={nextStep}
-	  previous={prevStep}
-	  triggerFilePicker={triggerFilePicker}
-	  loadingFile={loadingFile}
-	  setLoadingFile={setLoadingFile}
-	/>
+	const HeaderComponent = <Box safeAreaTop>
+		<Heading fontSize={44} mt={4} ml={2}>Import</Heading>
+		<ContentAboveList
+		  step={step}
+		  setStep={setStep}
+		  search={search}
+		  setSearch={setSearch}
+		  URL={URL}
+		  setURL={setURL}
+		  file={file}
+		  setFile={setFile}
+		  metadata={metadata}
+		  setMetadata={setMetadata}
+		  processed={processed}
+		  setProcessed={setProcessed}
+		  allMetadata={allMetadata}
+		  setAllMetadata={setAllMetadata}
+		  next={nextStep}
+		  previous={prevStep}
+		  triggerFilePicker={triggerFilePicker}
+		  loadingFile={loadingFile}
+		  setLoadingFile={setLoadingFile}
+		/></Box>
+
+	const EmptyComponent = <Box h={72} flex={1} alignItems="center" justifyContent="center">
+		<Icon as={Entypo} name="download" size={20} _dark={{color: "muted.800"}} _light={{color: "muted.300"}}/>
+		<Text _dark={{color: "muted.800"}} _light={{color: "muted.300"}} mt={3}>
+			No ongoing downloads
+		</Text>
+	</Box>
 
 	return (
-	  <>
-		  {downloadingList.length > 0 ? <FlatList
-			  ListHeaderComponent={HeaderComponent}
-			  data={downloadingList}
-			  renderItem={({item, index}) => <DownloadingCard item={item} index={index} onDelete={removeDownloadingItem}/>}
-			  keyExtractor={(item, index) => index.toString()}
-			  px={4}
-			  mt={2}
-			/>
-			:
-			<ScrollView>
-				{HeaderComponent}
-				<Flex h={72} flex={1} alignItems="center" justifyContent="center">
-					<Icon as={Entypo} name="download" size={20} _dark={{color: "muted.800"}} _light={{color: "muted.300"}}/>
-					<Text _dark={{color: "muted.800"}} _light={{color: "muted.300"}} mt={3}>
-						No ongoing downloads
-					</Text>
-				</Flex></ScrollView>
-		  }
-	  </>
+	  <FlatList
+		data={downloadingList}
+		renderItem={({item, index}) => <DownloadingCard key={index} item={item} index={index} onDelete={removeDownloadingItem}/>}
+		keyExtractor={(item, index) => index.toString()}
+		ListHeaderComponent={HeaderComponent}
+		ListEmptyComponent={EmptyComponent}
+		px={4}
+	  />
 	)
 }
 
