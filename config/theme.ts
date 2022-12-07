@@ -3,6 +3,8 @@ import {FontFamilies, FontFamiliesEnum, FontWeights} from "../constants/fonts";
 
 export const colors = {
 	"primary": "#FFD369",
+	"brand-dark": "#000000",
+	"brand-light": "#EEEEEE",
 	brand: {
 		"light": "#EEEEEE",
 		"primary": "#FFD369",

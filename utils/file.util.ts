@@ -10,6 +10,11 @@ export interface File {
 	mimeType: string;
 }
 
+export const extractFileName = (rawName: string) => {
+	const split = rawName.split(".");
+	return split[0] || rawName;
+}
+
 export const createFolder = async (name: string) => {
 	const path = FileSystem.documentDirectory + name;
 	const {exists} = await FileSystem.getInfoAsync(path);
