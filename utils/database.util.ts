@@ -3,7 +3,7 @@ import {SQLError, SQLResultSet} from "expo-sqlite";
 
 const DATABASE_NAME = 'reda.db';
 
-enum SQLBoolean {
+export enum SQLBoolean {
 	TRUE = 1,
 	FALSE = 0,
 }
@@ -16,10 +16,10 @@ export interface FileModel {
 }
 
 export interface MetadataModel {
-	file_id: number;
+	file_id?: number;
 	name: string;
-	image?: string;
-	description?: string;
+	image: string;
+	description: string;
 	author?: string;
 	chapters?: number;
 	current_page?: number;
@@ -28,6 +28,24 @@ export interface MetadataModel {
 	has_finished?: SQLBoolean;
 	created_at?: string;
 	updated_at?: string;
+}
+
+export interface CombinedFileResultType {
+	id: number;
+	file_id: number;
+	name: string;
+	image: string;
+	path: string;
+	size: number;
+	description: string;
+	author: string;
+	chapters: number;
+	current_page: number;
+	total_pages: number;
+	has_started: SQLBoolean;
+	has_finished: SQLBoolean;
+	created_at: string;
+	updated_at: string;
 }
 
 
@@ -99,7 +117,7 @@ export const saveFile = async (file: FileModel, meta: MetadataModel) => {
 		const savedFile = await insert('files', file) as SQLResultSet;
 		const {insertId} = savedFile;
 		const savedMeta = await insert('metadata', {...meta, file_id: insertId}) as SQLResultSet;
-		return {...savedFile, meta: savedMeta};
+		return {...savedFile.rows._array, meta: savedMeta.rows._array};
 	}
 	catch (e) {
 		throw e;
@@ -109,7 +127,8 @@ export const saveFile = async (file: FileModel, meta: MetadataModel) => {
 export const getFiles = async () => {
 	try {
 		const query = `SELECT * FROM files f INNER JOIN metadata m ON f.id = m.file_id;`;
-		return await executeQuery(query) as SQLResultSet | null;
+		const result = await executeQuery(query) as SQLResultSet | null;
+		return result?.rows._array || [] as any[];
 	}
 	catch (e) {
 		throw e;

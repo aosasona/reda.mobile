@@ -10,8 +10,12 @@ import CustomException from "../exceptions/CustomException";
 import {deleteFile, File, handleFilePick} from "../utils/file.util";
 import {OpenLibraryService} from "../utils/request.util";
 
-
+// TODO: Remove files after they are imported (or not)
+// TODO: Show toast message when file is imported
+// TODO: refactor and fix re-render issue
 export default function Import() {
+
+	const {isOpen, onOpen, onClose} = useDisclose();
 
 	const [step, setStep] = useState(0);
 	const [search, setSearch] = useState("");
@@ -56,27 +60,8 @@ export default function Import() {
 
 	const searchForBook = async (filename: string) => {
 		const metadataResult = (await OpenLibraryService.search({title: filename, limit: 50}))["docs"];
-		setProcessed(true);
 		if (!metadataResult) throw new CustomException("Something went wrong while processing the file");
 		setAllMetadata(metadataResult);
-		setProcessed(false);
-	}
-
-	const showSkip = () => {
-		Alert.alert("Skip", "Metadata is taking too long, cancel operation?", [
-			{
-				text: "Cancel",
-				style: "cancel",
-			},
-			{
-				text: "OK",
-				style: "destructive",
-				onPress: () => {
-					nextStep();
-
-				},
-			},
-		]);
 	}
 
 	const triggerFilePicker = async () => {
@@ -93,11 +78,10 @@ export default function Import() {
 				setFile(data);
 				const filename = data?.name?.split(".")[0] || "";
 				await searchForBook(filename);
-				setLoadingFile(false);
 				setSearch(filename);
-			} else {
-				setLoadingFile(false);
+				if (!isOpen) onOpen();
 			}
+			setLoadingFile(false);
 		}
 		catch (e: any) {
 			const msg = e instanceof CustomException ? e.message : "An error occurred";
@@ -105,50 +89,49 @@ export default function Import() {
 		}
 	}
 
-	const HeaderComponent = <Box safeAreaTop>
-		<Heading fontSize={44} mt={4} ml={2}>Import</Heading>
-		<ContentAboveList
-		  step={step}
-		  setStep={setStep}
-		  search={search}
-		  setSearch={setSearch}
-		  URL={URL}
-		  setURL={setURL}
-		  file={file}
-		  setFile={setFile}
-		  metadata={metadata}
-		  setMetadata={setMetadata}
-		  processed={processed}
-		  setProcessed={setProcessed}
-		  allMetadata={allMetadata}
-		  setAllMetadata={setAllMetadata}
-		  next={nextStep}
-		  previous={prevStep}
-		  triggerFilePicker={triggerFilePicker}
-		  loadingFile={loadingFile}
-		  setLoadingFile={setLoadingFile}
-		/></Box>
-
-	const EmptyComponent = <Box h={72} flex={1} alignItems="center" justifyContent="center">
-		<Icon as={Entypo} name="download" size={20} _dark={{color: "muted.800"}} _light={{color: "muted.300"}}/>
-		<Text _dark={{color: "muted.800"}} _light={{color: "muted.300"}} mt={3}>
-			No ongoing downloads
-		</Text>
-	</Box>
 
 	return (
 	  <FlatList
 		data={downloadingList}
 		renderItem={({item, index}) => <DownloadingCard key={index} item={item} index={index} onDelete={removeDownloadingItem}/>}
 		keyExtractor={(item, index) => index.toString()}
-		ListHeaderComponent={HeaderComponent}
-		ListEmptyComponent={EmptyComponent}
+		ListHeaderComponent={<Box safeAreaTop>
+			<Heading fontSize={44} mt={4} ml={2}>Import</Heading>
+			<ContentAboveList
+			  disclosure={{isOpen, onClose}}
+			  step={step}
+			  setStep={setStep}
+			  search={search}
+			  setSearch={setSearch}
+			  URL={URL}
+			  setURL={setURL}
+			  file={file}
+			  setFile={setFile}
+			  metadata={metadata}
+			  setMetadata={setMetadata}
+			  processed={processed}
+			  setProcessed={setProcessed}
+			  allMetadata={allMetadata}
+			  setAllMetadata={setAllMetadata}
+			  next={nextStep}
+			  previous={prevStep}
+			  triggerFilePicker={triggerFilePicker}
+			  loadingFile={loadingFile}
+			  setLoadingFile={setLoadingFile}
+			/></Box>}
+		ListEmptyComponent={<Box h={72} flex={1} alignItems="center" justifyContent="center">
+			<Icon as={Entypo} name="download" size={20} _dark={{color: "muted.800"}} _light={{color: "muted.300"}}/>
+			<Text _dark={{color: "muted.800"}} _light={{color: "muted.300"}} mt={3}>
+				No ongoing downloads
+			</Text>
+		</Box>}
 		px={4}
 	  />
 	)
 }
 
 export function ContentAboveList({
+	disclosure,
 	step,
 	setStep,
 	search,
@@ -172,17 +155,13 @@ export function ContentAboveList({
 	setLoadingFile,
 }: any) {
 
-	useEffect(() => {
-		if (processed) onOpen();
-	}, [processed])
-
-	const {isOpen, onOpen, onClose} = useDisclose();
+	const {isOpen, onClose} = disclosure;
 
 	const resetStates = () => {
 		setSearch("");
 		setURL("");
 		setLoadingFile(false);
-		setProcessed(false);
+		// setProcessed(false);
 		setMetadata(null);
 		setAllMetadata([]);
 		setStep(0);
@@ -215,6 +194,7 @@ export function ContentAboveList({
 			setStep={setStep}
 			search={search}
 			setSearch={setSearch}
+			loadingFile={loadingFile}
 			allMetadata={allMetadata}
 			currentMetadata={metadata}
 			handleModalClose={handleModalClose}

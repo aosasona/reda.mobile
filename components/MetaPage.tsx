@@ -1,10 +1,12 @@
 import {Entypo} from "@expo/vector-icons";
-import {AspectRatio, Box, Button, Flex, Heading, HStack, Icon, Image, Pressable, Text, VStack} from "native-base";
+import {AspectRatio, Box, Button, Heading, HStack, Icon, Image, Pressable, Text, VStack} from "native-base";
 import {useEffect, useState} from "react";
 import {useWindowDimensions} from "react-native";
 import {ButtonProps} from "../constants/props";
+import {FileModel, MetadataModel, saveFile, SQLBoolean} from "../utils/database.util";
 import {File} from "../utils/file.util";
 import {OpenLibraryService} from "../utils/request.util";
+import ImagePlaceholder from "./ImagePlaceholder";
 
 export default function MetaPage({data, file, next, previous}: { data: any, file: File, next: () => void, previous: () => void }) {
 
@@ -16,8 +18,36 @@ export default function MetaPage({data, file, next, previous}: { data: any, file
 		if (data?.cover_i) {
 			setImg(OpenLibraryService.getImageByID(data.cover_i, "L"));
 		}
-		// console.log(data);
 	}, [data]);
+
+	const save = async () => {
+		try {
+			setSaving(true);
+			const file_data: FileModel = {
+				name: file?.name || "",
+				path: file?.uri,
+				size: file?.size,
+			}
+			const meta: MetadataModel = {
+				name: data?.title || file?.name?.split(".")[0],
+				image: img || "",
+				description: data?.subtitle || "No description.",
+				author: data?.author_name[0] || "Unknown author",
+				chapters: 0,
+				total_pages: data?.number_of_pages_median || 0,
+				has_started: SQLBoolean.FALSE,
+				has_finished: SQLBoolean.FALSE,
+			}
+			const res = await saveFile(file_data, meta);
+			console.log(res);
+		}
+		catch (e) {
+
+		}
+		finally {
+			setSaving(false);
+		}
+	}
 
 	return (
 	  <Box pb={4}>
@@ -31,21 +61,7 @@ export default function MetaPage({data, file, next, previous}: { data: any, file
 			  <AspectRatio w={width * 0.3} ratio={9 / 12}>
 				  {img
 					? <Image resizeMode="cover" source={{uri: img}} alt={data?.title || ""} rounded={8}/>
-					: <Flex
-					  _dark={{bg: "muted.800"}}
-					  _light={{bg: "muted.200"}}
-					  alignItems="center"
-					  justifyContent="center"
-					  rounded={8}
-					>
-						<Icon
-						  as={Entypo}
-						  name="book"
-						  size="4xl"
-						  _dark={{color: "muted.700"}}
-						  _light={{color: "muted.400"}}
-						/>
-					</Flex>
+					: <ImagePlaceholder/>
 				  }
 			  </AspectRatio>
 			  <VStack bg="transparent" w={width * 0.6} space={2}>
@@ -63,7 +79,7 @@ export default function MetaPage({data, file, next, previous}: { data: any, file
 					</Text>
 				  }
 				  <HStack space={2} mt="auto" mb={1}>
-					  <Button {...ButtonProps} w={16} py={2} rounded={20} isLoading={saving}>
+					  <Button {...ButtonProps} w={16} py={2} rounded={20} isLoading={saving} onPress={save}>
 						  Save
 					  </Button>
 				  </HStack>

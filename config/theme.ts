@@ -8,7 +8,7 @@ export const colors = {
 		"primary": "#FFD369",
 		"dark": "#393E46",
 		"dark-brand": "#222831",
-		"darker": "#060606",
+		"darker": "#000000",
 		"faded": "#A9A9A9",
 		"faded-dark": "#A9A9A955",
 	},

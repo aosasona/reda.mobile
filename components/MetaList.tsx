@@ -1,6 +1,6 @@
 import {Entypo, MaterialIcons} from "@expo/vector-icons";
 import {Actionsheet, Box, Button, FlatList, Flex, Heading, HStack, Icon, Input, PresenceTransition, Pressable, Text} from "native-base";
-import {useWindowDimensions} from "react-native";
+import {ActivityIndicator, useWindowDimensions} from "react-native";
 import {ActionSheetProps, ButtonProps, InputProps} from "../constants/props";
 import {File} from "../utils/file.util";
 import MetaListCard from "./MetaListCard";
@@ -15,11 +15,12 @@ export default function MetaList({
 	search,
 	setSearch,
 	file,
+	loadingFile,
 	allMetadata,
 	currentMetadata,
 	onMetadataSelect,
 	handleModalClose,
-}: { isOpen: boolean, next: () => void; previous: () => void; file: File; step: number, setStep: () => void; search: string; setSearch: (str: any) => void, allMetadata: any[], currentMetadata: any, onMetadataSelect: (item: number) => void, handleModalClose: () => void }) {
+}: { isOpen: boolean, next: () => void; previous: () => void; file: File; loadingFile: boolean; step: number, setStep: () => void; search: string; setSearch: (str: any) => void, allMetadata: any[], currentMetadata: any, onMetadataSelect: (item: number) => void, handleModalClose: () => void }) {
 
 	const {height} = useWindowDimensions();
 
@@ -41,14 +42,6 @@ export default function MetaList({
 		},
 	}
 
-	const ListEmptyComponent = <Flex h={height * 0.6} alignItems="center" justifyContent="center">
-		<Box>
-			<Icon as={Entypo} name="info-with-circle" size={20} _dark={{color: "muted.800"}} _light={{color: "muted.300"}}/>
-			<Text _dark={{color: "muted.800"}} _light={{color: "muted.300"}} mt={3}>
-				No books found
-			</Text>
-		</Box>
-	</Flex>
 
 	return (
 	  <Actionsheet isOpen={isOpen} onClose={handleModalClose} _backdrop={{opacity: 0.8}}>
@@ -89,12 +82,23 @@ export default function MetaList({
 				  />
 
 				  <Box>
+					  <ActivityIndicator animating={loadingFile} size="small"/>
+				  </Box>
+
+				  <Box>
 					  <FlatList
 						bg="transparent"
 						data={allMetadata}
 						renderItem={({item, index}) => <MetaListCard data={item} index={index} onPress={onMetadataSelect}/>}
 						keyExtractor={(item, index) => index.toString()}
-						ListEmptyComponent={ListEmptyComponent}
+						ListEmptyComponent={<Flex h={height * 0.6} alignItems="center" justifyContent="center">
+							<Box>
+								<Icon as={Entypo} name="info-with-circle" size={20} _dark={{color: "muted.800"}} _light={{color: "muted.300"}}/>
+								<Text _dark={{color: "muted.800"}} _light={{color: "muted.300"}} mt={3}>
+									No result found.
+								</Text>
+							</Box>
+						</Flex>}
 						ListFooterComponent={<Box h={192}/>}
 						showsVerticalScrollIndicator={false}
 						px={0}
@@ -102,7 +106,7 @@ export default function MetaList({
 						maxHeight={height - 200}
 					  />
 				  </Box>
-				  <Box w="full" position="absolute" bottom={24} safeAreaBottom={true}>
+				  <Box w="full" position="absolute" bottom={32} safeAreaBottom={true}>
 					  <Button
 						w="full"
 						onPress={next}
