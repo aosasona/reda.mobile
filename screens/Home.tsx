@@ -128,7 +128,7 @@ const FileCard = ({data, index}: { data: CombinedFileResultType, index: number }
 	const {width} = useWindowDimensions();
 
 	return (
-	  <Pressable w={width * 0.44}>
+	  <Pressable w={width * 0.42} _pressed={{opacity: 0.6}}>
 		  <VStack bg="transparent" space={3} mr={3}>
 			  <AspectRatio ratio={1}>
 				  {data?.image
@@ -136,7 +136,10 @@ const FileCard = ({data, index}: { data: CombinedFileResultType, index: number }
 					: <ImagePlaceholder/>
 				  }
 			  </AspectRatio>
-			  <Heading fontSize={16} noOfLines={2} px={1}>{data?.name}</Heading>
+			  <Box px={0.5}>
+				  <Heading fontSize={18} noOfLines={2}>{data?.name}</Heading>
+				  <Text fontSize={14} opacity={0.4} noOfLines={1} mt={1}>{data?.author}</Text>
+			  </Box>
 		  </VStack>
 	  </Pressable>
 	)

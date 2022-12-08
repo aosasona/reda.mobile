@@ -1,13 +1,34 @@
 import {Entypo, Feather} from "@expo/vector-icons";
+import * as Clipboard from "expo-clipboard";
 import Lottie from "lottie-react-native";
 import {AspectRatio, Box, FlatList, Flex, HStack, Icon, Pressable, Text, useColorMode, View, VStack} from "native-base";
-import {Alert, Animated, useWindowDimensions} from "react-native";
+import {useEffect, useState} from "react";
+import {Alert, Animated, RefreshControl, useWindowDimensions} from "react-native";
 import {Swipeable} from "react-native-gesture-handler";
 import {DownloadingCardProps, DownloadingListProps, ImportStatesProps} from "../types/import";
 
 const DownloadingAnimation = require('../assets/animations/downloading.json');
 
-export default function DownloadingList({state, setState, HeaderComponent}: DownloadingListProps) {
+export default function DownloadingList({state, setState, reset, HeaderComponent}: DownloadingListProps) {
+
+	const [refreshing, setRefreshing] = useState(false);
+
+	useEffect(() => {
+		Clipboard.hasUrlAsync().then((hasUrl) => {
+			if (hasUrl) {
+				Clipboard.getStringAsync().then((url) => {
+					if (url) {
+						setState((prevState) => (
+						  {
+							  ...prevState,
+							  URL: url,
+						  }
+						))
+					}
+				})
+			}
+		})
+	}, []);
 
 	const onDelete = (i: number) => {
 		Alert.alert("Remove", "Are you sure you want to cancel this download?", [
@@ -36,6 +57,11 @@ export default function DownloadingList({state, setState, HeaderComponent}: Down
 		keyExtractor={(item, index) => index.toString()}
 		ListHeaderComponent={HeaderComponent}
 		ListEmptyComponent={DownloadingListEmpty}
+		refreshControl={<RefreshControl
+		  refreshing={refreshing}
+		  onRefresh={reset}
+		  progressViewOffset={50}
+		/>}
 		px={3}
 	  />
 	)

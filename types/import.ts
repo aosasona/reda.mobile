@@ -65,10 +65,22 @@ export interface MetaPageProps {
 	}
 }
 
+export interface MetaCardProps {
+	state: {
+		data: any;
+		index: number;
+		meta: ImportStatesProps["meta"];
+	};
+	functions: {
+		onPress: (item: any, index: number) => void;
+	}
+}
+
 export interface DownloadingListProps {
 	state: ImportStatesProps;
 	setState: StateSetter;
 	HeaderComponent: JSX.Element;
+	reset: () => void;
 }
 
 export interface DownloadingListState {

@@ -1,23 +1,25 @@
 import * as DocumentPicker from "expo-document-picker";
 import {useDisclose} from "native-base";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import {Alert} from "react-native";
 import DownloadingList from "../components/DownloadingList";
 import ImportHeader from "../components/ImportHeader";
 import MetaModal from "../components/MetaModal";
+import {GlobalContext} from "../context/GlobalContext";
 import CustomException from "../exceptions/CustomException";
 import {ImportStatesProps} from "../types/import";
 import {handlePossibleNull} from "../utils/exception.util";
 import {deleteFile, extractFileName, File, handleFilePick} from "../utils/file.util";
 import {OpenLibraryService} from "../utils/request.util";
 
-
-// TODO: Remove files after they are imported (or not)
-// TODO: Show toast message when file is imported
+// Todo: implement resume-able downloads
 
 export default function Import() {
 
 	const {isOpen, onOpen, onClose} = useDisclose();
+
+	const {state: globalState} = useContext(GlobalContext)
+
 
 	const [mixedState, setMixedState] = useState<ImportStatesProps>({
 		file: null,
@@ -78,10 +80,12 @@ export default function Import() {
 
 	const handleModalDismiss = () => {
 		resetState();
-		deleteFile(mixedState?.file?.uri as string).then(() => setMixedState(prevState => ({...prevState, file: null})))
-		  .catch(() => {
-			  Alert.alert("Error", "An error occurred.")
-		  });
+		if (globalState.deleteFilesAfterImport && mixedState?.file?.rawUri) {
+			deleteFile(mixedState?.file?.rawUri as string).then(() => setMixedState(prevState => ({...prevState, file: null})))
+			  .catch(() => {
+				  Alert.alert("Error", "An error occurred.")
+			  });
+		}
 		onClose();
 	}
 
@@ -92,7 +96,35 @@ export default function Import() {
 		setMixedState(prevState => ({...prevState, loading: {...prevState.loading, meta: false, local: false}}));
 	}
 
-	const handleRemoteImport = async () => {}
+	const handleRemoteImport = async () => {
+		try {
+			// if (!mixedState.URL) return
+			// if (!mixedState.URL.endsWith(".pdf")) throw new CustomException("The URL must end with .pdf")
+			// const fileName = extractFileName(mixedState.URL, {isURI: true});
+			// const target = `${DEFAULT_REDA_DIRECTORY}/${fileName}.pdf`;
+			// setMixedState(prevState => ({...prevState, loading: {...prevState.loading, remote: true}}));
+			// const {uri} = await FileSystem.downloadAsync(mixedState.URL, target);
+			// const processedFile = await handleFilePick({
+			// 	uri,
+			// 	name: extractFileName(mixedState.URL),
+			// 	type: "success",
+			// 	mimeType: "application/pdf",
+			// });
+			// handlePossibleNull(processedFile, "File could not be processed");
+			// const fileName = extractFileName(processedFile?.name as string);
+			// setMixedState(prevState => ({...prevState, search: fileName, file: processedFile}));
+			// await loadAllMeta(fileName);
+			// !isOpen && onOpen();
+		}
+		catch (e) {
+			console.log(e);
+			const msg = e instanceof CustomException ? e.message : "An error occurred";
+			Alert.alert("Error", msg);
+		}
+		finally {
+			setMixedState(prevState => ({...prevState, loading: {...prevState.loading, meta: false}}));
+		}
+	}
 
 	const handleLocalImport = async () => {
 		try {
@@ -111,6 +143,7 @@ export default function Import() {
 			}
 		}
 		catch (e) {
+			console.log(e);
 			const msg = e instanceof CustomException ? e.message : "An error occurred";
 			Alert.alert("Error", msg);
 		}
@@ -124,6 +157,7 @@ export default function Import() {
 		  <DownloadingList
 			state={mixedState}
 			setState={setMixedState}
+			reset={resetState}
 			HeaderComponent={<ImportHeader
 			  state={mixedState}
 			  setState={setMixedState}

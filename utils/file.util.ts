@@ -6,13 +6,28 @@ import CustomException from "../exceptions/CustomException";
 export interface File {
 	name: string;
 	uri: string;
+	rawUri?: string;
 	size: number;
 	mimeType: string;
 }
 
-export const extractFileName = (rawName: string) => {
+export interface ExtractFileOptions {
+	isURI: boolean;
+}
+
+export const DEFAULT_REDA_DIRECTORY = `${FileSystem.documentDirectory}${FolderNames.DOCUMENTS}`;
+
+export const extractFileName = (rawName: string, options: ExtractFileOptions = {isURI: false}) => {
+	if (options.isURI) {
+		rawName = extractFileNameFromUri(rawName);
+	}
 	const split = rawName.split(".");
 	return split[0] || rawName;
+}
+
+export const extractFileNameFromUri = (uri: string) => {
+	const split = uri.split("/");
+	return split[split.length - 1];
 }
 
 export const createFolder = async (name: string) => {
@@ -53,6 +68,7 @@ export const handleFilePick = async (data: DocumentResult): Promise<File | null>
 	return {
 		name: data.name,
 		uri: newUri,
+		rawUri: uri,
 		size: data.size as number,
 		mimeType: data.type,
 	};

@@ -24,6 +24,7 @@
     "expo": "^47.0.8",
     "expo-app-loading": "~2.1.1",
     "expo-asset": "~8.6.2",
+    "expo-clipboard": "~4.0.1",
     "expo-constants": "~14.0.2",
     "expo-document-picker": "~11.0.1",
     "expo-file-system": "~15.1.1",

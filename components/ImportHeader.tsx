@@ -20,10 +20,9 @@ export default function ImportHeader({state, setState, callbacks}: ImportHeaderP
 				  <Input
 					w="100%"
 					type="text"
-					placeholder="example.com"
+					placeholder="https://example.com"
 					onChangeText={setURL}
 					value={URL}
-					InputLeftElement={<Text ml={3} color="muted.400">https://</Text>}
 					InputRightElement={
 						<Button
 						  size="xs"
@@ -31,6 +30,7 @@ export default function ImportHeader({state, setState, callbacks}: ImportHeaderP
 						  h="full"
 						  onPress={handleRemoteImport}
 						  _text={{fontSize: 14, fontWeight: 500}}
+						  isLoading={loading.remote}
 						  {...ButtonProps}
 						  rounded={0}
 						>

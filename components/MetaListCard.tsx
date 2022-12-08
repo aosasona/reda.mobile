@@ -1,12 +1,17 @@
-import {AspectRatio, Flex, Heading, HStack, Image, Pressable, Text, VStack} from "native-base";
+import {AntDesign} from "@expo/vector-icons";
+import {AspectRatio, Box, Flex, Heading, HStack, Icon, Image, Pressable, Text, VStack} from "native-base";
 import {useEffect, useState} from "react";
-import {ActivityIndicator, useWindowDimensions} from "react-native";
+import {useWindowDimensions} from "react-native";
+import {MetaCardProps} from "../types/import";
 import {OpenLibraryService} from "../utils/request.util";
+import ImagePlaceholder from "./ImagePlaceholder";
 
-export default function MetaListCard({data, index, onPress}: { data: any, index: number, onPress: (index: number) => void }) {
+export default function MetaListCard({state, functions}: MetaCardProps) {
 	const [img, setImg] = useState("");
 
 	const {width} = useWindowDimensions();
+	const {meta, data, index} = state;
+	const {onPress} = functions;
 
 	useEffect(() => {
 		if (data?.cover_i) {
@@ -14,23 +19,27 @@ export default function MetaListCard({data, index, onPress}: { data: any, index:
 		}
 	}, [data]);
 
+
 	return (
-	  <Pressable _pressed={{opacity: 0.6}} onPress={() => onPress(index)} my={2}>
+	  <Pressable _pressed={{opacity: 0.6}} onPress={() => onPress(data, index)} my={2}>
+
 		  <HStack space={2} alignItems="stretch">
-			  <AspectRatio w={width * 0.25} ratio={1} alignSelf="center">
-				  {img
-					? <Image resizeMode="cover" source={{uri: img}} alt={data?.title} rounded={10}/>
-					: <Flex
-					  _dark={{bg: "muted.800"}}
-					  _light={{bg: "muted.200"}}
-					  alignItems="center"
-					  justifyContent="center"
-					  rounded={8}
-					>
-						<ActivityIndicator size="small"/>
-					</Flex>
-				  }
-			  </AspectRatio>
+			  <Box w={width * 0.25} position="relative">
+				  <AspectRatio w="full" ratio={1} alignSelf="center">
+					  {img
+						? <Image resizeMode="cover" source={{uri: img}} alt={data?.title} rounded={10}/>
+						: <ImagePlaceholder/>
+					  }
+				  </AspectRatio>
+				  {meta?.currentIndex === index &&
+					<VStack position="absolute" top={0} left={0} right={0} bottom={0} justifyContent="center" alignItems="center">
+						<AspectRatio ratio={1} w="full" bg="muted.900" opacity={0.8} justifyContent="center" alignItems="center" rounded={10}>
+							<Flex w="full" h="full" justifyContent="center" alignItems="center">
+								<Icon as={AntDesign} name="checkcircle" size="xl" color="green.500"/>
+							</Flex>
+						</AspectRatio>
+					</VStack>}
+			  </Box>
 			  <VStack
 				w={width * 0.65}
 				bg="transparent"

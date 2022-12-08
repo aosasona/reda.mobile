@@ -12,6 +12,8 @@ import ImagePlaceholder from "./ImagePlaceholder";
 export default function MetaPage({state, functions}: MetaPageProps) {
 
 	const {width} = useWindowDimensions();
+
+
 	const [img, setImg] = useState("");
 	const [saving, setSaving] = useState(false);
 
@@ -44,12 +46,14 @@ export default function MetaPage({state, functions}: MetaPageProps) {
 			}
 			const res = await saveFile(file_data, meta);
 			if (res) {
-				showToast("File saved successfully");
-				handleModalDismiss();
+				showToast("Successfully saved file!");
+			} else {
+				showToast("An error occurred while saving file.", "error");
 			}
+			handleModalDismiss();
 		}
 		catch (e) {
-			Alert.alert("Error", "An error occurred while saving the file");
+			Alert.alert("Error", "An error occurred!");
 		}
 		finally {
 			setSaving(false);

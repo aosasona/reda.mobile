@@ -27,7 +27,7 @@ export const colorModeManager: StorageManager = {
 			await AsyncStorage.setItem(ConfigKeys.COLOR_MODE, value);
 		}
 		catch (e) {
-			console.log(e);
+			return
 		}
 	},
 };

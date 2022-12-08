@@ -11,24 +11,23 @@ export default function MetaList({functions, state}: MetaModalProps) {
 	const {meta} = state;
 	const {toggleStep, handleCurrentMetaChange} = functions;
 
+	const onPress = (item: any, index: number) => handleCurrentMetaChange(item, index)
 
 	return (
 	  <>
-		  <Box>
-			  <FlatList
-				bg="transparent"
-				data={meta?.all}
-				renderItem={({item, index}) => <MetaListCard data={item} index={index} onPress={() => handleCurrentMetaChange(item, index)}/>}
-				keyExtractor={(item, index) => index.toString()}
-				ListHeaderComponent={<ListHeaderComponent state={state} functions={functions}/>}
-				ListEmptyComponent={ListEmptyComponent}
-				ListFooterComponent={<Box h={192}/>}
-				showsVerticalScrollIndicator={false}
-				stickyHeaderIndices={[0]}
-				px={0}
-				mt={0}
-			  />
-		  </Box>
+		  <FlatList
+			bg="transparent"
+			data={meta?.all}
+			renderItem={({item, index}) => <MetaListCard state={{data: item, index, meta}} functions={{onPress}}/>}
+			keyExtractor={(item, index) => index.toString()}
+			ListHeaderComponent={<ListHeaderComponent state={state} functions={functions}/>}
+			ListEmptyComponent={ListEmptyComponent}
+			ListFooterComponent={<Box h={128}/>}
+			showsVerticalScrollIndicator={false}
+			stickyHeaderIndices={[0]}
+			px={0}
+			mt={0}
+		  />
 		  <Box w="full" position="absolute" bottom={2} safeAreaBottom={true}>
 			  <Button
 				w="full"
@@ -57,7 +56,7 @@ export const ListHeaderComponent = ({functions, state}: MetaModalProps) => {
 	}
 
 	return (
-	  <Box _dark={{bg: "muted.900"}} _light={{bg: "muted.100"}} pb={4} mb={2}>
+	  <Box w="full" _dark={{bg: "muted.900"}} _light={{bg: "muted.100"}} pb={4} mb={2}>
 		  <HStack justifyContent="space-between" alignItems="flex-end" my={2}>
 			  <Heading fontSize={40} fontWeight="extrabold" textAlign="left" px={1}>
 				  Search
@@ -101,14 +100,14 @@ export const ListHeaderComponent = ({functions, state}: MetaModalProps) => {
 
 export const ListEmptyComponent = () => {
 
-	const {height} = useWindowDimensions();
+	const {height, width} = useWindowDimensions();
 
 	return (
-	  <Flex h={height * 0.6} alignItems="center" justifyContent="center">
+	  <Flex w={width * 0.9} h={height * 0.4} alignItems="center" justifyContent="center">
 		  <Box>
 			  <Icon as={Entypo} name="info-with-circle" size={20} _dark={{color: "muted.800"}} _light={{color: "muted.300"}}/>
 			  <Text _dark={{color: "muted.800"}} _light={{color: "muted.300"}} mt={3}>
-				  No result found.
+				  No results found.
 			  </Text>
 		  </Box>
 	  </Flex>
