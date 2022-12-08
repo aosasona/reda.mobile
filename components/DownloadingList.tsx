@@ -30,6 +30,21 @@ export default function DownloadingList({state, setState, reset, HeaderComponent
 		})
 	}, []);
 
+	const onRefresh = () => {
+		setRefreshing(true);
+		Alert.alert("Reset page", "Are you sure you want to reset the page content?", [
+			{
+				text: "Cancel",
+				onPress: () => setRefreshing(false),
+			},
+			{
+				text: "Reset",
+				onPress: () => reset(),
+			}
+		])
+		setRefreshing(false);
+	}
+
 	const onDelete = (i: number) => {
 		Alert.alert("Remove", "Are you sure you want to cancel this download?", [
 			{
@@ -59,7 +74,7 @@ export default function DownloadingList({state, setState, reset, HeaderComponent
 		ListEmptyComponent={DownloadingListEmpty}
 		refreshControl={<RefreshControl
 		  refreshing={refreshing}
-		  onRefresh={reset}
+		  onRefresh={onRefresh}
 		  progressViewOffset={50}
 		/>}
 		px={3}

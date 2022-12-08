@@ -10,7 +10,8 @@ import CustomException from "../exceptions/CustomException";
 import {ImportStatesProps} from "../types/import";
 import {handlePossibleNull} from "../utils/exception.util";
 import {deleteFile, extractFileName, File, handleFilePick} from "../utils/file.util";
-import {OpenLibraryService} from "../utils/request.util";
+import ImportUtil from "../utils/import .util";
+import {showToast} from "../utils/misc.util";
 
 // Todo: implement resume-able downloads
 
@@ -39,44 +40,12 @@ export default function Import() {
 		},
 	})
 
+	const importUtil = new ImportUtil(setMixedState)
 
-	const resetState = () => {
-		setMixedState({
-			file: null,
-			URL: "",
-			search: "",
-			step: 0,
-			downloadingList: [],
-			meta: {
-				all: [],
-				current: null,
-				currentIndex: 0,
-			},
-			loading: {
-				local: false,
-				remote: false,
-				meta: false,
-			},
-		})
-	}
 
-	const meta = {
-		setAll: (value: any[]) => setMixedState((prevState) => ({
-			...prevState,
-			meta: {
-				...prevState.meta,
-				all: value,
-			},
-		})),
-		setCurrent: (value: any, index: number) => setMixedState((prevState) => ({
-			...prevState,
-			meta: {
-				...prevState.meta,
-				current: value,
-				currentIndex: index,
-			},
-		})),
-	}
+	const resetState = importUtil.resetState
+	const loadAllMeta = importUtil.loadAllMeta
+	const meta = {setAll: importUtil.setAllMeta, setCurrent: importUtil.setCurrentMeta}
 
 	const handleModalDismiss = () => {
 		resetState();
@@ -89,15 +58,10 @@ export default function Import() {
 		onClose();
 	}
 
-	const loadAllMeta = async (fileName: string) => {
-		setMixedState(prevState => ({...prevState, loading: {...prevState.loading, meta: true}}));
-		const onlineMetadata = (await OpenLibraryService.search({title: fileName, limit: 50}))["docs"];
-		meta.setAll(onlineMetadata);
-		setMixedState(prevState => ({...prevState, loading: {...prevState.loading, meta: false, local: false}}));
-	}
 
 	const handleRemoteImport = async () => {
 		try {
+			showToast("Coming soon", "info");
 			// if (!mixedState.URL) return
 			// if (!mixedState.URL.endsWith(".pdf")) throw new CustomException("The URL must end with .pdf")
 			// const fileName = extractFileName(mixedState.URL, {isURI: true});
@@ -143,12 +107,11 @@ export default function Import() {
 			}
 		}
 		catch (e) {
-			console.log(e);
 			const msg = e instanceof CustomException ? e.message : "An error occurred";
 			Alert.alert("Error", msg);
 		}
 		finally {
-			setMixedState(prevState => ({...prevState, loading: {...prevState.loading, meta: false}}));
+			setMixedState(prevState => ({...prevState, loading: {...prevState.loading, meta: false, local: false}}));
 		}
 	}
 

@@ -1,5 +1,6 @@
 import {Entypo} from "@expo/vector-icons";
 import {Box, Button, FlatList, Flex, Heading, HStack, Icon, Input, Text} from "native-base";
+import {useEffect} from "react";
 import {Alert, useWindowDimensions} from "react-native";
 import {ButtonProps, InputProps} from "../constants/props";
 import {MetaModalProps} from "../types/import";
@@ -7,26 +8,29 @@ import MetaListCard from "./MetaListCard";
 
 export default function MetaList({functions, state}: MetaModalProps) {
 
-	const {height} = useWindowDimensions();
 	const {meta} = state;
 	const {toggleStep, handleCurrentMetaChange} = functions;
-
-	const onPress = (item: any, index: number) => handleCurrentMetaChange(item, index)
+	
+	useEffect(() => {
+		if (meta?.current === null && meta?.all && meta?.all?.length > 0) {
+			handleCurrentMetaChange(meta?.all[0], 0);
+		}
+	}, [])
 
 	return (
 	  <>
 		  <FlatList
 			bg="transparent"
 			data={meta?.all}
-			renderItem={({item, index}) => <MetaListCard state={{data: item, index, meta}} functions={{onPress}}/>}
+			renderItem={({item, index}) => <MetaListCard state={{data: item, index, meta}} functions={{onPress: handleCurrentMetaChange}}/>}
 			keyExtractor={(item, index) => index.toString()}
 			ListHeaderComponent={<ListHeaderComponent state={state} functions={functions}/>}
 			ListEmptyComponent={ListEmptyComponent}
-			ListFooterComponent={<Box h={128}/>}
+			ListFooterComponent={<Box bg="transparent" h={128}/>}
 			showsVerticalScrollIndicator={false}
 			stickyHeaderIndices={[0]}
 			px={0}
-			mt={0}
+			my={0}
 		  />
 		  <Box w="full" position="absolute" bottom={2} safeAreaBottom={true}>
 			  <Button

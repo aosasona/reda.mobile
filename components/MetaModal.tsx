@@ -13,27 +13,31 @@ export default function MetaModal({functions, state}: MetaModalProps) {
 	const toggleStep = () => setState(prevState => ({...prevState, step: prevState.step === MetaModalSteps.ONE ? MetaModalSteps.TWO : MetaModalSteps.ONE}));
 
 	return (
-	  <Actionsheet isOpen={isOpen} onClose={handleModalDismiss} _backdrop={{opacity: 0.8}}>
+	  <Actionsheet isOpen={isOpen} onClose={handleModalDismiss} _backdrop={{opacity: 0.8}} mb={0} pb={0}>
 
-		  {step === MetaModalSteps.ONE && <Actionsheet.Content position="relative" px={4} {...ActionSheetProps}>
-			  <PresenceTransition
-				visible={step === 0}
-				initial={backwardTransition}
-				animate={transitionAnimation}
-			  >
-				  <MetaList state={state} functions={{...functions, toggleStep}}/>
-			  </PresenceTransition>
-		  </Actionsheet.Content>}
+		  {step === MetaModalSteps.ONE &&
+			<Actionsheet.Content position="relative" px={4} pb={0} mb={0} {...ActionSheetProps}>
+				<PresenceTransition
+				  visible={step === MetaModalSteps.ONE}
+				  initial={backwardTransition}
+				  animate={transitionAnimation}
+				>
+					<MetaList state={state} functions={{...functions, toggleStep}}/>
+				</PresenceTransition>
+			</Actionsheet.Content>
+		  }
 
-		  {step === MetaModalSteps.TWO && <Actionsheet.Content {...ActionSheetProps}>
-			  <PresenceTransition
-				visible={step === MetaModalSteps.TWO}
-				initial={forwardTransition}
-				animate={transitionAnimation}
-			  >
-				  <MetaPage state={{data: meta?.current, file}} functions={{toggleStep, handleModalDismiss}}/>
-			  </PresenceTransition>
-		  </Actionsheet.Content>}
+		  {step === MetaModalSteps.TWO &&
+			<Actionsheet.Content {...ActionSheetProps}>
+				<PresenceTransition
+				  visible={step === MetaModalSteps.TWO}
+				  initial={forwardTransition}
+				  animate={transitionAnimation}
+				>
+					<MetaPage state={{data: meta?.current, file}} functions={{toggleStep, handleModalDismiss}}/>
+				</PresenceTransition>
+			</Actionsheet.Content>
+		  }
 
 	  </Actionsheet>
 	);

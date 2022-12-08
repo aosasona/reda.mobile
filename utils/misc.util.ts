@@ -1,10 +1,10 @@
 import {Toast} from "native-base";
 
-export const showToast = (message: string, type: "success" | "error" | "warning" = "success") => {
+export const showToast = (message: string, type: "success" | "error" | "warning" | "info" = "success") => {
 	Toast.show({
 		description: message,
 		minW: "90%",
-		placement: "top",
+		placement: "bottom",
 		color: `${type}.400`,
 		backgroundColor: `${type}.600`,
 		rounded: 8,
@@ -17,6 +17,7 @@ export const showToast = (message: string, type: "success" | "error" | "warning"
 		},
 		_description: {
 			fontSize: 16,
+			noOfLines: 1,
 		},
 	})
 }
