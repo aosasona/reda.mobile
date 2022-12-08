@@ -51,7 +51,6 @@ export interface CombinedFileResultType {
 
 const db = SQLite.openDatabase(DATABASE_NAME, "1.0", "Local data store for Reda");
 
-
 export const executeQuery = async (query: string, params: any[] = []): Promise<SQLResultSet | SQLError> => {
 
 	return new Promise((resolve, reject) => {
@@ -61,6 +60,11 @@ export const executeQuery = async (query: string, params: any[] = []): Promise<S
 			});
 		}, (error) => reject(error));
 	})
+}
+
+export const clearDatabase = async () => {
+	await executeQuery("DELETE FROM files");
+	await executeQuery("DELETE FROM metadata");
 }
 
 

@@ -1,133 +1,116 @@
-import {Entypo, MaterialIcons} from "@expo/vector-icons";
-import {Actionsheet, Box, Button, FlatList, Flex, Heading, HStack, Icon, Input, PresenceTransition, Pressable, Text} from "native-base";
-import {ActivityIndicator, useWindowDimensions} from "react-native";
-import {ActionSheetProps, ButtonProps, InputProps} from "../constants/props";
-import {File} from "../utils/file.util";
+import {Entypo} from "@expo/vector-icons";
+import {Box, Button, FlatList, Flex, Heading, HStack, Icon, Input, Text} from "native-base";
+import {Alert, useWindowDimensions} from "react-native";
+import {ButtonProps, InputProps} from "../constants/props";
+import {MetaModalProps} from "../types/import";
 import MetaListCard from "./MetaListCard";
-import MetaPage from "./MetaPage";
 
-export default function MetaList({
-	isOpen,
-	next,
-	previous,
-	step,
-	setStep,
-	search,
-	setSearch,
-	file,
-	loadingFile,
-	allMetadata,
-	currentMetadata,
-	onMetadataSelect,
-	handleModalClose,
-}: { isOpen: boolean, next: () => void; previous: () => void; file: File; loadingFile: boolean; step: number, setStep: () => void; search: string; setSearch: (str: any) => void, allMetadata: any[], currentMetadata: any, onMetadataSelect: (item: number) => void, handleModalClose: () => void }) {
+export default function MetaList({functions, state}: MetaModalProps) {
 
 	const {height} = useWindowDimensions();
-
-	const forwardTransition = {
-		translateX: 100,
-		opacity: 0,
-	}
-
-	const backwardTransition = {
-		translateX: -100,
-		opacity: 0,
-	}
-
-	const transitionAnimation = {
-		opacity: 1,
-		translateX: 0,
-		transition: {
-			duration: 250,
-		},
-	}
+	const {meta} = state;
+	const {toggleStep, handleCurrentMetaChange} = functions;
 
 
 	return (
-	  <Actionsheet isOpen={isOpen} onClose={handleModalClose} _backdrop={{opacity: 0.8}}>
-
-		  {step === 0 && <Actionsheet.Content position="relative" px={4} {...ActionSheetProps}>
-			  <PresenceTransition
-				visible={step === 0}
-				initial={backwardTransition}
-				animate={transitionAnimation}
+	  <>
+		  <Box>
+			  <FlatList
+				bg="transparent"
+				data={meta?.all}
+				renderItem={({item, index}) => <MetaListCard data={item} index={index} onPress={() => handleCurrentMetaChange(item, index)}/>}
+				keyExtractor={(item, index) => index.toString()}
+				ListHeaderComponent={<ListHeaderComponent state={state} functions={functions}/>}
+				ListEmptyComponent={ListEmptyComponent}
+				ListFooterComponent={<Box h={192}/>}
+				showsVerticalScrollIndicator={false}
+				stickyHeaderIndices={[0]}
+				px={0}
+				mt={0}
+			  />
+		  </Box>
+		  <Box w="full" position="absolute" bottom={2} safeAreaBottom={true}>
+			  <Button
+				w="full"
+				onPress={toggleStep}
+				{...ButtonProps}
 			  >
-				  <HStack justifyContent="space-between" alignItems="flex-end" my={2}>
-					  <Heading fontSize={40} fontWeight="extrabold" textAlign="left" px={1}>
-						  Search
-					  </Heading>
-					  <Text fontSize={12} opacity={0.5}>Showing {allMetadata?.length || 0} results</Text>
-				  </HStack>
-				  <Input
-					w="full"
-					type="text"
-					placeholder="Search..."
-					onChangeText={setSearch}
-					value={search}
-					mt={1}
-					InputRightElement={
-						search
-						  ? <Pressable _pressed={{opacity: 0.5}} p={4} onPress={() => setSearch("")}>
-							  <Icon
-								as={MaterialIcons}
-								name="cancel"
-								size={5}
-								_dark={{color: "muted.800"}}
-								_light={{color: "muted.400"}}
-							  />
-						  </Pressable>
-						  : <></>
-					}
-					{...InputProps}
-				  />
-
-				  <Box>
-					  <ActivityIndicator animating={loadingFile} size="small"/>
-				  </Box>
-
-				  <Box>
-					  <FlatList
-						bg="transparent"
-						data={allMetadata}
-						renderItem={({item, index}) => <MetaListCard data={item} index={index} onPress={onMetadataSelect}/>}
-						keyExtractor={(item, index) => index.toString()}
-						ListEmptyComponent={<Flex h={height * 0.6} alignItems="center" justifyContent="center">
-							<Box>
-								<Icon as={Entypo} name="info-with-circle" size={20} _dark={{color: "muted.800"}} _light={{color: "muted.300"}}/>
-								<Text _dark={{color: "muted.800"}} _light={{color: "muted.300"}} mt={3}>
-									No result found.
-								</Text>
-							</Box>
-						</Flex>}
-						ListFooterComponent={<Box h={192}/>}
-						showsVerticalScrollIndicator={false}
-						px={0}
-						mt={4}
-						maxHeight={height - 200}
-					  />
-				  </Box>
-				  <Box w="full" position="absolute" bottom={32} safeAreaBottom={true}>
-					  <Button
-						w="full"
-						onPress={next}
-						{...ButtonProps}
-					  >
-						  Continue
-					  </Button>
-				  </Box>
-			  </PresenceTransition>
-		  </Actionsheet.Content>}
-
-		  {step === 1 && <Actionsheet.Content {...ActionSheetProps}>
-			  <PresenceTransition
-				visible={step === 1}
-				initial={forwardTransition}
-				animate={transitionAnimation}
-			  >
-				  <MetaPage data={currentMetadata} file={file} next={next} previous={previous}/>
-			  </PresenceTransition>
-		  </Actionsheet.Content>}
-
-	  </Actionsheet>
+				  Continue
+			  </Button>
+		  </Box>
+	  </>
 	);
+}
+
+export const ListHeaderComponent = ({functions, state}: MetaModalProps) => {
+
+	const {search, meta, loading} = state;
+	const {setState, loadAllMeta} = functions;
+	const handleSearchChange = (value: string) => setState(prevState => ({...prevState, search: value}));
+
+	const handleSearch = () => {
+		if (search.length > 0) {
+			loadAllMeta(search).then().catch(() => {
+				Alert.alert("Error", "An error occurred!");
+			})
+		}
+	}
+
+	return (
+	  <Box _dark={{bg: "muted.900"}} _light={{bg: "muted.100"}} pb={4} mb={2}>
+		  <HStack justifyContent="space-between" alignItems="flex-end" my={2}>
+			  <Heading fontSize={40} fontWeight="extrabold" textAlign="left" px={1}>
+				  Search
+			  </Heading>
+			  <Text fontSize={12} opacity={0.5}>Showing {meta?.all?.length || 0} results</Text>
+		  </HStack>
+		  <Input
+			w="full"
+			type="text"
+			placeholder="Search..."
+			onChangeText={handleSearchChange}
+			value={search}
+			mt={1}
+			InputRightElement={
+				<Button
+				  size="xs"
+				  w="1/6"
+				  h="full"
+				  onPress={handleSearch}
+				  _text={{fontSize: 14, fontWeight: 500}}
+				  isLoading={loading.meta}
+				  {...ButtonProps}
+				  rounded={0}
+				>
+					<Icon
+					  as={Entypo}
+					  name="magnifying-glass"
+					  size={5}
+					  _dark={{color: "muted.900"}}
+					  _light={{color: "muted.100"}}
+					/>
+				</Button>
+			}
+			{...InputProps}
+			_dark={{bg: "muted.800", placeholderTextColor: "muted.500", _focus: {bg: "muted.800"}}}
+			_light={{bg: "muted.200", placeholderTextColor: "muted.500", _focus: {bg: "muted.200"}}}
+		  />
+	  </Box>
+	)
+}
+
+export const ListEmptyComponent = () => {
+
+	const {height} = useWindowDimensions();
+
+	return (
+	  <Flex h={height * 0.6} alignItems="center" justifyContent="center">
+		  <Box>
+			  <Icon as={Entypo} name="info-with-circle" size={20} _dark={{color: "muted.800"}} _light={{color: "muted.300"}}/>
+			  <Text _dark={{color: "muted.800"}} _light={{color: "muted.300"}} mt={3}>
+				  No result found.
+			  </Text>
+		  </Box>
+	  </Flex>
+	)
 }

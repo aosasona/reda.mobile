@@ -7,6 +7,11 @@ export const HStackProps = {
 	py: 2.5,
 }
 
+export const VStackProps = {
+	_light: {bg: "muted.200"},
+	_dark: {bg: "muted.900"},
+}
+
 export const SelectProps = {
 	minW: 20,
 	variant: "filled" as any,

@@ -1,18 +1,22 @@
 import {Entypo} from "@expo/vector-icons";
 import {AspectRatio, Box, Button, Heading, HStack, Icon, Image, Pressable, Text, VStack} from "native-base";
 import {useEffect, useState} from "react";
-import {useWindowDimensions} from "react-native";
+import {Alert, useWindowDimensions} from "react-native";
 import {ButtonProps} from "../constants/props";
+import {MetaPageProps} from "../types/import";
 import {FileModel, MetadataModel, saveFile, SQLBoolean} from "../utils/database.util";
-import {File} from "../utils/file.util";
+import {showToast} from "../utils/misc.util";
 import {OpenLibraryService} from "../utils/request.util";
 import ImagePlaceholder from "./ImagePlaceholder";
 
-export default function MetaPage({data, file, next, previous}: { data: any, file: File, next: () => void, previous: () => void }) {
+export default function MetaPage({state, functions}: MetaPageProps) {
 
 	const {width} = useWindowDimensions();
 	const [img, setImg] = useState("");
 	const [saving, setSaving] = useState(false);
+
+	const {data, file} = state;
+	const {toggleStep, handleModalDismiss} = functions;
 
 	useEffect(() => {
 		if (data?.cover_i) {
@@ -39,10 +43,13 @@ export default function MetaPage({data, file, next, previous}: { data: any, file
 				has_finished: SQLBoolean.FALSE,
 			}
 			const res = await saveFile(file_data, meta);
-			console.log(res);
+			if (res) {
+				showToast("File saved successfully");
+				handleModalDismiss();
+			}
 		}
 		catch (e) {
-
+			Alert.alert("Error", "An error occurred while saving the file");
 		}
 		finally {
 			setSaving(false);
@@ -51,7 +58,7 @@ export default function MetaPage({data, file, next, previous}: { data: any, file
 
 	return (
 	  <Box pb={4}>
-		  <Pressable onPress={previous} _pressed={{opacity: 0.5}} mb={6} py={1}>
+		  <Pressable onPress={toggleStep} _pressed={{opacity: 0.5}} mb={6} py={1}>
 			  <HStack alignItems="center">
 				  <Icon as={Entypo} name="chevron-left" size="sm" color="blue.600"/>
 				  <Text fontSize={18} color="blue.600">Search</Text>

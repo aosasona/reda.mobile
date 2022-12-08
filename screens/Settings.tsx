@@ -78,6 +78,7 @@ export default function Settings() {
 				  </Pressable>
 				  <Box pl={4}><Divider {...DividerProps}/></Box>
 				  <Pressable
+					onPress={settingsUtil.clearAllData}
 					{...PressableProps}
 				  >
 					  <HStack alignItems="center" space={2} px={4} py={4}>

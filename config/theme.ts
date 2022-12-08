@@ -50,12 +50,6 @@ export const componentsConfig = {
 			px: 4,
 		}),
 	},
-	VStack: {
-		baseStyle: (props: any) => ({
-			_light: {bg: "muted.200"},
-			_dark: {bg: "muted.900"},
-		}),
-	},
 }
 
 export const extendedTheme = extendTheme({

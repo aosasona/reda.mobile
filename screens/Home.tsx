@@ -144,10 +144,10 @@ const FileCard = ({data, index}: { data: CombinedFileResultType, index: number }
 
 const EmptyComponent = () => {
 
-	const {height} = useWindowDimensions();
+	const {height, width} = useWindowDimensions();
 
 	return (
-	  <Flex h={height * 0.6} alignItems="center" justifyContent="center">
+	  <Flex w={width * 0.9} h={height * 0.6} alignItems="center" justifyContent="center">
 		  <Box alignItems="center">
 			  <Icon as={MaterialIcons} name="folder" size={48} _dark={{color: "muted.800"}} _light={{color: "muted.300"}}/>
 			  <Heading _dark={{color: "muted.800"}} _light={{color: "muted.300"}} mt={3}>

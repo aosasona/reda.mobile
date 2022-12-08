@@ -1,17 +1,9 @@
 import {Box, Button, Heading, Input, Text, VStack} from "native-base";
 import {ButtonProps, InputProps} from "../constants/props";
-import {ImportStatesProps} from "../types/import";
+import {ImportHeaderProps} from "../types/import";
 
-interface Props {
-	state: ImportStatesProps;
-	setState: (value: ImportStatesProps) => void;
-	callbacks: {
-		handleRemoteImport: () => void;
-		handleLocalImport: () => void;
-	}
-}
 
-export default function ImportHeader({state, setState, callbacks}: Props) {
+export default function ImportHeader({state, setState, callbacks}: ImportHeaderProps) {
 
 	const {URL, loading} = state;
 	const {handleRemoteImport, handleLocalImport} = callbacks;

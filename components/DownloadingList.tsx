@@ -1,7 +1,7 @@
 import {Entypo, Feather} from "@expo/vector-icons";
 import Lottie from "lottie-react-native";
 import {AspectRatio, Box, FlatList, Flex, HStack, Icon, Pressable, Text, useColorMode, View, VStack} from "native-base";
-import {Animated, useWindowDimensions} from "react-native";
+import {Alert, Animated, useWindowDimensions} from "react-native";
 import {Swipeable} from "react-native-gesture-handler";
 import {DownloadingCardProps, DownloadingListProps, ImportStatesProps} from "../types/import";
 
@@ -10,10 +10,23 @@ const DownloadingAnimation = require('../assets/animations/downloading.json');
 export default function DownloadingList({state, setState, HeaderComponent}: DownloadingListProps) {
 
 	const onDelete = (i: number) => {
-		setState((current: ImportStatesProps) => ({
-			...current,
-			downloadingList: state.downloadingList.filter((_, index) => index !== i),
-		}));
+		Alert.alert("Remove", "Are you sure you want to cancel this download?", [
+			{
+				text: "Cancel",
+				style: "cancel",
+			},
+			{
+				text: "OK",
+				style: "destructive",
+				onPress: () => {
+					setState((current: ImportStatesProps) => ({
+						...current,
+						downloadingList: state.downloadingList.filter((_, index) => index !== i),
+					}));
+				},
+			},
+		]);
+
 	}
 
 	return (

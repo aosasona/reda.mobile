@@ -42,10 +42,10 @@ export default function MetaListCard({data, index, onPress}: { data: any, index:
 				px={1}
 				py={2}
 			  >
-				  <Heading fontSize={20}>{data?.title}</Heading>
+				  <Heading fontSize={24} noOfLines={2}>{data?.title}</Heading>
 				  <HStack justifyContent="space-between" space={1}>
-					  {data?.author_name && <Text opacity={0.5}>{data?.author_name}</Text>}
-					  {data?.publish_year && <Text opacity={0.5}>Published {data?.publish_year[0]}</Text>}
+					  {data?.author_name && <Text opacity={0.9} fontWeight={600}>{data?.author_name}</Text>}
+					  {data?.publish_year && <Text opacity={0.3} fontSize={12} fontWeight={600}>Published {data?.publish_year[0]}</Text>}
 				  </HStack>
 			  </VStack>
 		  </HStack>

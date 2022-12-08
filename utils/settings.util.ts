@@ -2,6 +2,7 @@ import {Alert} from "react-native";
 import {ConfigKeys} from "../constants/config";
 import {FontFamiliesEnum} from "../constants/fonts";
 import {GlobalAction, GlobalActionType} from "../context/GlobalReducer";
+import {clearDatabase} from "./database.util";
 import {getAsyncStorage} from "./storage.util";
 
 export default class SettingsUtil {
@@ -42,6 +43,24 @@ export default class SettingsUtil {
 			{
 				text: "Reset",
 				onPress: () => this.dispatch({type: GlobalActionType.RESET_SETTINGS}),
+				style: "destructive",
+			},
+		])
+	}
+
+	public clearAllData = () => {
+		Alert.alert("Clear All Data", "Are you sure you want to clear all data?", [
+			{
+				text: "Cancel",
+				style: "cancel",
+			},
+			{
+				text: "Clear",
+				onPress: () => {
+					clearDatabase()
+					  .then()
+					  .catch(() => Alert.alert("Error", "An error occurred "))
+				},
 				style: "destructive",
 			},
 		])
