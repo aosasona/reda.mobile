@@ -4,7 +4,7 @@ export const showToast = (message: string, type: "success" | "error" | "warning"
 	Toast.show({
 		description: message,
 		minW: "90%",
-		placement: "bottom",
+		placement: "top",
 		color: `${type}.400`,
 		backgroundColor: `${type}.600`,
 		rounded: 8,

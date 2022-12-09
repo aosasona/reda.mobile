@@ -3,7 +3,7 @@ import * as Clipboard from "expo-clipboard";
 import Lottie from "lottie-react-native";
 import {AspectRatio, Box, FlatList, Flex, HStack, Icon, Pressable, Text, useColorMode, View, VStack} from "native-base";
 import {useEffect, useState} from "react";
-import {Alert, Animated, RefreshControl, useWindowDimensions} from "react-native";
+import {Alert, Animated, Platform, RefreshControl, useWindowDimensions} from "react-native";
 import {Swipeable} from "react-native-gesture-handler";
 import {DownloadingCardProps, DownloadingListProps, ImportStatesProps} from "../types/import";
 
@@ -14,24 +14,25 @@ export default function DownloadingList({state, setState, reset, HeaderComponent
 	const [refreshing, setRefreshing] = useState(false);
 
 	useEffect(() => {
-		Clipboard.hasUrlAsync().then((hasUrl) => {
-			if (hasUrl) {
-				Clipboard.getStringAsync().then((url) => {
-					if (url) {
-						setState((prevState) => (
-						  {
-							  ...prevState,
-							  URL: url,
-						  }
-						))
-					}
-				})
-			}
-		})
+		if (Platform.OS ==="ios") {
+			Clipboard.hasUrlAsync().then((hasUrl) => {
+				if (hasUrl) {
+					Clipboard.getStringAsync().then((url) => {
+						if (url) {
+							setState((prevState) => (
+							  {
+								  ...prevState,
+								  URL: url,
+							  }
+							))
+						}
+					})
+				}
+			})
+		}
 	}, []);
 
 	const onRefresh = () => {
-		setRefreshing(true);
 		Alert.alert("Reset page", "Are you sure you want to reset the page content?", [
 			{
 				text: "Cancel",
@@ -39,10 +40,13 @@ export default function DownloadingList({state, setState, reset, HeaderComponent
 			},
 			{
 				text: "Reset",
-				onPress: () => reset(),
-			}
+				onPress: () => {
+					setRefreshing(true);
+					reset();
+					setRefreshing(false);
+				},
+			},
 		])
-		setRefreshing(false);
 	}
 
 	const onDelete = (i: number) => {

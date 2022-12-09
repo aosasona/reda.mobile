@@ -49,12 +49,6 @@ export default function Import() {
 
 	const handleModalDismiss = () => {
 		resetState();
-		if (globalState.deleteFilesAfterImport && mixedState?.file?.rawUri) {
-			deleteFile(mixedState?.file?.rawUri as string).then(() => setMixedState(prevState => ({...prevState, file: null})))
-			  .catch(() => {
-				  Alert.alert("Error", "An error occurred.")
-			  });
-		}
 		onClose();
 	}
 
@@ -62,8 +56,8 @@ export default function Import() {
 	const handleRemoteImport = async () => {
 		try {
 			showToast("Coming soon", "info");
-			// if (!mixedState.URL) return
-			// if (!mixedState.URL.endsWith(".pdf")) throw new CustomException("The URL must end with .pdf")
+			if (!mixedState.URL) return
+			if (!mixedState.URL?.endsWith(".pdf")) throw new CustomException("The URL must end with .pdf")
 			// const fileName = extractFileName(mixedState.URL, {isURI: true});
 			// const target = `${DEFAULT_REDA_DIRECTORY}/${fileName}.pdf`;
 			// setMixedState(prevState => ({...prevState, loading: {...prevState.loading, remote: true}}));
@@ -107,6 +101,7 @@ export default function Import() {
 			}
 		}
 		catch (e) {
+			console.log(e);
 			const msg = e instanceof CustomException ? e.message : "An error occurred";
 			Alert.alert("Error", msg);
 		}

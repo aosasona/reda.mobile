@@ -46,7 +46,7 @@ export const copyToFolder = async (uri: string, folder: string) => {
 	}
 	const name = uri.split('/').pop();
 	const newPath = `${path}/${name}`;
-	const {exists: newExists} = await FileSystem.getInfoAsync(newPath);
+	const {exists: newExists} = await FileSystem.getInfoAsync(path);
 	if (!newExists) {
 		await FileSystem.copyAsync({
 			from: uri,

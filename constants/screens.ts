@@ -11,6 +11,10 @@ const screens = {
 		screenName: 'ImportScreen',
 		screenTitle: 'Import File',
 	},
+	READ_DOCUMENT: {
+		screenName: 'ReadDocumentScreen',
+		screenTitle: 'Read Document',
+	}
 }
 
 export default screens

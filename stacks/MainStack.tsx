@@ -17,7 +17,7 @@ export default function MainStack() {
 	const Tab = createBottomTabNavigator();
 	return (
 	  <SafeAreaProvider>
-		  <StatusBar animated={true} style={colorMode === "dark" ? "light" : "dark"} translucent={true} backgroundColor="blue"/>
+		  <StatusBar animated={true} style={colorMode === "dark" ? "light" : "dark"} translucent={true} />
 		  <NavigationContainer>
 			  <Tab.Navigator initialRouteName={tabs.HOME} backBehavior="history">
 				  <Tab.Screen

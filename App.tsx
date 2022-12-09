@@ -99,12 +99,12 @@ export default function App() {
 	}, [fontsLoaded]);
 
 
-	useEffect(() => {
+	if(typeof window !== 'undefined') {
 		Appearance.addChangeListener(({colorScheme}) => {
 			colorModeManager.set(colorScheme);
 		});
 		(async () => await runMigration())();
-	}, []);
+	}
 
 
 	if (!fontsLoaded) {

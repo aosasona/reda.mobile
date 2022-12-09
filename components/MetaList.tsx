@@ -1,7 +1,7 @@
 import {Entypo} from "@expo/vector-icons";
 import {Box, Button, FlatList, Flex, Heading, HStack, Icon, Input, Text} from "native-base";
 import {useEffect} from "react";
-import {Alert, useWindowDimensions} from "react-native";
+import {Alert, Platform, useWindowDimensions} from "react-native";
 import {ButtonProps, InputProps} from "../constants/props";
 import {MetaModalProps} from "../types/import";
 import MetaListCard from "./MetaListCard";
@@ -12,10 +12,16 @@ export default function MetaList({functions, state}: MetaModalProps) {
 	const {toggleStep, handleCurrentMetaChange} = functions;
 	
 	useEffect(() => {
-		if (meta?.current === null && meta?.all && meta?.all?.length > 0) {
-			handleCurrentMetaChange(meta?.all[0], 0);
+		let mounted = true;
+		if (mounted) {
+			if (meta?.current === null && meta?.all && meta?.all?.length > 0) {
+				handleCurrentMetaChange(meta?.all[0], 0);
+			}
 		}
-	}, [])
+		return () => {
+			mounted = false;
+		}
+	}, [meta])
 
 	return (
 	  <>
@@ -32,7 +38,7 @@ export default function MetaList({functions, state}: MetaModalProps) {
 			px={0}
 			my={0}
 		  />
-		  <Box w="full" position="absolute" bottom={2} safeAreaBottom={true}>
+		  <Box position="absolute" mx="auto" left={0} right={0} bottom={Platform.OS === "android" ? 10 : 2} safeAreaBottom={true}>
 			  <Button
 				w="full"
 				onPress={toggleStep}

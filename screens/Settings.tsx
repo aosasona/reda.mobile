@@ -63,11 +63,11 @@ export default function Settings() {
 			  </SettingsSection>
 
 			  <SettingsSection title="User & App Data">
-				  <HStack {...HStackProps}>
-					  <Text>Delete files after importing</Text>
-					  <Switch size="sm" onTrackColor="green.500" onToggle={settingsUtil.setDeleteFilesAfterImport} value={state.deleteFilesAfterImport}/>
-				  </HStack>
-				  <Box pl={4}><Divider {...DividerProps}/></Box>
+				  {/* <HStack {...HStackProps}> */}
+					{/*   <Text>Delete files after importing</Text> */}
+					{/*   <Switch size="sm" onTrackColor="green.500" onToggle={settingsUtil.setDeleteFilesAfterImport} value={state.deleteFilesAfterImport}/> */}
+				  {/* </HStack> */}
+				  {/* <Box pl={4}><Divider {...DividerProps}/></Box> */}
 				  <Pressable
 					onPress={handleSettingsReset}
 					{...PressableProps}
