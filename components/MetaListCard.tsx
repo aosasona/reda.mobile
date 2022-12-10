@@ -3,6 +3,7 @@ import {AspectRatio, Box, Flex, Heading, HStack, Icon, Image, Pressable, Text, V
 import {useEffect, useState} from "react";
 import {useWindowDimensions} from "react-native";
 import {MetaCardProps} from "../types/import";
+import {getThumbnail} from "../utils/misc.util";
 import {OpenLibraryService} from "../utils/request.util";
 import ImagePlaceholder from "./ImagePlaceholder";
 
@@ -19,6 +20,7 @@ export default function MetaListCard({state, functions}: MetaCardProps) {
 		}
 	}, [data]);
 
+	const {thumb, fallback} = getThumbnail(img);
 
 	return (
 	  <Pressable _pressed={{opacity: 0.6}} onPress={() => onPress(data, index)} my={2}>
@@ -27,7 +29,7 @@ export default function MetaListCard({state, functions}: MetaCardProps) {
 			  <Box w={width * 0.25} position="relative">
 				  <AspectRatio w="full" ratio={1} alignSelf="center">
 					  {img
-						? <Image resizeMode="cover" source={{uri: img}} alt={data?.title} rounded={10}/>
+						? <Image w="full" h="auto" resizeMode="cover" source={thumb} loadingIndicatorSource={fallback} defaultSource={fallback} alt={data?.title || ""} rounded={10}/>
 						: <ImagePlaceholder/>
 					  }
 				  </AspectRatio>

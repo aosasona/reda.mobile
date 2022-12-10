@@ -5,7 +5,8 @@ import {Alert, RefreshControl} from "react-native";
 import EmptyLibrary from "../components/EmptyLibrary";
 import HomeHeader from "../components/HomeHeader";
 import HorizontalFileCard from "../components/HorizontalFileCard";
-import {CombinedFileResultType, getFiles} from "../utils/database.util";
+import {CombinedFileResultType} from "../types/database";
+import {RedaService} from "../utils/internal.util";
 
 export default function Home() {
 
@@ -29,7 +30,7 @@ export default function Home() {
 	const fetchAllFiles = async () => {
 		try {
 			setLoading(true);
-			const result = await getFiles() as CombinedFileResultType[] | null;
+			const result = await RedaService.getAll() as CombinedFileResultType[] | null;
 			setFiles(result);
 		}
 		catch (e) {

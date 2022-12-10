@@ -2,7 +2,7 @@ import {NavigationProp} from "@react-navigation/native";
 import {AspectRatio, Box, Heading, Image, Pressable, Text, VStack} from "native-base";
 import {useWindowDimensions} from "react-native";
 import screens from "../constants/screens";
-import {CombinedFileResultType} from "../utils/database.util";
+import {CombinedFileResultType} from "../types/database";
 import ImagePlaceholder from "./ImagePlaceholder";
 
 interface HorizontalFileCardProps {

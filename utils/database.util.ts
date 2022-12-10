@@ -1,53 +1,8 @@
 import * as SQLite from "expo-sqlite";
 import {SQLError, SQLResultSet} from "expo-sqlite";
+import {CombinedFileResultType, FileModel, MetadataModel, QueryFilter} from "../types/database";
 
 const DATABASE_NAME = 'reda.db';
-
-export enum SQLBoolean {
-	TRUE = 1,
-	FALSE = 0,
-}
-
-export interface FileModel {
-	name: string;
-	path: string;
-	size?: number;
-	created_at?: string;
-}
-
-export interface MetadataModel {
-	file_id?: number;
-	name: string;
-	image: string;
-	description: string;
-	author?: string;
-	chapters?: number;
-	current_page?: number;
-	total_pages?: number;
-	has_started?: SQLBoolean;
-	has_finished?: SQLBoolean;
-	created_at?: string;
-	updated_at?: string;
-}
-
-export interface CombinedFileResultType {
-	id: number;
-	file_id: number;
-	name: string;
-	image: string;
-	path: string;
-	size: number;
-	description: string;
-	author: string;
-	chapters: number;
-	current_page: number;
-	total_pages: number;
-	has_started: SQLBoolean;
-	has_finished: SQLBoolean;
-	created_at: string;
-	updated_at: string;
-}
-
 
 const db = SQLite.openDatabase(DATABASE_NAME, "1.0", "Local data store for Reda");
 
@@ -62,48 +17,83 @@ export const executeQuery = async (query: string, params: any[] = []): Promise<S
 	})
 }
 
-export const clearDatabase = async () => {
-	await executeQuery("DELETE FROM files");
-	await executeQuery("DELETE FROM metadata");
-}
-
 
 export const runMigration = async () => {
 
+	interface MigrationDefinition {
+		name: string;
+		query: string;
+	}
+
+	const migrations: MigrationDefinition[] = [
+		{
+			name: "create_files_table",
+			query: `
+			CREATE TABLE IF NOT EXISTS files (
+			    id				INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	            name 			TEXT NOT NULL DEFAULT 'Untitled',
+	            path			TEXT NOT NULL,
+			    size			INTEGER NOT NULL,
+	            has_started		BOOLEAN NOT NULL DEFAULT 0,
+	            has_finished		BOOLEAN NOT NULL DEFAULT 0,
+                is_downloaded	BOOLEAN NOT NULL DEFAULT 0,
+	            is_starred		BOOLEAN NOT NULL DEFAULT 0,
+			    created_at 		DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			    CONSTRAINT path_unique UNIQUE (path)
+			)`
+		},
+		{
+			name: "create_metadata_table",
+			query: `
+			CREATE TABLE IF NOT EXISTS metadata (
+				id 				INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+				file_id 			INTEGER NOT NULL, 
+				image 			TEXT NOT NULL DEFAULT '', 
+				description 	TEXT NOT NULL DEFAULT '', 
+				author 			TEXT NOT NULL DEFAULT '',
+	            raw				TEXT NOT NULL DEFAULT '',
+	            table_of_contents TEXT NOT NULL DEFAULT '',
+	            subjects			TEXT NOT NULL DEFAULT '',
+	            first_publish_year 	INTEGER NOT NULL DEFAULT '',
+	            book_key		TEXT NOT NULL DEFAULT '',
+				chapters 		INTEGER NOT NULL DEFAULT 0,
+				current_page	INTEGER NOT NULL DEFAULT 1,
+			    total_pages		INTEGER NOT NULL DEFAULT 1,
+				created_at 		DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+				updated_at 		DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				FOREIGN KEY (file_id) REFERENCES files(id)
+			)`
+		}
+	]
+
 	const enablePragma = `PRAGMA foreign_keys = ON;`;
 
-	const filesSQL = `
-		CREATE TABLE IF NOT EXISTS files (
-		    id				INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-		    name			TEXT NOT NULL,
-		    path			TEXT NOT NULL,
-		    size			INTEGER NOT NULL,
-		    created_at 		DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-		);`
-
-	const metadataSQL = `
-		CREATE TABLE IF NOT EXISTS metadata (
-			id 				INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-			file_id 			INTEGER NOT NULL, 
-			name 			TEXT NOT NULL DEFAULT 'Untitled', 
-			image 			TEXT NOT NULL DEFAULT '', 
-			description 	TEXT NOT NULL DEFAULT '', 
-			author 			TEXT NOT NULL DEFAULT '', 
-			chapters 		INTEGER NOT NULL DEFAULT 0, 
-			current_page	INTEGER NOT NULL DEFAULT 1,
-		    total_pages		INTEGER NOT NULL DEFAULT 1,
-		    has_started		BOOLEAN NOT NULL DEFAULT 0,
-		    has_finished		BOOLEAN NOT NULL DEFAULT 0,
-			created_at 		DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
-			updated_at 		DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-			FOREIGN KEY (file_id) REFERENCES files(id)
-		);`
+	const migrationTableQuery = `CREATE TABLE IF NOT EXISTS migrations (
+    		id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    		name TEXT NOT NULL,
+    		created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )`;
 
 	db.transaction((tx: any) => {
 		tx.executeSql(enablePragma);
-		tx.executeSql(filesSQL);
-		tx.executeSql(metadataSQL);
+		tx.executeSql(migrationTableQuery);
+		migrations.forEach((migration) => {
+			tx.executeSql(`SELECT * FROM migrations WHERE name = ?`, [migration.name], (tx: any, res: any) => {
+				if (res.rows.length === 0) {
+					tx.executeSql(migration.query);
+					tx.executeSql(`INSERT INTO migrations (name) VALUES (?)`, [migration.name]);
+				}
+			});
+		})
 	}, console.error);
+
+}
+
+export const clearDatabase = async () => {
+	await executeQuery(`DROP TABLE IF EXISTS files`);
+	await executeQuery(`DROP TABLE IF EXISTS metadata`);
+	await executeQuery(`DROP TABLE IF EXISTS migrations`);
+	await runMigration();
 }
 
 export const insert = async (table: string, data: any) => {
@@ -128,30 +118,8 @@ export const saveFile = async (file: FileModel, meta: MetadataModel) => {
 	}
 }
 
-interface QueryFilter {
-	limit: number;
-	sort_by: "name" | "created_at";
-	sort_order: "ASC" | "DESC";
-}
 
-export const getFiles = async (filter: QueryFilter = { limit: 25, sort_by: "created_at", sort_order: "DESC" }): Promise<CombinedFileResultType[]> => {
-	try {
-		const {limit, sort_by, sort_order} = filter;
-		const query = `SELECT * FROM files f INNER JOIN metadata m ON f.id = m.file_id ORDER BY ${sort_by} ${sort_order} LIMIT ?;`;
-		const result = await executeQuery(query, [limit]) as SQLResultSet | null;
-		return result?.rows._array || [] as any[];
-	}
-	catch (e) {
-		throw e;
-	}
-}
 
 export const getFile = async (id: number) => {
-	try {
-		const query = `SELECT * FROM files f INNER JOIN metadata m ON f.id = m.file_id WHERE f.id = ?;`;
-		return await executeQuery(query, [id]) as SQLResultSet | null;
-	}
-	catch (e) {
-		throw e;
-	}
+
 }

@@ -1,5 +1,4 @@
 import {Toast} from "native-base";
-import {CombinedFileResultType} from "./database.util";
 
 export const showToast = (message: string, type: "success" | "error" | "warning" | "info" = "success") => {
 	Toast.show({
@@ -25,6 +24,6 @@ export const showToast = (message: string, type: "success" | "error" | "warning"
 
 export const getThumbnail = (image: string | null | undefined) => {
 	const defaultThumb = require("../assets/default-book.jpg");
-	const thumb = (image !== null && image !== undefined) ? {uri: image} : defaultThumb;
+	const thumb = !!image ? {uri: image} : defaultThumb;
 	return {thumb, fallback: defaultThumb};
 }

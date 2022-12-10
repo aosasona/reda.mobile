@@ -24,4 +24,10 @@ export class OpenLibraryService {
 	static getImageByID(isbn: string, quality: "S" | "M" | "L" = "M") {
 		return `https://covers.openlibrary.org/b/id/${isbn}-${quality}.jpg`
 	}
+
+	static async getBookDataByKey(key: string) {
+		const url = `${this.BASE_URL}books/${key}.json`
+		const { data } = await axios.get(url)
+		return data
+	}
 }

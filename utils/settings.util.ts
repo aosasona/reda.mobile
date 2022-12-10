@@ -59,7 +59,7 @@ export default class SettingsUtil {
 				onPress: () => {
 					clearDatabase()
 					  .then()
-					  .catch(() => Alert.alert("Error", "An error occurred "))
+					  .catch((e) => Alert.alert("Error", "An error occurred "))
 				},
 				style: "destructive",
 			},

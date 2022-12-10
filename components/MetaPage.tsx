@@ -3,9 +3,10 @@ import {AspectRatio, Box, Button, Heading, HStack, Icon, Image, Pressable, Text,
 import {useEffect, useState} from "react";
 import {Alert, useWindowDimensions} from "react-native";
 import {ButtonProps} from "../constants/props";
+import {FileModel, MetadataModel, SQLBoolean} from "../types/database";
 import {MetaPageProps} from "../types/import";
-import {FileModel, MetadataModel, saveFile, SQLBoolean} from "../utils/database.util";
-import {showToast} from "../utils/misc.util";
+import {saveFile} from "../utils/database.util";
+import {getThumbnail, showToast} from "../utils/misc.util";
 import {OpenLibraryService} from "../utils/request.util";
 import ImagePlaceholder from "./ImagePlaceholder";
 
@@ -16,6 +17,10 @@ export default function MetaPage({state, functions}: MetaPageProps) {
 
 	const [img, setImg] = useState("");
 	const [saving, setSaving] = useState(false);
+	const [bookData, setBookData] = useState<any>({
+		has_loaded: false,
+		data: null
+	});
 
 	const {data, file} = state;
 	const {toggleStep, handleModalDismiss} = functions;
@@ -24,25 +29,48 @@ export default function MetaPage({state, functions}: MetaPageProps) {
 		if (data?.cover_i) {
 			setImg(OpenLibraryService.getImageByID(data.cover_i, "L"));
 		}
+		(async () => await getBookData())();
 	}, [data]);
+
+	const getBookData = async () => {
+		try {
+			const bookSeed = data?.seed?.filter((seed: string) => seed.startsWith("/books"))[0];
+			const key = data?.edition_key[0] || bookSeed?.split("/")?.[2];
+			if (key) {
+				const {data} = await OpenLibraryService.getBookDataByKey(key);
+				setBookData((prev: any) => ({...prev, data}));
+			}
+		} catch (e) {}
+		finally {
+			setBookData((prev: any) => ({...prev, has_loaded: true}));
+		}
+	}
+
 
 	const save = async () => {
 		try {
 			setSaving(true);
 			const file_data: FileModel = {
-				name: file?.name || "",
+				name : data?.title || file?.name?.split(".")[0],
 				path: file?.uri,
 				size: file?.size,
-			}
-			const meta: MetadataModel = {
-				name: data?.title || file?.name?.split(".")[0],
-				image: img || "",
-				description: data?.subtitle || "No description.",
-				author: data?.author_name[0] || "Unknown author",
-				chapters: 0,
-				total_pages: data?.number_of_pages_median || 0,
 				has_started: SQLBoolean.FALSE,
 				has_finished: SQLBoolean.FALSE,
+				is_downloaded: SQLBoolean.FALSE,
+				is_starred: SQLBoolean.FALSE,
+			}
+			const meta: MetadataModel = {
+				image: img || "",
+				description: data?.subtitle || data?.description ||  "No description.",
+				author: data?.author_name[0] || "Unknown author",
+				raw: JSON.stringify(data),
+				table_of_contents: JSON.stringify(bookData?.data?.table_of_contents || []),
+				subjects: data?.subject_facet?.join(", ") || bookData?.data?.subjects?.join(", ") || "",
+				first_publish_year: data?.first_publish_year || bookData?.data?.first_publish_year || data?.publish_year?.[0] || 0,
+				book_key: data?.edition_key?.[0] || "",
+				chapters: bookData?.data?.table_of_contents?.length || 0,
+				current_page: 0,
+				total_pages: bookData?.data?.number_of_pages || data?.number_of_pages_median || 0,
 			}
 			const res = await saveFile(file_data, meta);
 			if (res) {
@@ -60,6 +88,8 @@ export default function MetaPage({state, functions}: MetaPageProps) {
 		}
 	}
 
+	const {thumb, fallback} = getThumbnail(img);
+
 	return (
 	  <Box pb={4}>
 		  <Pressable onPress={toggleStep} _pressed={{opacity: 0.5}} mb={6} py={1}>
@@ -71,7 +101,7 @@ export default function MetaPage({state, functions}: MetaPageProps) {
 		  <HStack bg="transparent" w={width * 0.9} space={3}>
 			  <AspectRatio w={width * 0.3} ratio={9 / 12}>
 				  {img
-					? <Image resizeMode="cover" source={{uri: img}} alt={data?.title || ""} rounded={8}/>
+					? <Image w="full" h="auto" resizeMode="cover" source={thumb} alt={data?.title || ""} defaultSource={fallback} loadingIndicatorSource={fallback} rounded={8}/>
 					: <ImagePlaceholder/>
 				  }
 			  </AspectRatio>
@@ -90,7 +120,7 @@ export default function MetaPage({state, functions}: MetaPageProps) {
 					</Text>
 				  }
 				  <HStack space={2} mt="auto" mb={1}>
-					  <Button {...ButtonProps} w={16} py={2} rounded={20} isLoading={saving} onPress={save}>
+					  <Button {...ButtonProps} w={16} py={2} rounded={20} isLoading={saving} onPress={save} isDisabled={!bookData.has_loaded}>
 						  Save
 					  </Button>
 				  </HStack>

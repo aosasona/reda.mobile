@@ -1,4 +1,4 @@
-import {NavigationProp, NavigationState} from "@react-navigation/native";
+import {NavigationProp} from "@react-navigation/native";
 
 export interface ScreenProps {
 	navigation: NavigationProp<any>
