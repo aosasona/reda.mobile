@@ -11,6 +11,10 @@ const screens = {
 		screenName: 'ImportScreen',
 		screenTitle: 'Import File',
 	},
+	PREVIEW:{
+		screenName: 'PreviewScreen',
+		screenTitle: 'Preview',
+	},
 	READ_DOCUMENT: {
 		screenName: 'ReadDocumentScreen',
 		screenTitle: 'Read Document',

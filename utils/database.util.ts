@@ -128,10 +128,17 @@ export const saveFile = async (file: FileModel, meta: MetadataModel) => {
 	}
 }
 
-export const getFiles = async () => {
+interface QueryFilter {
+	limit: number;
+	sort_by: "name" | "created_at";
+	sort_order: "ASC" | "DESC";
+}
+
+export const getFiles = async (filter: QueryFilter = { limit: 25, sort_by: "created_at", sort_order: "DESC" }): Promise<CombinedFileResultType[]> => {
 	try {
-		const query = `SELECT * FROM files f INNER JOIN metadata m ON f.id = m.file_id;`;
-		const result = await executeQuery(query) as SQLResultSet | null;
+		const {limit, sort_by, sort_order} = filter;
+		const query = `SELECT * FROM files f INNER JOIN metadata m ON f.id = m.file_id ORDER BY ${sort_by} ${sort_order} LIMIT ?;`;
+		const result = await executeQuery(query, [limit]) as SQLResultSet | null;
 		return result?.rows._array || [] as any[];
 	}
 	catch (e) {

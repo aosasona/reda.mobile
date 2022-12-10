@@ -1,3 +1,4 @@
+import {useNavigation} from "@react-navigation/native";
 import {FlatList, ScrollView} from "native-base";
 import {useEffect, useState} from "react";
 import {Alert, RefreshControl} from "react-native";
@@ -8,6 +9,7 @@ import {CombinedFileResultType, getFiles} from "../utils/database.util";
 
 export default function Home() {
 
+	const navigation = useNavigation();
 	const [search, setSearch] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [initialLoad, setInitialLoad] = useState(false);
@@ -51,7 +53,7 @@ export default function Home() {
 			data={files}
 			horizontal
 			showsHorizontalScrollIndicator={false}
-			renderItem={({item, index}) => (<HorizontalFileCard data={item} index={index}/>)}
+			renderItem={({item, index}) => (<HorizontalFileCard data={item} index={index} navigator={navigation}/>)}
 			keyExtractor={(item, index) => index.toString()}
 			ListEmptyComponent={<EmptyLibrary/>}
 			px={0}
