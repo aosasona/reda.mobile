@@ -10,11 +10,11 @@ export default function MetaList({functions, state}: MetaModalProps) {
 
 	const {meta} = state;
 	const {toggleStep, handleCurrentMetaChange} = functions;
-	
+
 	useEffect(() => {
 		let mounted = true;
 		if (mounted) {
-			if (meta?.current === null && meta?.all && meta?.all?.length > 0) {
+			if (meta?.currentIndex !== null && meta?.current === null && meta?.all && meta?.all?.length > 0) {
 				handleCurrentMetaChange(meta?.all[0], 0);
 			}
 		}

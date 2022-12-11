@@ -27,3 +27,7 @@ export const getThumbnail = (image: string | null | undefined) => {
 	const thumb = !!image ? {uri: image} : defaultThumb;
 	return {thumb, fallback: defaultThumb};
 }
+
+export const byteToMB = (bytes: number) => {
+	return (bytes / 1024 / 1024)?.toFixed(2) + " MB";
+}

@@ -8,15 +8,15 @@ import ImagePlaceholder from "./ImagePlaceholder";
 interface HorizontalFileCardProps {
 	data: CombinedFileResultType;
 	index: number;
-	navigator: NavigationProp<any>;
+	navigation: NavigationProp<any>;
 }
 
-export default function HorizontalFileCard({data, index, navigator}: HorizontalFileCardProps) {
+export default function HorizontalFileCard({data, index, navigation}: HorizontalFileCardProps) {
 
 	const {width} = useWindowDimensions();
 
 	const navigateToDocumentPage = () => {
-		navigator.navigate(screens.PREVIEW.screenName, { data });
+		navigation.navigate(screens.PREVIEW.screenName, {data});
 	}
 	return (
 	  <Pressable w={width * 0.42} _pressed={{opacity: 0.6}} onPress={navigateToDocumentPage}>

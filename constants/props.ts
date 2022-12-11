@@ -60,3 +60,8 @@ export const DividerProps = {
 	_dark: {bg: "muted.800"},
 	_light: {bg: "muted.200"},
 }
+
+export const DetailsProps = {
+	justifyContent: "space-between",
+	my: 4,
+}

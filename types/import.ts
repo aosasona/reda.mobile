@@ -27,7 +27,7 @@ export interface ImportStatesProps {
 	meta?: {
 		all?: any[];
 		current?: any;
-		currentIndex?: number;
+		currentIndex?: number | null;
 	};
 	loading: {
 		local: boolean;

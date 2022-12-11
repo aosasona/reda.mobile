@@ -9,7 +9,7 @@ import {GlobalContext} from "../context/GlobalContext";
 import CustomException from "../exceptions/CustomException";
 import {ImportStatesProps} from "../types/import";
 import {handlePossibleNull} from "../utils/exception.util";
-import {deleteFile, extractFileName, File, handleFilePick} from "../utils/file.util";
+import {extractFileName, File, handleFilePick} from "../utils/file.util";
 import ImportUtil from "../utils/import .util";
 import {showToast} from "../utils/misc.util";
 
@@ -45,6 +45,15 @@ export default function Import() {
 
 	const resetState = importUtil.resetState
 	const loadAllMeta = importUtil.loadAllMeta
+
+	const handleMetaSelection = (value: any, index: number) => {
+		if (mixedState.meta?.currentIndex !== null && mixedState.meta?.currentIndex === index) {
+			setMixedState({...mixedState, meta: {...mixedState.meta, currentIndex: null, current: null}})
+			return;
+		}
+		importUtil.setCurrentMeta(value, index)
+	}
+
 	const meta = {setAll: importUtil.setAllMeta, setCurrent: importUtil.setCurrentMeta}
 
 	const handleModalDismiss = () => {
@@ -101,7 +110,6 @@ export default function Import() {
 			}
 		}
 		catch (e) {
-			console.log(e);
 			const msg = e instanceof CustomException ? e.message : "An error occurred";
 			Alert.alert("Error", msg);
 		}
@@ -133,7 +141,7 @@ export default function Import() {
 			}}
 			functions={{
 				setState: setMixedState,
-				handleCurrentMetaChange: meta.setCurrent,
+				handleCurrentMetaChange: handleMetaSelection,
 				handleModalDismiss,
 				loadAllMeta,
 			}}

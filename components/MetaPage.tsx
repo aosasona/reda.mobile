@@ -19,7 +19,7 @@ export default function MetaPage({state, functions}: MetaPageProps) {
 	const [saving, setSaving] = useState(false);
 	const [bookData, setBookData] = useState<any>({
 		has_loaded: false,
-		data: null
+		data: null,
 	});
 
 	const {data, file} = state;
@@ -40,7 +40,9 @@ export default function MetaPage({state, functions}: MetaPageProps) {
 				const {data} = await OpenLibraryService.getBookDataByKey(key);
 				setBookData((prev: any) => ({...prev, data}));
 			}
-		} catch (e) {}
+		}
+		catch (e) {
+		}
 		finally {
 			setBookData((prev: any) => ({...prev, has_loaded: true}));
 		}
@@ -51,7 +53,7 @@ export default function MetaPage({state, functions}: MetaPageProps) {
 		try {
 			setSaving(true);
 			const file_data: FileModel = {
-				name : data?.title || file?.name?.split(".")[0],
+				name: data?.title || file?.name?.split(".")[0],
 				path: file?.uri,
 				size: file?.size,
 				has_started: SQLBoolean.FALSE,
@@ -61,16 +63,16 @@ export default function MetaPage({state, functions}: MetaPageProps) {
 			}
 			const meta: MetadataModel = {
 				image: img || "",
-				description: data?.subtitle || data?.description ||  "No description.",
+				description: data?.subtitle || data?.description || "No description.",
 				author: data?.author_name[0] || "Unknown author",
 				raw: JSON.stringify(data),
 				table_of_contents: JSON.stringify(bookData?.data?.table_of_contents || []),
 				subjects: data?.subject_facet?.join(", ") || bookData?.data?.subjects?.join(", ") || "",
 				first_publish_year: data?.first_publish_year || bookData?.data?.first_publish_year || data?.publish_year?.[0] || 0,
 				book_key: data?.edition_key?.[0] || "",
-				chapters: bookData?.data?.table_of_contents?.length || 0,
-				current_page: 0,
-				total_pages: bookData?.data?.number_of_pages || data?.number_of_pages_median || 0,
+				chapters: bookData?.data?.table_of_contents?.length || 1,
+				current_page: 1,
+				total_pages: bookData?.data?.number_of_pages || data?.number_of_pages_median || 1,
 			}
 			const res = await saveFile(file_data, meta);
 			if (res) {

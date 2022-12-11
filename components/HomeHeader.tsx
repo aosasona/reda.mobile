@@ -1,7 +1,6 @@
 import {MaterialIcons} from "@expo/vector-icons";
-import {Box, Heading, HStack, Icon, Input, Pressable, Text} from "native-base";
+import {Box, Heading, Icon, Input, Pressable} from "native-base";
 import {InputProps} from "../constants/props";
-import {CombinedFileResultType} from "../utils/database.util";
 import LoadingHeader from "./LoadingHeader";
 
 interface HeaderComponentProps {
@@ -9,20 +8,16 @@ interface HeaderComponentProps {
 		search: string;
 		loading: boolean;
 		initialLoad: boolean;
-		files: CombinedFileResultType[] | null;
 	};
 	setters: {
 		setSearch: (value: string) => void;
 	}
 }
 
-interface AllFilesProps {
-	files: CombinedFileResultType[];
-}
 
-export default function HomeHeader ({state, setters}: HeaderComponentProps) {
+export default function HomeHeader({state, setters}: HeaderComponentProps) {
 
-	const {search, loading, initialLoad, files} = state;
+	const {search, loading, initialLoad} = state;
 	const {setSearch} = setters;
 
 	return (
@@ -55,19 +50,6 @@ export default function HomeHeader ({state, setters}: HeaderComponentProps) {
 		  />
 
 		  {!initialLoad && loading && <LoadingHeader/>}
-
-		  {files && files.length > 0 && <AllFiles files={files}/>}
 	  </Box>
-	)
-}
-
-const AllFiles = ({files}: AllFilesProps) => {
-	return (
-	  <HStack alignItems="flex-end" justifyContent="space-between" space={4} px={2} mt={4} mb={4}>
-		  <Heading fontSize={28}>All</Heading>
-		  <Pressable _pressed={{opacity: 0.5}} p={0} m={0}>
-			  <Text fontSize={13} color="blue.500">Show All</Text>
-		  </Pressable>
-	  </HStack>
 	)
 }
