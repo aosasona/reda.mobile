@@ -1,4 +1,4 @@
-import {AntDesign, Ionicons, MaterialCommunityIcons} from "@expo/vector-icons";
+import {AntDesign, Ionicons} from "@expo/vector-icons";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import {NavigationContainer} from "@react-navigation/native";
 import {StatusBar} from "expo-status-bar";
@@ -17,7 +17,7 @@ export default function MainStack() {
 	const Tab = createBottomTabNavigator();
 	return (
 	  <SafeAreaProvider>
-		  <StatusBar animated={true} style={colorMode === "dark" ? "light" : "dark"} translucent={true} />
+		  <StatusBar animated={true} style={colorMode === "dark" ? "light" : "dark"} translucent={true}/>
 		  <NavigationContainer>
 			  <Tab.Navigator initialRouteName={tabs.HOME} backBehavior="history">
 				  <Tab.Screen
@@ -32,7 +32,7 @@ export default function MainStack() {
 					name={tabs.IMPORT}
 					component={ImportStack}
 					options={{
-						tabBarIcon: ({focused}) => <Icon as={MaterialCommunityIcons} name="import" size={6} color={iconOptions(colorMode, focused)}/>,
+						tabBarIcon: ({focused}) => <Icon as={Ionicons} name="download-outline" size={6} color={iconOptions(colorMode, focused)}/>,
 						...screenOptions(colorMode),
 					}}
 				  />

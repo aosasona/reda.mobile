@@ -29,7 +29,7 @@ export default function MetaListCard({state, functions}: MetaCardProps) {
 			  <Box w={width * 0.25} position="relative">
 				  <AspectRatio w="full" ratio={1} alignSelf="center">
 					  {img
-						? <Image w="full" h="auto" resizeMode="cover" source={thumb} loadingIndicatorSource={fallback} defaultSource={fallback} alt={data?.title || ""} rounded={10}/>
+						? <Image w="full" h="auto" resizeMode="cover" source={thumb} defaultSource={fallback} alt={data?.title || ""} rounded={10}/>
 						: <ImagePlaceholder/>
 					  }
 				  </AspectRatio>

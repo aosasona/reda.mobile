@@ -1,4 +1,5 @@
-import {Heading, HStack, Pressable, Text} from "native-base";
+import {Entypo} from "@expo/vector-icons";
+import {Heading, HStack, Icon, Pressable} from "native-base";
 
 interface HomeSectionTitleProps {
 	title: string;
@@ -6,11 +7,11 @@ interface HomeSectionTitleProps {
 
 export default function HomeSectionTitle({title}: HomeSectionTitleProps) {
 	return (
-	  <HStack alignItems="flex-end" justifyContent="space-between" space={4} px={2} mt={4} mb={4}>
-		  <Heading fontSize={28}>{title}</Heading>
-		  <Pressable _pressed={{opacity: 0.5}} p={0} m={0}>
-			  <Text fontSize={13} color="blue.500">Show All</Text>
-		  </Pressable>
-	  </HStack>
+	  <Pressable _pressed={{opacity: 0.5}} p={0} mt={4} mb={4}>
+		  <HStack alignItems="center" justifyContent="flex-start">
+			  <Heading fontSize={26} fontWeight={600}>{title}</Heading>
+			  <Icon as={Entypo} name="chevron-right" opacity={0.75} size={6}/>
+		  </HStack>
+	  </Pressable>
 	)
 }

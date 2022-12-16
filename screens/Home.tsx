@@ -1,13 +1,13 @@
-import {useFocusEffect, useNavigation} from "@react-navigation/native";
-import {FlatList, SectionList} from "native-base";
-import {useCallback, useState} from "react";
-import {Alert, RefreshControl} from "react-native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { FlatList, SectionList } from "native-base";
+import { useCallback, useState } from "react";
+import { Alert, RefreshControl } from "react-native";
 import EmptySection from "../components/EmptySection";
 import HomeHeader from "../components/HomeHeader";
 import HomeSectionTitle from "../components/HomeSectionTitle";
 import HorizontalFileCard from "../components/HorizontalFileCard";
-import {CombinedFileResultType} from "../types/database";
-import {RedaService} from "../utils/internal.util";
+import { CombinedFileResultType } from "../types/database";
+import { RedaService } from "../utils/internal.util";
 
 
 interface FullDataState {
@@ -34,15 +34,15 @@ export default function Home() {
 	const [initialLoad, setInitialLoad] = useState(false);
 	const [count, setCount] = useState(0);
 	const [data, setData] = useState<FlatDataState[]>([
-		{title: "Recent", data: []},
-		{title: "Starred", data: []},
+		{ title: "Recently Added", data: [] },
+		{ title: "Starred", data: [] },
 	]);
 
 	useFocusEffect(
-	  useCallback(() => {
-		  (async () => await fetchAllFiles())();
-		  return () => setInitialLoad(true);
-	  }, []),
+		useCallback(() => {
+			(async () => await fetchAllFiles())();
+			return () => setInitialLoad(true);
+		}, []),
 	);
 
 	const fetchAllFiles = async () => {
@@ -56,16 +56,16 @@ export default function Home() {
 			const all = await RedaService.getAll() as CombinedFileResultType[] | null;
 			const starred = await RedaService.getStarred() as CombinedFileResultType[] | null;
 			setData(prevState => (
-			  [
-				  {
-					  ...prevState[0],
-					  data: all || [],
-				  },
-				  {
-					  ...prevState[1],
-					  data: starred || [],
-				  },
-			  ]
+				[
+					{
+						...prevState[0],
+						data: all || [],
+					},
+					{
+						...prevState[1],
+						data: starred || [],
+					},
+				]
 			));
 		}
 		catch (e) {
@@ -77,45 +77,46 @@ export default function Home() {
 	}
 
 	return (
-
-	  <SectionList
-		sections={data.map((d) => ({
-			title: d.title,
-			key: d.title,
-			data: [
-				{
-					key: d.title,
-					list: d.data,
-				},
-			],
-		}))}
-		ListHeaderComponent={<HomeHeader state={{search, loading, initialLoad}} setters={{setSearch}}/>}
-		keyExtractor={(item, index) => item.key + index}
-		renderSectionHeader={({section: {title}}) => (<HomeSectionTitle title={title}/>)}
-		renderItem={({item, index}) => (
-		  <FlatList
-			data={item.list}
-			horizontal
-			showsHorizontalScrollIndicator={false}
-			renderItem={({item, index}) => (<HorizontalFileCard data={item as any} index={index} navigation={navigation}/>)}
-			keyExtractor={(item, index) => index.toString()}
-			ListEmptyComponent={<EmptySection title={item.key}/>}
+		<SectionList
+			sections={data.map((d) => ({
+				title: d.title,
+				key: d.title,
+				data: [
+					{
+						key: d.title,
+						list: d.data,
+					},
+				],
+			}))}
+			ListHeaderComponent={<HomeHeader state={{ search, loading, initialLoad }} setters={{ setSearch }} />}
+			keyExtractor={(item, index) => item.key + index}
+			renderSectionHeader={({ section }) => (section?.data?.[0]?.list?.length > 0 ? <HomeSectionTitle title={section.title} /> : null)}
+			renderItem={({ item, index }) => (
+				item.list.length > 0 ?
+					<FlatList
+						data={item.list}
+						horizontal
+						showsHorizontalScrollIndicator={false}
+						renderItem={({ item, index }) => (<HorizontalFileCard data={item as any} index={index} navigation={navigation} />)}
+						keyExtractor={(item, index) => index.toString()}
+						ListEmptyComponent={<EmptySection title={item.key} />}
+						alwaysBounceVertical={false}
+						alwaysBounceHorizontal={false}
+						initialNumToRender={20}
+						px={0}
+						mx={0}
+					/> : null
+			)}
+			refreshControl={
+				<RefreshControl
+					refreshing={loading}
+					onRefresh={fetchAllFiles}
+					progressViewOffset={40}
+				/>
+			}
+			showsVerticalScrollIndicator={false}
+			keyboardShouldPersistTaps={"handled"}
 			alwaysBounceVertical={false}
-			alwaysBounceHorizontal={false}
-			initialNumToRender={20}
-			px={0}
-			mx={0}
-		  />
-		)}
-		refreshControl={
-			<RefreshControl
-			  refreshing={loading}
-			  onRefresh={fetchAllFiles}
-			  progressViewOffset={40}
-			/>
-		}
-		showsVerticalScrollIndicator={false}
-		keyboardShouldPersistTaps={"handled"}
-	  />
+		/>
 	)
 }

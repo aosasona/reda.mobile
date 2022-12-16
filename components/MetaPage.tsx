@@ -103,7 +103,7 @@ export default function MetaPage({state, functions}: MetaPageProps) {
 		  <HStack bg="transparent" w={width * 0.9} space={3}>
 			  <AspectRatio w={width * 0.3} ratio={9 / 12}>
 				  {img
-					? <Image w="full" h="auto" resizeMode="cover" source={thumb} alt={data?.title || ""} defaultSource={fallback} loadingIndicatorSource={fallback} rounded={8}/>
+					? <Image w="full" h="auto" resizeMode="cover" source={thumb} alt={data?.title || ""} defaultSource={fallback} rounded={8}/>
 					: <ImagePlaceholder/>
 				  }
 			  </AspectRatio>

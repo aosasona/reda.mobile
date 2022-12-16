@@ -27,7 +27,7 @@ export default function Settings() {
 			  <SettingsSection title="Appearance">
 				  <HStack {...HStackProps}>
 					  <Text>Dark Mode</Text>
-					  <Switch size="sm" onTrackColor="green.500" onToggle={toggleColorMode} value={(colorMode === "dark")}/>
+					  <Switch size="md" onTrackColor="green.500" onToggle={toggleColorMode} value={(colorMode === "dark")}/>
 				  </HStack>
 				  <Box pl={4}><Divider {...DividerProps}/></Box>
 				  <HStack {...HStackProps}>
@@ -64,8 +64,8 @@ export default function Settings() {
 
 			  <SettingsSection title="User & App Data">
 				  {/* <HStack {...HStackProps}> */}
-					{/*   <Text>Delete files after importing</Text> */}
-					{/*   <Switch size="sm" onTrackColor="green.500" onToggle={settingsUtil.setDeleteFilesAfterImport} value={state.deleteFilesAfterImport}/> */}
+				  {/*   <Text>Delete files after importing</Text> */}
+				  {/*   <Switch size="sm" onTrackColor="green.500" onToggle={settingsUtil.setDeleteFilesAfterImport} value={state.deleteFilesAfterImport}/> */}
 				  {/* </HStack> */}
 				  {/* <Box pl={4}><Divider {...DividerProps}/></Box> */}
 				  <Pressable

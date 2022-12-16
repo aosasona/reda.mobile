@@ -23,6 +23,7 @@ export const screenOptions = (colorMode: ColorMode) => ({
 	},
 	tabBarLabelStyle: {
 		fontSize: 12,
+		display: "none",
 	},
 	tabBarStyle: {
 		backgroundColor: getPrimaryColor(colorMode),
