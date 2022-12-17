@@ -58,12 +58,14 @@ export default function Preview({ route, navigation }: ScreenProps) {
 	const filesizeInMB = byteToMB(data?.size);
 
 	return (
-		<ScrollView px={0} refreshControl={
-			<RefreshControl
-				refreshing={refreshing}
-				onRefresh={onRefresh}
-			/>
-		}>
+		<ScrollView px={0}
+			showsVerticalScrollIndicator={false}
+			refreshControl={
+				<RefreshControl
+					refreshing={refreshing}
+					onRefresh={onRefresh}
+				/>
+			}>
 			<PreviewHeader source={thumb} defaultSource={fallback} navigation={navigation} data={data} onPress={toggleStar} />
 			<Box px={4} py={4}>
 				<Box mb={4}>
@@ -89,11 +91,11 @@ export default function Preview({ route, navigation }: ScreenProps) {
 						<Text fontSize={16}>Total Pages</Text>
 						<Text opacity={0.5} fontSize={16}>{data?.total_pages}</Text>
 					</HStack>
-					<Divider {...DividerProps} />
-					<HStack {...DetailsProps}>
-						<Text fontSize={16}>Subjects</Text>
-						<Text opacity={0.5} fontSize={16}>{data?.subjects}</Text>
-					</HStack>
+				</Box>
+
+				<Box mt={5}>
+					<Heading fontSize={24}>Subject(s)</Heading>
+					<Text opacity={0.6} mt={2}>{data?.subjects}</Text>
 				</Box>
 			</Box>
 		</ScrollView>
