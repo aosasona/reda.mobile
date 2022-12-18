@@ -29,7 +29,6 @@ interface FlatDataState {
 
 export default function Home() {
 	const navigation = useNavigation();
-	const [search, setSearch] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [initialLoad, setInitialLoad] = useState(false);
 	const [count, setCount] = useState(0);
@@ -128,6 +127,7 @@ export default function Home() {
 							alwaysBounceVertical={false}
 							alwaysBounceHorizontal={false}
 							initialNumToRender={20}
+							bounces={false}
 							px={0}
 							mx={0}
 						/>
@@ -141,7 +141,6 @@ export default function Home() {
 					/>
 				}
 				showsVerticalScrollIndicator={false}
-				keyboardShouldPersistTaps="always"
 				stickySectionHeadersEnabled={false}
 				alwaysBounceVertical={false}
 			/>

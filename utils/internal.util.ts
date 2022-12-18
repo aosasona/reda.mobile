@@ -265,7 +265,7 @@ export class RedaService {
 		keyword: string,
 		filter: QueryFilter = {
 			limit: 100,
-			sort_by: "name",
+			sort_by: "created_at",
 			sort_order: "ASC",
 		}
 	): Promise<CombinedFileResultType[]> {
@@ -292,12 +292,10 @@ export class RedaService {
                        FROM files f
                                 INNER JOIN metadata m
                                            ON f.id = m.file_id
-                                WHERE LIKE %?%
-                       ORDER BY f.${sort_by} ${sort_order}
-                       LIMIT ?;`;
+            						WHERE f.name LIKE ? ORDER BY f.${sort_by} ${sort_order} LIMIT ?;`;
 
 		const result = (await this.query(query, [
-			keyword,
+			`%${keyword}%`,
 			limit,
 		])) as SQLResultSet | null;
 		const res = result?.rows._array || ([] as any[]);

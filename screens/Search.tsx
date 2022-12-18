@@ -1,20 +1,40 @@
 import { MaterialIcons } from "@expo/vector-icons";
+import { NavigationProp } from "@react-navigation/native";
 import { Box, FlatList, Flex, Icon, Input, Pressable, Text } from "native-base";
 import { useEffect, useState } from "react";
-import { useWindowDimensions } from "react-native";
+import { Alert, useWindowDimensions } from "react-native";
+import SearchCard from "../components/SearchCard";
 import { InputProps } from "../constants/props";
 import { CombinedFileResultType } from "../types/database";
+import { RedaService } from "../utils/internal.util";
 
-export default function Search() {
+interface SearchProps {
+  route: any;
+  navigation: NavigationProp<any>;
+}
+
+export default function Search({ route, navigation }) {
   const { width } = useWindowDimensions();
 
   const [search, setSearch] = useState<string>("");
   const [results, setResults] = useState<CombinedFileResultType[]>([]);
 
+  useEffect(() => {
+    if (search.length >= 3) {
+      RedaService.search(search)
+        .then(setResults)
+        .catch((_) => Alert.alert("Error", "Something went wrong!"));
+    } else if (search.length == 0) {
+      setResults([]);
+    }
+  }, [search]);
+
   return (
     <FlatList
       data={results}
-      renderItem={({ item, index }) => <></>}
+      renderItem={({ item, index }) => (
+        <SearchCard data={item} navigation={navigation} />
+      )}
       keyExtractor={(item, index) => index.toString()}
       ListHeaderComponent={
         <SearchHeader search={search} setSearch={setSearch} />
@@ -64,6 +84,7 @@ function SearchHeader({
       _dark={{ bg: "brand-dark" }}
       _light={{ bg: "brand-light" }}
       py={3}
+      mb={2}
     >
       <Input
         w="100%"
