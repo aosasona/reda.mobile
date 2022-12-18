@@ -1,10 +1,6 @@
 import { DocumentResult } from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
-import { Alert } from "react-native";
 import CustomException from "../exceptions/CustomException";
-import { SQLBoolean } from "../types/database";
-import { update } from "./database.util";
-import { RedaService } from "./internal.util";
 
 export interface File {
 	name: string;
@@ -87,46 +83,4 @@ export const handleFilePick = async (
 		size: data.size as number,
 		mimeType: data.type,
 	};
-};
-
-export const updateTotalPagesOnLoad = async (
-	id: number,
-	totalPageNumber: number
-) => {
-	try {
-		const file = await RedaService.getOne(id);
-		if (!file) return;
-		if (file.total_pages == totalPageNumber) return;
-		await update({ table: "metadata", identifier: "file_id" }, id, {
-			total_pages: totalPageNumber,
-		});
-	} catch (err) {
-		Alert.alert("Error", "Something went wrong! Close the app and try again.");
-	}
-};
-
-export const saveCurrentPage = async (
-	id: number,
-	currentPageNumber: number
-) => {
-	try {
-		const file = await RedaService.getOne(id);
-		if (!file) return;
-		if (
-			file.current_page > file.total_pages ||
-			file.current_page > currentPageNumber ||
-			file?.has_finished == 1
-		)
-			return;
-		if (!file.has_started && currentPageNumber > 1) {
-			await update({ table: "files", identifier: "id" }, id, {
-				has_started: SQLBoolean.TRUE,
-			});
-		}
-		await update({ table: "metadata", identifier: "file_id" }, id, {
-			current_page: currentPageNumber,
-		});
-	} catch (err: unknown) {
-		Alert.alert("Error", "Something went wrong. Close app and try again.");
-	}
 };

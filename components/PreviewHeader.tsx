@@ -15,6 +15,7 @@ import {
 } from "native-base";
 import { ImageBackground } from "react-native";
 import { CombinedFileResultType } from "../types/database";
+import { RedaService } from "../utils/internal.util";
 import Back from "./Back";
 
 interface PreviewHeaderProps {
@@ -32,6 +33,10 @@ export default function PreviewHeader({
 	onPress,
 	navigation,
 }: PreviewHeaderProps) {
+	const onDelete = async () => {
+		RedaService.deleteFile(data.id, navigation);
+	};
+
 	const progress = Number(
 		(data?.total_pages
 			? ((data?.current_page || 1) / data?.total_pages) * 100
@@ -107,7 +112,7 @@ export default function PreviewHeader({
 								)}
 							>
 								<Menu.Item>
-									<Pressable>
+									<Pressable onPress={onDelete}>
 										<HStack space={2}>
 											<Icon
 												as={FontAwesome}

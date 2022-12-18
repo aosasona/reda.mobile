@@ -1,7 +1,12 @@
+import { NavigationProp } from "@react-navigation/native";
 import { SQLResultSet } from "expo-sqlite";
 import { Alert } from "react-native";
-import { CombinedFileResultType, QueryFilter } from "../types/database";
-import { del, executeQuery } from "./database.util";
+import {
+	CombinedFileResultType,
+	QueryFilter,
+	SQLBoolean,
+} from "../types/database";
+import { del, executeQuery, update } from "./database.util";
 import { deleteFile } from "./file.util";
 
 export interface HomePageData {
@@ -143,8 +148,8 @@ export class RedaService {
 	static async getContinueReading(
 		filter: QueryFilter = {
 			limit: 25,
-			sort_by: "created_at",
-			sort_order: "DESC",
+			sort_by: "name",
+			sort_order: "ASC",
 		}
 	): Promise<CombinedFileResultType[]> {
 		const { limit, sort_by, sort_order } = filter;
@@ -184,6 +189,7 @@ export class RedaService {
 		});
 		return res;
 	}
+
 	static async toggleStar(id: number): Promise<void> {
 		const query = `UPDATE files
                        SET is_starred = NOT is_starred
@@ -191,20 +197,116 @@ export class RedaService {
 		await this.query(query, [id]);
 	}
 
-	static async deleteFile(id: number) {
+	static async updateTotalPagesOnLoad(id: number, totalPageNumber: number) {
+		try {
+			const file = await RedaService.getOne(id);
+			if (!file) return;
+			if (file.total_pages == totalPageNumber) return;
+			await update({ table: "metadata", identifier: "file_id" }, id, {
+				total_pages: totalPageNumber,
+			});
+		} catch (err) {
+			Alert.alert(
+				"Error",
+				"Something went wrong! Close the app and try again."
+			);
+		}
+	}
+
+	static async saveCurrentPage(id: number, currentPageNumber: number) {
+		try {
+			const file = await RedaService.getOne(id);
+			if (!file) return;
+			if (
+				file.current_page > file.total_pages ||
+				file.current_page > currentPageNumber ||
+				file?.has_finished == 1
+			)
+				return;
+			if (!file.has_started && currentPageNumber > 1) {
+				await update({ table: "files", identifier: "id" }, id, {
+					has_started: SQLBoolean.TRUE,
+				});
+			}
+			await update({ table: "metadata", identifier: "file_id" }, id, {
+				current_page: currentPageNumber,
+			});
+		} catch (err: unknown) {
+			Alert.alert("Error", "Something went wrong. Close app and try again.");
+		}
+	}
+
+	static async deleteFile(id: number, navigation: NavigationProp<any>) {
 		const file = await RedaService.getOne(id);
 		if (!file) return;
-		const delMetaDB = del({
-			table: "metadata",
-			identifier: "file_id",
-			id: file.id,
+		Alert.alert(
+			"Confirm",
+			`Are you sure you want to delete ${file?.name || ""}?`,
+			[
+				{ text: "Cancel", style: "cancel" },
+				{
+					text: "Confirm",
+					style: "destructive",
+					onPress: () => {
+						Promise.all([
+							del({ table: "metadata", identifier: "file_id", id: file.id }),
+							del({ table: "files", identifier: "id", id: file.id }),
+							deleteFile(file.path),
+						])
+							.then(() => navigation.goBack())
+							.catch((e) => Alert.alert("Error", "Failed to delete!"));
+					},
+				},
+			]
+		);
+	}
+
+	static async search(
+		keyword: string,
+		filter: QueryFilter = {
+			limit: 100,
+			sort_by: "name",
+			sort_order: "ASC",
+		}
+	): Promise<CombinedFileResultType[]> {
+		const { limit, sort_by, sort_order } = filter;
+
+		const query = `SELECT f.id,
+                              f.name,
+                              f.path,
+                              f.size,
+                              f.has_started,
+                              f.has_finished,
+                              f.is_downloaded,
+                              f.is_starred,
+                              f.created_at,
+                              m.image,
+                              m.description,
+                              m.author,
+                              m.table_of_contents,
+                              m.subjects,
+                              m.first_publish_year,
+                              m.chapters,
+                              m.current_page,
+                              m.total_pages
+                       FROM files f
+                                INNER JOIN metadata m
+                                           ON f.id = m.file_id
+                                WHERE LIKE %?%
+                       ORDER BY f.${sort_by} ${sort_order}
+                       LIMIT ?;`;
+
+		const result = (await this.query(query, [
+			keyword,
+			limit,
+		])) as SQLResultSet | null;
+		const res = result?.rows._array || ([] as any[]);
+		res.map((item: any) => {
+			item.table_of_contents =
+				item?.table_of_contents == "[]"
+					? []
+					: JSON.parse(item.table_of_contents);
 		});
-		const delFileDB = del({
-			table: "files",
-			identifier: "id",
-			id: file.id,
-		});
-		const delFileStorage = deleteFile(file.path);
-		await Promise.all([delMetaDB, delFileDB, delFileStorage]);
+		return res;
 	}
 }
