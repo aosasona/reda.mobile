@@ -1,10 +1,11 @@
-import {ConfigKeys} from "../constants/config";
-import {FontFamiliesEnum} from "../constants/fonts";
-import {clearAsyncStorage, setAsyncStorage} from "../utils/storage.util";
-import {GlobalStateType} from "./GlobalContext";
+import { ConfigKeys } from "../constants/config";
+import { FontFamiliesEnum } from "../constants/fonts";
+import { clearAsyncStorage, setAsyncStorage } from "../utils/storage.util";
+import { GlobalStateType } from "./GlobalContext";
 
 export enum GlobalActionType {
 	SET_FONT_SIZE = 'SET_FONT_SIZE',
+	SET_SINGLE_PAGE_LAYOUT_OPTION = "SET_SINGLE_PAGE_LAYOUT_OPTION",
 	RESET_SETTINGS = 'RESET_SETTINGS',
 	LOAD_SETTINGS = 'LOAD_SETTINGS',
 	SET_FONT_FAMILY = 'SET_FONT_FAMILY',
@@ -20,14 +21,21 @@ export const GlobalReducer = (state: GlobalStateType, action: GlobalAction): Glo
 	switch (action.type) {
 		case GlobalActionType.RESET_SETTINGS:
 			clearAsyncStorage()
-			  .then(() => ({...state, fontSize: 16, fontFamily: FontFamiliesEnum.OUTFIT, deleteFilesAfterImport: true})).catch((error) => ({state}))
+				.then(() => ({ ...state, fontSize: 16, fontFamily: FontFamiliesEnum.OUTFIT, deleteFilesAfterImport: true })).catch((error) => ({ state }))
 			break
 		case GlobalActionType.LOAD_SETTINGS:
 			return {
 				...state,
 				fontSize: action?.payload?.fontSize || "16",
 				fontFamily: action?.payload?.fontFamily || FontFamiliesEnum.OUTFIT,
-				deleteFilesAfterImport: action?.payload?.deleteFilesAfterImport || false,
+				deleteFilesAfterImport: action?.payload?.deleteFilesAfterImport,
+				useSinglePageLayout: action?.payload?.useSinglePageLayout
+			}
+		case GlobalActionType.SET_SINGLE_PAGE_LAYOUT_OPTION:
+			(async () => await setAsyncStorage(ConfigKeys.SINGLE_PAGE_LAYOUT, String(action?.payload)))()
+			return {
+				...state,
+				useSinglePageLayout: action?.payload === 1
 			}
 		case GlobalActionType.SET_FONT_SIZE:
 			(async () => await setAsyncStorage(ConfigKeys.FONT_SIZE, action?.payload?.toString()))()

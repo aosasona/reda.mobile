@@ -4,6 +4,7 @@ export enum ConfigKeys {
 	COLOR_MODE = '@color-mode',
 	DELETE_FILES_AFTER_IMPORT = '@delete-files-after-import',
 	MIGRATION_EXISTS = '@migration-exists',
+	SINGLE_PAGE_LAYOUT = "@single-page-layout"
 }
 
 export enum FolderNames {

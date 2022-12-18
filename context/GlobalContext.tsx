@@ -1,12 +1,13 @@
-import {createContext, useEffect, useReducer} from "react";
-import {FontFamiliesEnum} from "../constants/fonts";
+import { createContext, useEffect, useReducer } from "react";
+import { FontFamiliesEnum } from "../constants/fonts";
 import SettingsUtil from "../utils/settings.util";
-import {GlobalReducer} from "./GlobalReducer";
+import { GlobalReducer } from "./GlobalReducer";
 
 export interface GlobalStateType {
 	fontSize: number;
 	fontFamily: FontFamiliesEnum;
 	deleteFilesAfterImport: boolean;
+	useSinglePageLayout: boolean;
 }
 
 interface GlobalContextType {
@@ -16,11 +17,12 @@ interface GlobalContextType {
 
 const GlobalContext = createContext<GlobalContextType>(null as any);
 
-const GlobalContextProvider = ({children}: any) => {
+const GlobalContextProvider = ({ children }: any) => {
 	const initialState: GlobalStateType = {
 		fontSize: 14,
 		fontFamily: FontFamiliesEnum.OUTFIT,
 		deleteFilesAfterImport: true,
+		useSinglePageLayout: true
 	}
 
 	const [reducerState, dispatch] = useReducer(GlobalReducer, initialState);
@@ -31,13 +33,13 @@ const GlobalContextProvider = ({children}: any) => {
 	}, []);
 
 	return (
-	  <GlobalContext.Provider value={{
-		  state: reducerState,
-		  dispatch,
-	  }}>
-		  {children}
-	  </GlobalContext.Provider>
+		<GlobalContext.Provider value={{
+			state: reducerState,
+			dispatch,
+		}}>
+			{children}
+		</GlobalContext.Provider>
 	)
 };
 
-export {GlobalContext, GlobalContextProvider}
+export { GlobalContext, GlobalContextProvider }

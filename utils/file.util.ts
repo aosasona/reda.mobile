@@ -60,6 +60,17 @@ export const deleteFile = async (uri: string) => {
 	await FileSystem.deleteAsync(uri);
 }
 
+export const deleteAll = async () => {
+	const path = DEFAULT_REDA_DIRECTORY
+	const files = await FileSystem.readDirectoryAsync(path)
+	if (files.length > 0) {
+		for (let file of files) {
+			if (file == "SQLite") continue;
+			await deleteFile(path + "/" + file)
+		}
+	}
+}
+
 export const handleFilePick = async (data: DocumentResult): Promise<File | null> => {
 	if (data.type !== "success") return null;
 	const uri = data?.uri;
@@ -83,7 +94,7 @@ export const updateTotalPagesOnLoad = async (id: number, totalPageNumber: number
 			id,
 			{ total_pages: totalPageNumber })
 	} catch (err) {
-		Alert.alert("Something went wrong! Close the app and try again.")
+		Alert.alert("Error", "Something went wrong! Close the app and try again.")
 	}
 }
 
@@ -101,6 +112,6 @@ export const saveCurrentPage = async (id: number, currentPageNumber: number) => 
 			id,
 			{ current_page: currentPageNumber })
 	} catch (err: unknown) {
-		Alert.alert("Something went wrong. Please close app and try again.")
+		Alert.alert("Error", "Something went wrong. Close app and try again.")
 	}
 }

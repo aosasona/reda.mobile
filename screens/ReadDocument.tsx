@@ -1,13 +1,14 @@
 import { View, Text, ScrollView, Box, useColorMode } from "native-base";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CombinedFileResultType } from "../types/database";
 import { ScreenProps } from "../types/general";
 import Pdf from "react-native-pdf";
 import { Alert, Dimensions, useWindowDimensions } from "react-native";
 import { saveCurrentPage, updateTotalPagesOnLoad } from "../utils/file.util";
+import { GlobalContext } from "../context/GlobalContext";
 
 export default function ReadDocument({ route, navigation }: ScreenProps) {
-
+	const { state } = useContext(GlobalContext)
 	const { data: initialData } = route.params;
 
 	if (!initialData) {
@@ -54,8 +55,8 @@ export default function ReadDocument({ route, navigation }: ScreenProps) {
 			<Pdf
 				source={source}
 				page={data?.current_page || 1}
-				enablePaging={true}
-				horizontal={true}
+				enablePaging={state.useSinglePageLayout}
+				horizontal={state.useSinglePageLayout}
 				enableAntialiasing={true}
 				enableAnnotationRendering={true}
 				onLoadComplete={onLoadComplete}

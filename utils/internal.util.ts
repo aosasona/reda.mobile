@@ -170,4 +170,8 @@ export class RedaService {
                        WHERE id = ?;`;
 		await this.query(query, [id]);
 	}
+
+	static async deleteFile(id: number) {
+
+	}
 }

@@ -124,6 +124,11 @@ export const update = async (target: { table: string, identifier: string }, id: 
 	return await executeQuery(query, replacement)
 }
 
+export const del = async (data: { table: string, identifier: string, id: string }) => {
+	const query = `DELETE FROM ${data.table} WHERE ${data.identifier} = ?`
+	return await executeQuery(query, [data.id])
+}
+
 export const saveFile = async (file: FileModel, meta: MetadataModel) => {
 	try {
 		const savedFile = await insert('files', file) as SQLResultSet;
