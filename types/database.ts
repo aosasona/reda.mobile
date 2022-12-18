@@ -44,8 +44,8 @@ export interface CombinedFileResultType {
 	first_publish_year: MetadataModel['first_publish_year'];
 	author: MetadataModel['author'];
 	chapters: MetadataModel['chapters'];
-	current_page: MetadataModel['current_page'];
-	total_pages: MetadataModel['total_pages'];
+	current_page: number;
+	total_pages: number;
 	has_started: FileModel['has_started'];
 	has_finished: FileModel['has_finished'];
 	is_starred: FileModel['is_starred'];

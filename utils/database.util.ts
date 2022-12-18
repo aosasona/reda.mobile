@@ -1,6 +1,6 @@
 import * as SQLite from "expo-sqlite";
-import {SQLError, SQLResultSet} from "expo-sqlite";
-import {FileModel, MetadataModel} from "../types/database";
+import { SQLError, SQLResultSet } from "expo-sqlite";
+import { FileModel, MetadataModel } from "../types/database";
 
 const DATABASE_NAME = 'reda.db';
 
@@ -112,12 +112,24 @@ export const insert = async (table: string, data: any) => {
 	return await executeQuery(query, values);
 }
 
+export const update = async (target: { table: string, identifier: string }, id: number, data: any) => {
+	const { table, identifier } = target
+	const keys = Object.keys(data);
+	const values = Object.values(data)
+	const columns = keys.map((key: string, _) => `${key} = ?`).join(", ")
+
+	const query = `UPDATE ${table} SET ${columns} WHERE ${identifier} = ?`
+	const replacement = [...values, id]
+
+	return await executeQuery(query, replacement)
+}
+
 export const saveFile = async (file: FileModel, meta: MetadataModel) => {
 	try {
 		const savedFile = await insert('files', file) as SQLResultSet;
-		const {insertId} = savedFile;
-		const savedMeta = await insert('metadata', {...meta, file_id: insertId}) as SQLResultSet;
-		return {...savedFile.rows._array, meta: savedMeta.rows._array};
+		const { insertId } = savedFile;
+		const savedMeta = await insert('metadata', { ...meta, file_id: insertId }) as SQLResultSet;
+		return { ...savedFile.rows._array, meta: savedMeta.rows._array };
 	}
 	catch (e) {
 		throw e;

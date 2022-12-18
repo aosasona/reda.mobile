@@ -34,7 +34,8 @@ export default function Home() {
 	const [initialLoad, setInitialLoad] = useState(false);
 	const [count, setCount] = useState(0);
 	const [data, setData] = useState<FlatDataState[]>([
-		{ title: "Recently Added", data: [] },
+		{ title: "Continue reading", data: [] },
+		{ title: "Recently added", data: [] },
 		{ title: "Starred", data: [] },
 	]);
 
@@ -53,16 +54,19 @@ export default function Home() {
 				setCount(0);
 				return;
 			}
-			const all = await RedaService.getAll() as CombinedFileResultType[] | null;
-			const starred = await RedaService.getStarred() as CombinedFileResultType[] | null;
+			const { recentlyAdded, starred, continueReading } = await RedaService.loadHomePageData()
 			setData(prevState => (
 				[
 					{
 						...prevState[0],
-						data: all || [],
+						data: continueReading || [],
 					},
 					{
 						...prevState[1],
+						data: recentlyAdded || [],
+					},
+					{
+						...prevState[2],
 						data: starred || [],
 					},
 				]

@@ -3,9 +3,8 @@ import { useEffect, useState } from "react";
 import { CombinedFileResultType } from "../types/database";
 import { ScreenProps } from "../types/general";
 import Pdf from "react-native-pdf";
-import { useWindowDimensions } from "react-native";
-import * as FileSystem from 'expo-file-system';
-import { DEFAULT_REDA_DIRECTORY } from "../utils/file.util";
+import { Alert, useWindowDimensions } from "react-native";
+import { saveCurrentPage, updateTotalPagesOnLoad } from "../utils/file.util";
 
 export default function ReadDocument({ route, navigation }: ScreenProps) {
 
@@ -22,21 +21,20 @@ export default function ReadDocument({ route, navigation }: ScreenProps) {
 		navigation.setOptions({ title: data?.name || "Read Document" });
 	}, [])
 
+	const onError = (err: any) => {
+		Alert.alert("Something went wrong!")
+		navigation.goBack()
+	}
+
 	const source = { uri: data.path }
 
 	return (
 		<ScrollView px={0}>
 			<Pdf
 				source={source}
-				onLoadComplete={(numberOfPages, filePath) => {
-					console.log(`Number of pages: ${numberOfPages}`);
-				}}
-				onPageChanged={(page, numberOfPages) => {
-					console.log(`Current page: ${page}`);
-				}}
-				onError={(error) => {
-					console.log(error);
-				}}
+				onLoadComplete={(numberOfPages, _) => updateTotalPagesOnLoad(data.id, numberOfPages)}
+				onPageChanged={(pageNumber, _) => saveCurrentPage(data?.id, pageNumber)}
+				onError={onError}
 				onPressLink={(uri) => {
 					console.log(`Link pressed: ${uri}`);
 				}}
