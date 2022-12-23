@@ -2,7 +2,7 @@ import {extendTheme} from "native-base";
 import {FontFamilies, FontFamiliesEnum, FontWeights} from "../constants/fonts";
 
 export const colors = {
-	"primary": "#FFD369",
+	"primary": "#2563EB",
 	"brand-dark": "#000000",
 	"brand-light": "#EEEEEE",
 	brand: {

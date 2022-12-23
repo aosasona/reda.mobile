@@ -1,14 +1,14 @@
-import {useFocusEffect, useNavigation} from "@react-navigation/native";
-import {FlatList, SectionList} from "native-base";
-import {useCallback, useState} from "react";
-import {Alert, RefreshControl} from "react-native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { Box, FlatList, SectionList } from "native-base";
+import { useCallback, useState } from "react";
+import { Alert, RefreshControl } from "react-native";
 import EmptySection from "../components/EmptySection";
 import HomeHeader from "../components/HomeHeader";
 import HomeSectionTitle from "../components/HomeSectionTitle";
 import HorizontalFileCard from "../components/HorizontalFileCard";
 import LargeHorizontalFileCard from "../components/LargeHorizontalFileCard";
-import {CombinedFileResultType} from "../types/database";
-import {RedaService} from "../utils/internal.util";
+import { CombinedFileResultType } from "../types/database";
+import { RedaService } from "../utils/internal.util";
 
 interface FullDataState {
 	title: string;
@@ -28,32 +28,33 @@ interface FlatDataState {
 
 export default function Home() {
 	const navigation = useNavigation();
-	const [loading, setLoading] = useState(false);
-	const [initialLoad, setInitialLoad] = useState(false);
+	const [loading, setLoading] = useState(true);
+	const [initialLoad, setInitialLoad] = useState(true);
 	const [count, setCount] = useState(0);
 	const [data, setData] = useState<FlatDataState[]>([
-		{title: "Continue reading", data: []},
-		{title: "Recently added", data: []},
-		{title: "Starred", data: []},
+		{ title: "Continue reading", data: [] },
+		{ title: "Recently added", data: [] },
+		{ title: "Starred", data: [] },
 	]);
 
 	useFocusEffect(
-	  useCallback(() => {
-		  (async () => await fetchAllFiles())();
-		  return () => setInitialLoad(true);
-	  }, [])
+		useCallback(() => {
+			(async () => await fetchAllFiles(false))();
+			setInitialLoad(false);
+			setLoading(false);
+		}, [])
 	);
 
-	const fetchAllFiles = async () => {
+	const fetchAllFiles = async (triggerLoad: boolean = true) => {
 		try {
-			setLoading(true);
+			if (triggerLoad) setLoading(true);
 			const filesCount = await RedaService.count();
 			if (filesCount === 0) {
 				setCount(0);
 				return;
 			}
-			const {recentlyAdded, starred, continueReading} =
-			  await RedaService.loadHomePageData();
+			const { recentlyAdded, starred, continueReading } =
+				await RedaService.loadHomePageData();
 			setData((prevState) => [
 				{
 					...prevState[0],
@@ -68,18 +69,15 @@ export default function Home() {
 					data: starred || [],
 				},
 			]);
-		}
-		catch (e) {
+		} catch (e) {
 			Alert.alert("Error", "An error occurred while fetching files");
-		}
-		finally {
-			setLoading(false);
+		} finally {
+			if (triggerLoad) setLoading(false);
 		}
 	};
 
 	return (
-	  <>
-		  <SectionList
+		<SectionList
 			sections={data.map((d) => ({
 				title: d.title,
 				key: d.title,
@@ -91,60 +89,57 @@ export default function Home() {
 				],
 			}))}
 			ListHeaderComponent={
-				<HomeHeader
-				  state={{loading, initialLoad}}
-				  navigation={navigation}
-				/>
+				<HomeHeader state={{ loading, initialLoad }} navigation={navigation} />
 			}
+			ListFooterComponent={<Box bg="transparent" my={10} />}
 			keyExtractor={(item, index) => item.key + index}
-			renderSectionHeader={({section}) =>
-			  section?.data?.[0]?.list?.length > 0 ? (
-				<HomeSectionTitle title={section.title}/>
-			  ) : null
+			renderSectionHeader={({ section }) =>
+				section?.data?.[0]?.list?.length > 0 ? (
+					<HomeSectionTitle title={section.title} />
+				) : null
 			}
-			renderItem={({item, section, index}) =>
-			  item.list.length > 0 ? (
-				<FlatList
-				  data={item.list}
-				  horizontal
-				  showsHorizontalScrollIndicator={false}
-				  renderItem={({item, index}) =>
-					section.title == "Continue reading" ? (
-					  <LargeHorizontalFileCard
-						data={item}
-						index={index}
-						navigation={navigation}
-					  />
-					) : (
-					  <HorizontalFileCard
-						data={item}
-						index={index}
-						navigation={navigation}
-					  />
-					)
-				  }
-				  keyExtractor={(item, index) => index.toString()}
-				  ListEmptyComponent={<EmptySection title={item.key}/>}
-				  alwaysBounceVertical={false}
-				  alwaysBounceHorizontal={false}
-				  initialNumToRender={20}
-				  bounces={false}
-				  px={0}
-				  mx={0}
-				/>
-			  ) : null
+			renderItem={({ item, section, index }) =>
+				item.list.length > 0 ? (
+					<FlatList
+						data={item.list}
+						horizontal
+						showsHorizontalScrollIndicator={false}
+						renderItem={({ item, index }) =>
+							section.title == "Continue reading" ? (
+								<LargeHorizontalFileCard
+									data={item}
+									index={index}
+									navigation={navigation}
+								/>
+							) : (
+								<HorizontalFileCard
+									data={item}
+									index={index}
+									navigation={navigation}
+								/>
+							)
+						}
+						keyExtractor={(item, index) => index.toString()}
+						ListEmptyComponent={<EmptySection title={item.key} />}
+						alwaysBounceVertical={false}
+						alwaysBounceHorizontal={false}
+						initialNumToRender={20}
+						bounces={false}
+						px={0}
+						mx={0}
+					/>
+				) : null
 			}
 			refreshControl={
 				<RefreshControl
-				  refreshing={loading}
-				  onRefresh={fetchAllFiles}
-				  progressViewOffset={40}
+					refreshing={loading}
+					onRefresh={fetchAllFiles}
+					progressViewOffset={40}
 				/>
 			}
 			showsVerticalScrollIndicator={false}
 			stickySectionHeadersEnabled={false}
 			alwaysBounceVertical={false}
-		  />
-	  </>
+		/>
 	);
 }

@@ -14,7 +14,7 @@ export default function DownloadingList({state, setState, reset, HeaderComponent
 	const [refreshing, setRefreshing] = useState(false);
 
 	useEffect(() => {
-		if (Platform.OS ==="ios") {
+		if (Platform.OS === "ios") {
 			Clipboard.hasUrlAsync().then((hasUrl) => {
 				if (hasUrl) {
 					Clipboard.getStringAsync().then((url) => {
@@ -116,7 +116,7 @@ export function DownloadingListEmpty() {
 	return (
 	  <Box h={height * 0.5} flex={1} alignItems="center" justifyContent="center">
 		  <Icon as={Entypo} name="download" size={20} _dark={{color: "muted.800"}} _light={{color: "muted.300"}}/>
-		  <Text _dark={{color: "muted.800"}} _light={{color: "muted.300"}} mt={3}>
+		  <Text _dark={{color: "muted.700"}} _light={{color: "muted.300"}} mt={3}>
 			  No ongoing downloads
 		  </Text>
 	  </Box>

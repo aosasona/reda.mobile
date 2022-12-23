@@ -25,7 +25,7 @@ export default function MainStack() {
 					component={HomeStack}
 					options={{
 						tabBarIcon: ({focused}) => <Icon as={AntDesign} name="home" size={6} color={iconOptions(colorMode, focused)}/>,
-						...screenOptions(colorMode),
+						...screenOptions(colorMode) as any,
 					}}
 				  />
 				  <Tab.Screen
@@ -33,7 +33,7 @@ export default function MainStack() {
 					component={ImportStack}
 					options={{
 						tabBarIcon: ({focused}) => <Icon as={Ionicons} name="download-outline" size={6} color={iconOptions(colorMode, focused)}/>,
-						...screenOptions(colorMode),
+						...screenOptions(colorMode) as any,
 					}}
 				  />
 				  <Tab.Screen
@@ -41,7 +41,7 @@ export default function MainStack() {
 					component={SettingsStack}
 					options={{
 						tabBarIcon: ({focused}) => <Icon as={Ionicons} name="settings-outline" size={6} color={iconOptions(colorMode, focused)}/>,
-						...screenOptions(colorMode),
+						...screenOptions(colorMode) as any,
 					}}
 				  />
 			  </Tab.Navigator>

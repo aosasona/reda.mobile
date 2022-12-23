@@ -14,11 +14,15 @@
       }
     },
     "production": {
+      "autoIncrement": true,
       "android": {},
       "ios": {}
     }
   },
   "submit": {
     "production": {}
+  },
+  "cli": {
+    "appVersionSource": "remote"
   }
 }

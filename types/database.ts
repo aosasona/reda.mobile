@@ -56,6 +56,6 @@ export interface CombinedFileResultType {
 
 export interface QueryFilter {
 	limit: number;
-	sort_by: "name" | "created_at";
+	sort_by: "name" | "created_at" | "updated_at";
 	sort_order: "ASC" | "DESC";
 }

@@ -1,27 +1,27 @@
 import * as SQLite from "expo-sqlite";
-import { SQLError, SQLResultSet } from "expo-sqlite";
-import { FileModel, MetadataModel } from "../types/database";
+import {SQLError, SQLResultSet} from "expo-sqlite";
+import {FileModel, MetadataModel} from "../types/database";
 
 const DATABASE_NAME = "reda.db";
 
 const db = SQLite.openDatabase(
-	DATABASE_NAME,
-	"1.0",
-	"Local data store for Reda"
+  DATABASE_NAME,
+  "1.0",
+  "Local data store for Reda",
 );
 
 export const executeQuery = async (
-	query: string,
-	params: any[] = []
+  query: string,
+  params: any[] = [],
 ): Promise<SQLResultSet | SQLError> => {
 	return new Promise((resolve, reject) => {
 		db.transaction(
-			(tx) => {
-				tx.executeSql(query, params, (_, res) => {
-					resolve(res);
-				});
-			},
-			(error) => reject(error)
+		  (tx) => {
+			  tx.executeSql(query, params, (_, res) => {
+				  resolve(res);
+			  });
+		  },
+		  (error) => reject(error),
 		);
 	});
 };
@@ -84,27 +84,29 @@ export const runMigration = async () => {
                                  )`;
 
 	db.transaction(
-		(tx: any) => {
-			tx.executeSql(enablePragma);
-			tx.executeSql(migrationTableQuery);
-			migrations.forEach((migration) => {
-				tx.executeSql(
-					`SELECT * FROM migrations WHERE name = ?`,
-					[migration.name],
-					(tx: any, res: any) => {
-						if (res.rows.length === 0) {
-							tx.executeSql(migration.query);
-							tx.executeSql(
-								`INSERT INTO migrations (name)
-                                   VALUES (?)`,
-								[migration.name]
-							);
-						}
+	  (tx: any) => {
+		  tx.executeSql(enablePragma);
+		  tx.executeSql(migrationTableQuery);
+		  migrations.forEach((migration) => {
+			  tx.executeSql(
+				`SELECT *
+                 FROM migrations
+                 WHERE name = ?`,
+				[migration.name],
+				(tx: any, res: any) => {
+					if (res.rows.length === 0) {
+						tx.executeSql(migration.query);
+						tx.executeSql(
+						  `INSERT INTO migrations (name)
+                           VALUES (?)`,
+						  [migration.name],
+						);
 					}
-				);
-			});
-		},
-		(error) => console.log(error.message)
+				},
+			  );
+		  });
+	  },
+	  (error) => console.log(error.message),
 	);
 };
 
@@ -119,24 +121,27 @@ export const insert = async (table: string, data: any) => {
 	const keys = Object.keys(data);
 	const values = Object.values(data);
 
-	const query = `INSERT INTO ${table} (${keys.join(", ")}) VALUES (${keys
-		.map(() => "?")
-		.join(", ")});`;
+	const query = `INSERT INTO ${table} (${keys.join(", ")})
+                   VALUES (${keys
+                           .map(() => "?")
+                           .join(", ")});`;
 
 	return await executeQuery(query, values);
 };
 
 export const update = async (
-	target: { table: string; identifier: string },
-	id: number,
-	data: any
+  target: { table: string; identifier: string },
+  id: number,
+  data: any,
 ) => {
-	const { table, identifier } = target;
+	const {table, identifier} = target;
 	const keys = Object.keys(data);
 	const values = Object.values(data);
 	const columns = keys.map((key: string, _) => `${key} = ?`).join(", ");
 
-	const query = `UPDATE ${table} SET ${columns} WHERE ${identifier} = ?`;
+	const query = `UPDATE ${table}
+                   SET ${columns}
+                   WHERE ${identifier} = ?`;
 	const replacement = [...values, id];
 
 	return await executeQuery(query, replacement);
@@ -147,20 +152,23 @@ export const del = async (data: {
 	identifier: string;
 	id: number;
 }) => {
-	const query = `DELETE FROM ${data.table} WHERE ${data.identifier} = ?`;
+	const query = `DELETE
+                   FROM ${data.table}
+                   WHERE ${data.identifier} = ?`;
 	return await executeQuery(query, [data.id]);
 };
 
 export const saveFile = async (file: FileModel, meta: MetadataModel) => {
 	try {
 		const savedFile = (await insert("files", file)) as SQLResultSet;
-		const { insertId } = savedFile;
+		const {insertId} = savedFile;
 		const savedMeta = (await insert("metadata", {
 			...meta,
 			file_id: insertId,
 		})) as SQLResultSet;
-		return { ...savedFile.rows._array, meta: savedMeta.rows._array };
-	} catch (e) {
+		return {...savedFile.rows._array, meta: savedMeta.rows._array};
+	}
+	catch (e) {
 		throw e;
 	}
 };
