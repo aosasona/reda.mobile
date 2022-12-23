@@ -9,18 +9,22 @@ import { GlobalContext } from "../context/GlobalContext";
 import CustomException from "../exceptions/CustomException";
 import { ImportStatesProps } from "../types/import";
 import { handlePossibleNull } from "../utils/exception.util";
-import { extractFileName, File, handleFilePick } from "../utils/file.util";
+import {
+	extractFileName,
+	File,
+	handleFileCleanup,
+	handleFilePick,
+	processFileName,
+} from "../utils/file.util";
 import ImportUtil from "../utils/import .util";
 import { showToast } from "../utils/misc.util";
 
 // Todo: implement resume-able downloads
 
 export default function Import() {
-
 	const { isOpen, onOpen, onClose } = useDisclose();
 
-	const { state: globalState } = useContext(GlobalContext)
-
+	const { state: globalState } = useContext(GlobalContext);
 
 	const [mixedState, setMixedState] = useState<ImportStatesProps>({
 		file: null,
@@ -38,49 +42,63 @@ export default function Import() {
 			remote: false,
 			meta: false,
 		},
-	})
+	});
 
-	const importUtil = new ImportUtil(setMixedState)
+	const importUtil = new ImportUtil(setMixedState);
 
-
-	const resetState = importUtil.resetState
-	const loadAllMeta = importUtil.loadAllMeta
+	const resetState = importUtil.resetState;
+	const loadAllMeta = importUtil.loadAllMeta;
 
 	const handleMetaSelection = (value: any, index: number) => {
-		if (mixedState.meta?.currentIndex !== null && mixedState.meta?.currentIndex === index) {
-			setMixedState({ ...mixedState, meta: { ...mixedState.meta, currentIndex: null, current: null } })
+		if (
+			mixedState.meta?.currentIndex !== null &&
+			mixedState.meta?.currentIndex === index
+		) {
+			setMixedState({
+				...mixedState,
+				meta: { ...mixedState.meta, currentIndex: null, current: null },
+			});
 			return;
 		}
-		importUtil.setCurrentMeta(value, index)
-	}
+		importUtil.setCurrentMeta(value, index);
+	};
 
-	const meta = { setAll: importUtil.setAllMeta, setCurrent: importUtil.setCurrentMeta }
+	const meta = {
+		setAll: importUtil.setAllMeta,
+		setCurrent: importUtil.setCurrentMeta,
+	};
 
 	const handleModalDismiss = () => {
 		resetState();
 		onClose();
-	}
-
+		handleFileCleanup(mixedState.file?.uri).then().catch();
+	};
 
 	const handleRemoteImport = async () => {
 		try {
 			showToast("Coming soon", "info");
-			if (!mixedState.URL) return
-			if (!mixedState.URL?.endsWith(".pdf")) throw new CustomException("The URL must end with .pdf")
-		}
-		catch (e) {
+			if (!mixedState.URL) return;
+			if (!mixedState.URL?.endsWith(".pdf"))
+				throw new CustomException("The URL must end with .pdf");
+		} catch (e) {
 			console.log(e);
-			const msg = e instanceof CustomException ? e.message : "An error occurred";
+			const msg =
+				e instanceof CustomException ? e.message : "An error occurred";
 			Alert.alert("Error", msg);
+		} finally {
+			setMixedState((prevState) => ({
+				...prevState,
+				loading: { ...prevState.loading, meta: false },
+			}));
 		}
-		finally {
-			setMixedState(prevState => ({ ...prevState, loading: { ...prevState.loading, meta: false } }));
-		}
-	}
+	};
 
 	const handleLocalImport = async () => {
 		try {
-			setMixedState(prevState => ({ ...prevState, loading: { ...prevState.loading, local: true } }));
+			setMixedState((prevState) => ({
+				...prevState,
+				loading: { ...prevState.loading, local: true },
+			}));
 			const result = await DocumentPicker.getDocumentAsync({
 				type: ["application/pdf", "application/msword"],
 				copyToCacheDirectory: true,
@@ -89,19 +107,26 @@ export default function Import() {
 				const processedFile = await handleFilePick(result);
 				handlePossibleNull(processedFile, "File could not be processed");
 				const fileName = extractFileName(processedFile?.name as string);
-				setMixedState(prevState => ({ ...prevState, search: fileName, file: processedFile }));
-				await loadAllMeta(fileName);
+				const slimFileName = processFileName(fileName, 5);
+				setMixedState((prevState) => ({
+					...prevState,
+					search: slimFileName,
+					file: processedFile,
+				}));
+				await loadAllMeta(slimFileName);
 				!isOpen && onOpen();
 			}
-		}
-		catch (e) {
-			const msg = e instanceof CustomException ? e.message : "An error occurred";
+		} catch (e) {
+			const msg =
+				e instanceof CustomException ? e.message : "An error occurred";
 			Alert.alert("Error", msg);
+		} finally {
+			setMixedState((prevState) => ({
+				...prevState,
+				loading: { ...prevState.loading, meta: false, local: false },
+			}));
 		}
-		finally {
-			setMixedState(prevState => ({ ...prevState, loading: { ...prevState.loading, meta: false, local: false } }));
-		}
-	}
+	};
 
 	return (
 		<>
@@ -109,11 +134,13 @@ export default function Import() {
 				state={mixedState}
 				setState={setMixedState}
 				reset={resetState}
-				HeaderComponent={<ImportHeader
-					state={mixedState}
-					setState={setMixedState}
-					callbacks={{ handleLocalImport, handleRemoteImport }}
-				/>}
+				HeaderComponent={
+					<ImportHeader
+						state={mixedState}
+						setState={setMixedState}
+						callbacks={{ handleLocalImport, handleRemoteImport }}
+					/>
+				}
 			/>
 			<MetaModal
 				state={{
@@ -132,5 +159,5 @@ export default function Import() {
 				}}
 			/>
 		</>
-	)
+	);
 }

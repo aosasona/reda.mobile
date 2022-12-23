@@ -89,9 +89,7 @@ export const runMigration = async () => {
 			tx.executeSql(migrationTableQuery);
 			migrations.forEach((migration) => {
 				tx.executeSql(
-					`SELECT *
-                           FROM migrations
-                           WHERE name = ?`,
+					`SELECT * FROM migrations WHERE name = ?`,
 					[migration.name],
 					(tx: any, res: any) => {
 						if (res.rows.length === 0) {
@@ -121,8 +119,9 @@ export const insert = async (table: string, data: any) => {
 	const keys = Object.keys(data);
 	const values = Object.values(data);
 
-	const query = `INSERT INTO ${table} (${keys.join(", ")})
-                   VALUES (${keys.map(() => "?").join(", ")});`;
+	const query = `INSERT INTO ${table} (${keys.join(", ")}) VALUES (${keys
+		.map(() => "?")
+		.join(", ")});`;
 
 	return await executeQuery(query, values);
 };
