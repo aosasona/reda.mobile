@@ -11,7 +11,7 @@ import {
 	Text,
 } from "native-base";
 import { useEffect } from "react";
-import { Alert, Platform, useWindowDimensions } from "react-native";
+import { Alert, Dimensions, Platform, useWindowDimensions } from "react-native";
 import { ButtonProps, InputProps } from "../constants/props";
 import { MetaModalProps } from "../types/import";
 import MetaListCard from "./MetaListCard";
@@ -78,6 +78,9 @@ export default function MetaList({ functions, state }: MetaModalProps) {
 export const ListHeaderComponent = ({ functions, state }: MetaModalProps) => {
 	const { search, meta, loading } = state;
 	const { setState, loadAllMeta } = functions;
+
+	const { width } = Dimensions.get("window");
+
 	const handleSearchChange = (value: string) =>
 		setState((prevState) => ({ ...prevState, search: value }));
 
@@ -100,10 +103,16 @@ export const ListHeaderComponent = ({ functions, state }: MetaModalProps) => {
 			mb={2}
 		>
 			<HStack justifyContent="space-between" alignItems="flex-end" my={2}>
-				<Heading fontSize={40} fontWeight="extrabold" textAlign="left" px={1}>
-					Search
+				<Heading
+					maxW={width * 0.7}
+					fontSize={40}
+					fontWeight="extrabold"
+					textAlign="left"
+					px={1}
+				>
+					Online Search
 				</Heading>
-				<Text fontSize={12} opacity={0.5}>
+				<Text maxW={width * 0.2} fontSize={12} opacity={0.5}>
 					Showing {meta?.all?.length || 0} results
 				</Text>
 			</HStack>
@@ -166,15 +175,15 @@ export const ListEmptyComponent = () => {
 					as={Entypo}
 					name="info-with-circle"
 					size={20}
-					_dark={{ color: "muted.800" }}
+					_dark={{ color: "muted.700" }}
 					_light={{ color: "muted.300" }}
 				/>
 				<Text
-					_dark={{ color: "muted.800" }}
+					_dark={{ color: "muted.700" }}
 					_light={{ color: "muted.300" }}
 					mt={3}
 				>
-					No results found.
+					No match found.
 				</Text>
 			</Box>
 		</Flex>

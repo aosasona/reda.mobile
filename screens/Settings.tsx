@@ -1,4 +1,9 @@
-import { Feather } from "@expo/vector-icons";
+import {
+  Feather,
+  Foundation,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import constants from "expo-constants";
 import {
   AspectRatio,
@@ -19,6 +24,8 @@ import IconText from "../components/IconText";
 import { DividerProps, HStackProps, PressableProps } from "../constants/props";
 import { GlobalContext } from "../context/GlobalContext";
 import SettingsUtil from "../utils/settings.util";
+import { REDA_URL } from "../constants/url";
+import { Linking } from "react-native";
 
 export default function Settings() {
   const { toggleColorMode, colorMode } = useColorMode();
@@ -28,18 +35,20 @@ export default function Settings() {
 
   const handleSettingsReset = () => settingsUtil.resetSettings();
 
+  const openRedaServicePage = (url: string) => {
+    const uri = REDA_URL + url;
+    Linking.openURL(uri);
+  };
   const bg = useColorModeValue("brand-light", "brand-dark");
   const color = useColorModeValue("brand-dark", "brand-light");
 
   return (
-    <ScrollView px={3} stickyHeaderIndices={[0]}>
-      <Box bg={bg} py={3} safeAreaTop>
-        <Heading fontSize={44} ml={2}>
-          Settings
-        </Heading>
+    <ScrollView px={0} stickyHeaderIndices={[0]}>
+      <Box bg={bg} px={3} py={3} safeAreaTop>
+        <Heading fontSize={44}>Settings</Heading>
       </Box>
 
-      <SettingsSection title="Appearance">
+      <SettingsSection title="Configure Reda">
         <HStack {...HStackProps}>
           <IconText
             name={colorMode == "dark" ? "sun" : "moon"}
@@ -66,7 +75,51 @@ export default function Settings() {
         </HStack>
       </SettingsSection>
 
-      <SettingsSection title="User & App Data">
+      <SettingsSection title="About Reda">
+        <Pressable
+          onPress={() => openRedaServicePage("/releases")}
+          {...PressableProps}
+        >
+          <HStack {...HStackProps}>
+            <IconText
+              as={MaterialCommunityIcons}
+              name="new-box"
+              text="Release notes"
+            />
+            <Icon as={Feather} name="arrow-up-right" size={4} />
+          </HStack>
+        </Pressable>
+        <Box>
+          <Divider {...DividerProps} />
+        </Box>
+        <Pressable
+          onPress={() => openRedaServicePage("/privacy")}
+          {...PressableProps}
+        >
+          <HStack {...HStackProps}>
+            <IconText
+              as={MaterialIcons}
+              name="privacy-tip"
+              text="Privacy policy"
+            />
+            <Icon as={Feather} name="arrow-up-right" size={4} />
+          </HStack>
+        </Pressable>
+        <Box>
+          <Divider {...DividerProps} />
+        </Box>
+        <Pressable
+          onPress={() => openRedaServicePage("/terms")}
+          {...PressableProps}
+        >
+          <HStack {...HStackProps}>
+            <IconText name="book" text="Terms of service" />
+            <Icon as={Feather} name="arrow-up-right" size={4} />
+          </HStack>
+        </Pressable>
+      </SettingsSection>
+
+      <SettingsSection title="App Controls">
         <Pressable onPress={handleSettingsReset} {...PressableProps}>
           <Box px={4} py={4}>
             <Text color="red.500">Reset settings</Text>
@@ -89,10 +142,7 @@ export default function Settings() {
         fontWeight={400}
         mt={10}
       >
-        v{constants?.manifest?.version}{" "}
-        {Number(constants?.manifest?.version || "1") >= 1.0
-          ? "-stable"
-          : "-beta"}
+        Version {constants?.manifest?.version}
       </Text>
     </ScrollView>
   );
@@ -105,12 +155,15 @@ const SettingsSection = ({
   title: string;
   children: ReactNode;
 }) => (
-  <Box
-    _dark={{ bg: "muted.900", borderColor: "muted.800" }}
-    _light={{ bg: "muted.100", borderColor: "muted.200" }}
-    mt={6}
-    rounded={10}
-  >
-    <Box>{children}</Box>
+  <Box mt={6}>
+    <Text mb={2} px={4} opacity={0.5}>
+      {title}
+    </Text>
+    <Box
+      _dark={{ bg: "muted.900", borderColor: "muted.800" }}
+      _light={{ bg: "muted.100", borderColor: "muted.200" }}
+    >
+      <Box>{children}</Box>
+    </Box>
   </Box>
 );

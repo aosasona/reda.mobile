@@ -26,7 +26,8 @@ export const extractFileName = (
 		rawName = extractFileNameFromUri(rawName);
 	}
 	const split = rawName.split(".");
-	return split[0]?.length > 0 ? split[0] : "Unknown file" || rawName;
+	const fileName = split[0]?.length > 0 ? split[0] : "Unknown file" || rawName;
+	return fileName?.replace(/[^\w\s]/gi, " ") || fileName;
 };
 
 export const extractFileNameFromUri = (uri: string) => {
@@ -94,7 +95,7 @@ export const handleFileCleanup = async (url: string | undefined) => {
 
 	if (count > 0) return;
 
-	await deleteFile(url);
+	await deleteFile(DEFAULT_REDA_DIRECTORY + url);
 };
 
 export const handleFilePick = async (
