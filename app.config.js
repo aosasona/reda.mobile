@@ -1,9 +1,9 @@
 const IS_IN_DEVELOPMENT = process.env.APP_ENVIRONMENT === "development";
 
 export default {
-  name: "Reda Mobile",
+  name: IS_IN_DEVELOPMENT ? "Reda Development" : "Reda Mobile",
   slug: "reda",
-  version: "0.1.4",
+  version: "0.1.5",
   orientation: "portrait",
   icon: "./assets/" + (IS_IN_DEVELOPMENT ? "icon-dev.png" : "icon.png"),
   userInterfaceStyle: "automatic",

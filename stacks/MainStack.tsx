@@ -44,8 +44,8 @@ export default function MainStack() {
 						options={{
 							tabBarIcon: ({ focused }) => (
 								<Icon
-									as={Ionicons}
-									name="download-outline"
+									as={AntDesign}
+									name="plussquareo"
 									size={6}
 									color={iconOptions(colorMode, focused)}
 								/>
