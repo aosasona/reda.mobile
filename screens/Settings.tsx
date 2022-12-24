@@ -15,6 +15,7 @@ import {
 	useColorModeValue,
 } from "native-base";
 import { ReactNode, useContext } from "react";
+import IconText from "../components/IconText";
 import { DividerProps, HStackProps, PressableProps } from "../constants/props";
 import { GlobalContext } from "../context/GlobalContext";
 import SettingsUtil from "../utils/settings.util";
@@ -37,21 +38,13 @@ export default function Settings() {
 					Settings
 				</Heading>
 			</Box>
+
 			<SettingsSection title="Appearance">
 				<HStack {...HStackProps}>
-					<HStack alignItems="center" space={2}>
-						<AspectRatio w={8} ratio={1}>
-							<Box bg={color} p={2} rounded={8}>
-								<Icon
-									as={Feather}
-									name={colorMode == "dark" ? "sun" : "moon"}
-									color={bg}
-									size={4}
-								/>
-							</Box>
-						</AspectRatio>
-						<Text>Dark Mode</Text>
-					</HStack>
+					<IconText
+						name={colorMode == "dark" ? "sun" : "moon"}
+						text="Dark mode"
+					/>
 					<Switch
 						size="md"
 						_android={{ size: "lg" }}
@@ -60,11 +53,11 @@ export default function Settings() {
 						value={colorMode === "dark"}
 					/>
 				</HStack>
-				<Box pl={4}>
+				<Box>
 					<Divider {...DividerProps} />
 				</Box>
 				<HStack {...HStackProps}>
-					<Text>Single-page Layout</Text>
+					<IconText name="book-open" text="Single page" />
 					<Switch
 						size="md"
 						_android={{ size: "lg" }}
@@ -81,14 +74,13 @@ export default function Settings() {
 						<Text color="red.500">Reset settings</Text>
 					</Box>
 				</Pressable>
-				<Box pl={4}>
+				<Box>
 					<Divider {...DividerProps} />
 				</Box>
 				<Pressable onPress={settingsUtil.clearAllData} {...PressableProps}>
-					<HStack alignItems="center" space={2} px={4} py={4}>
-						<Icon as={Feather} name="trash-2" size={4} color="red.500" />
+					<Box w="full" px={4} py={4}>
 						<Text color="red.500">Clear data</Text>
-					</HStack>
+					</Box>
 				</Pressable>
 			</SettingsSection>
 
