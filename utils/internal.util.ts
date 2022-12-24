@@ -56,11 +56,7 @@ export class RedaService {
 	}
 
 	static async getOne(id: number): Promise<CombinedFileResultType | null> {
-		const query = `SELECT ${this.fetchQueryFields}
-                       FROM files f
-                                INNER JOIN metadata m
-                                           ON f.id = m.file_id
-                       WHERE f.id = ?;`;
+		const query = `SELECT ${this.fetchQueryFields} FROM files f INNER JOIN metadata m ON f.id = m.file_id WHERE f.id = ?;`;
 		const result = (await this.query(query, [id])) as SQLResultSet | null;
 		const res = result?.rows._array || ([] as any[]);
 		return res[0];
@@ -75,12 +71,7 @@ export class RedaService {
 	): Promise<CombinedFileResultType[]> {
 		const { limit, sort_by, sort_order } = filter;
 
-		const query = `SELECT ${this.fetchQueryFields}
-                       FROM files f
-                                INNER JOIN metadata m
-                                           ON f.id = m.file_id
-                       ORDER BY f.${sort_by} ${sort_order}
-                       LIMIT ?;`;
+		const query = `SELECT ${this.fetchQueryFields} FROM files f INNER JOIN metadata m ON f.id = m.file_id ORDER BY f.${sort_by} ${sort_order}  LIMIT ?;`;
 
 		const result = (await this.query(query, [limit])) as SQLResultSet | null;
 		return this.extractResults(result);
@@ -95,13 +86,7 @@ export class RedaService {
 	): Promise<CombinedFileResultType[] | null> {
 		const { limit, sort_by, sort_order } = filter;
 
-		const query = `SELECT ${this.fetchQueryFields}
-                       FROM files f
-                                INNER JOIN metadata m
-                                           ON f.id = m.file_id
-                       WHERE f.is_starred = 1
-                       ORDER BY m.${sort_by} ${sort_order}
-                       LIMIT ?;`;
+		const query = `SELECT ${this.fetchQueryFields} FROM files f INNER JOIN metadata m ON f.id = m.file_id WHERE f.is_starred = 1 ORDER BY m.${sort_by} ${sort_order} LIMIT ?;`;
 		const result = (await this.query(query, [limit])) as SQLResultSet | null;
 		return this.extractResults(result);
 	}
@@ -115,28 +100,37 @@ export class RedaService {
 	): Promise<CombinedFileResultType[]> {
 		const { limit, sort_by, sort_order } = filter;
 
-		const query = `SELECT ${this.fetchQueryFields}
-                       FROM files f
-                                INNER JOIN metadata m
-                                           ON f.id = m.file_id
-                       WHERE has_started = 1
-                       ORDER BY m.${sort_by} ${sort_order}
-                       LIMIT ?;`;
+		const query = `SELECT ${this.fetchQueryFields} FROM files f INNER JOIN metadata m ON f.id = m.file_id WHERE has_started = 1 ORDER BY m.${sort_by} ${sort_order} LIMIT ?;`;
 
 		const result = (await this.query(query, [limit])) as SQLResultSet | null;
 		return this.extractResults(result);
 	}
 
-	static async toggleStar(id: number): Promise<void> {
-		const query = `UPDATE files
-                       SET is_starred = NOT is_starred
-                       WHERE id = ?;`;
-		await Promise.all([
-			this.query(query, [id]),
-			update({ table: "metadata", identifier: "file_id" }, id, {
-				updated_at: RedaService.generateCurrentTimestamp(),
-			}),
-		]);
+	static async search(
+		keyword: string,
+		filter: QueryFilter = {
+			limit: 100,
+			sort_by: "created_at",
+			sort_order: "ASC",
+		}
+	): Promise<CombinedFileResultType[]> {
+		const { limit, sort_by, sort_order } = filter;
+
+		const query = `SELECT ${this.fetchQueryFields} FROM files f INNER JOIN metadata m ON f.id = m.file_id WHERE f.name LIKE ? OR m.description LIKE ? ORDER BY f.${sort_by} ${sort_order} LIMIT ?;`;
+
+		const result = (await this.query(query, [
+			`%${keyword}%`,
+			`%${keyword}%`,
+			limit,
+		])) as SQLResultSet | null;
+		const res = result?.rows._array || ([] as any[]);
+		res.map((item: any) => {
+			item.table_of_contents =
+				item?.table_of_contents == "[]"
+					? []
+					: JSON.parse(item.table_of_contents);
+		});
+		return res;
 	}
 
 	static async updateTotalPagesOnLoad(id: number, totalPageNumber: number) {
@@ -207,36 +201,28 @@ export class RedaService {
 		);
 	}
 
-	static async search(
-		keyword: string,
-		filter: QueryFilter = {
-			limit: 100,
-			sort_by: "created_at",
-			sort_order: "ASC",
-		}
-	): Promise<CombinedFileResultType[]> {
-		const { limit, sort_by, sort_order } = filter;
+	static async toggleStar(id: number): Promise<void> {
+		const query = `UPDATE files SET is_starred = NOT is_starred WHERE id = ?;`;
+		await Promise.all([
+			this.query(query, [id]),
+			update({ table: "metadata", identifier: "file_id" }, id, {
+				updated_at: RedaService.generateCurrentTimestamp(),
+			}),
+		]);
+	}
 
-		const query = `SELECT ${this.fetchQueryFields}
-                       FROM files f
-                                INNER JOIN metadata m
-                                           ON f.id = m.file_id
-                       WHERE f.name LIKE ? OR m.description LIKE ?
-                       ORDER BY f.${sort_by} ${sort_order}
-                       LIMIT ?;`;
-
-		const result = (await this.query(query, [
-			`%${keyword}%`,
-			`%${keyword}%`,
-			limit,
-		])) as SQLResultSet | null;
-		const res = result?.rows._array || ([] as any[]);
-		res.map((item: any) => {
-			item.table_of_contents =
-				item?.table_of_contents == "[]"
-					? []
-					: JSON.parse(item.table_of_contents);
-		});
-		return res;
+	static async toggleReadStatus(id: number): Promise<void> {
+		const file = await RedaService.getOne(id);
+		if (!file) return;
+		const new_current_page = file?.has_started ? 1 : file?.total_pages;
+		const new_has_started = !Boolean(file?.has_started);
+		await Promise.all([
+			update({ table: "metadata", identifier: "file_id" }, id, {
+				current_page: new_current_page,
+			}),
+			update({ table: "files", identifier: "id" }, id, {
+				has_started: new_has_started,
+			}),
+		]);
 	}
 }

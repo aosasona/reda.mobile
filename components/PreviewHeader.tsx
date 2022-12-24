@@ -1,4 +1,4 @@
-import { AntDesign, Entypo, Feather, FontAwesome } from "@expo/vector-icons";
+import { AntDesign, Entypo, Feather } from "@expo/vector-icons";
 import { NavigationProp } from "@react-navigation/native";
 import {
 	AspectRatio,
@@ -27,8 +27,11 @@ interface PreviewHeaderProps {
 interface PreviewNavigationHeaderProps {
 	data: CombinedFileResultType;
 	navigation: NavigationProp<any>;
-	onPress: () => Promise<void>;
-	onDelete: () => Promise<void>;
+	functions: {
+		handleToggleStar: () => Promise<void>;
+		handleToggleReadStatus: () => Promise<void>;
+		handleDelete: () => Promise<void>;
+	};
 }
 
 export default function PreviewHeader({
@@ -100,10 +103,10 @@ export default function PreviewHeader({
 export const PreviewNavigationHeader = ({
 	data,
 	navigation,
-	onPress,
-	onDelete,
+	functions,
 }: PreviewNavigationHeaderProps) => {
 	const { top } = useSafeAreaInsets();
+	const { handleDelete, handleToggleStar, handleToggleReadStatus } = functions;
 	return (
 		<HStack
 			w="full"
@@ -132,7 +135,7 @@ export const PreviewNavigationHeader = ({
 					}}
 					p={2}
 					m={0}
-					onPress={onPress}
+					onPress={handleToggleStar}
 				/>
 				<Menu
 					w={200}
@@ -148,7 +151,11 @@ export const PreviewNavigationHeader = ({
 					)}
 				>
 					<Menu.Item>
-						<Pressable w="full" _pressed={{ opacity: 0.5 }} onPress={onDelete}>
+						<Pressable
+							w="full"
+							_pressed={{ opacity: 0.5 }}
+							onPress={handleToggleReadStatus}
+						>
 							<HStack space={2}>
 								<Icon
 									as={Feather}
@@ -162,7 +169,11 @@ export const PreviewNavigationHeader = ({
 						</Pressable>
 					</Menu.Item>
 					<Menu.Item>
-						<Pressable w="full" _pressed={{ opacity: 0.5 }} onPress={onDelete}>
+						<Pressable
+							w="full"
+							_pressed={{ opacity: 0.5 }}
+							onPress={handleDelete}
+						>
 							<HStack space={2}>
 								<Icon as={Feather} name="trash" size={4} color="red.500" />
 								<Text color="red.500">Delete</Text>
