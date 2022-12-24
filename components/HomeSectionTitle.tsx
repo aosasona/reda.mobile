@@ -7,7 +7,7 @@ interface HomeSectionTitleProps {
 
 export default function HomeSectionTitle({ title }: HomeSectionTitleProps) {
 	return (
-		<Pressable _pressed={{ opacity: 0.5 }} p={0} mt={4} mb={4}>
+		<Pressable _pressed={{ opacity: 0.5 }} p={0} mt={6} mb={4}>
 			<HStack alignItems="center" justifyContent="flex-start">
 				<Heading fontSize={26} fontWeight={600}>
 					{title}

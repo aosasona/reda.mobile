@@ -1,4 +1,4 @@
-import { AntDesign, Entypo, FontAwesome } from "@expo/vector-icons";
+import { AntDesign, Entypo, Feather, FontAwesome } from "@expo/vector-icons";
 import { NavigationProp } from "@react-navigation/native";
 import {
 	AspectRatio,
@@ -135,7 +135,7 @@ export const PreviewNavigationHeader = ({
 					onPress={onPress}
 				/>
 				<Menu
-					w={180}
+					w={200}
 					trigger={(props) => (
 						<IconButton
 							icon={<Icon as={Entypo} name="dots-three-horizontal" />}
@@ -148,14 +148,23 @@ export const PreviewNavigationHeader = ({
 					)}
 				>
 					<Menu.Item>
-						<Pressable w="full" onPress={onDelete}>
+						<Pressable w="full" _pressed={{ opacity: 0.5 }} onPress={onDelete}>
 							<HStack space={2}>
 								<Icon
-									as={FontAwesome}
-									name="trash-o"
+									as={Feather}
+									name={data?.has_started ? "eye-off" : "eye"}
 									size={4}
-									color="red.500"
 								/>
+								<Text>
+									Mark as {data?.has_started ? "unread" : "completed"}
+								</Text>
+							</HStack>
+						</Pressable>
+					</Menu.Item>
+					<Menu.Item>
+						<Pressable w="full" _pressed={{ opacity: 0.5 }} onPress={onDelete}>
+							<HStack space={2}>
+								<Icon as={Feather} name="trash" size={4} color="red.500" />
 								<Text color="red.500">Delete</Text>
 							</HStack>
 						</Pressable>

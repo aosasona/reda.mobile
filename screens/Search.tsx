@@ -20,7 +20,7 @@ export default function Search({ route, navigation }) {
   const [results, setResults] = useState<CombinedFileResultType[]>([]);
 
   useEffect(() => {
-    if (search.length >= 3) {
+    if (search.length >= 2) {
       RedaService.search(search)
         .then(setResults)
         .catch((_) => Alert.alert("Error", "Something went wrong!"));
@@ -57,8 +57,8 @@ export default function Search({ route, navigation }) {
             />
             <Text
               fontSize={16}
-              _dark={{ color: "muted.800" }}
-              _light={{ color: "muted.300" }}
+              _dark={{ color: "muted.700" }}
+              _light={{ color: "muted.400" }}
               mt={3}
             >
               No results...
@@ -67,6 +67,7 @@ export default function Search({ route, navigation }) {
         </Flex>
       }
       stickyHeaderIndices={[0]}
+      px={3}
     />
   );
 }
@@ -89,10 +90,10 @@ function SearchHeader({
       <Input
         w="100%"
         type="text"
+        keyboardType="web-search"
         placeholder="Search"
         onChangeText={setSearch}
         value={search}
-        autoFocus={true}
         autoCapitalize="none"
         autoCorrect={false}
         px={2}

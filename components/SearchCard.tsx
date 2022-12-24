@@ -37,7 +37,7 @@ export default function SearchCard({ data, navigation }: SearchCardProps) {
       onPress={navigateToDocumentPage}
     >
       <HStack w="full" bg="transparent" space={width * 0.02}>
-        <Box w={width * 0.14}>
+        <Box w={width * 0.15}>
           <AspectRatio ratio={1}>
             {data?.image ? (
               <Image
@@ -55,7 +55,7 @@ export default function SearchCard({ data, navigation }: SearchCardProps) {
           </AspectRatio>
         </Box>
         <VStack
-          w={width * 0.76}
+          w={width * 0.74}
           borderBottomWidth={1}
           _dark={{ borderBottomColor: "muted.900" }}
           _light={{ borderBottomColor: "muted.200" }}

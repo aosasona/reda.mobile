@@ -217,32 +217,16 @@ export class RedaService {
 	): Promise<CombinedFileResultType[]> {
 		const { limit, sort_by, sort_order } = filter;
 
-		const query = `SELECT f.id,
-                              f.name,
-                              f.path,
-                              f.size,
-                              f.has_started,
-                              f.has_finished,
-                              f.is_downloaded,
-                              f.is_starred,
-                              f.created_at,
-                              m.image,
-                              m.description,
-                              m.author,
-                              m.table_of_contents,
-                              m.subjects,
-                              m.first_publish_year,
-                              m.chapters,
-                              m.current_page,
-                              m.total_pages
+		const query = `SELECT ${this.fetchQueryFields}
                        FROM files f
                                 INNER JOIN metadata m
                                            ON f.id = m.file_id
-                       WHERE f.name LIKE ?
+                       WHERE f.name LIKE ? OR m.description LIKE ?
                        ORDER BY f.${sort_by} ${sort_order}
                        LIMIT ?;`;
 
 		const result = (await this.query(query, [
+			`%${keyword}%`,
 			`%${keyword}%`,
 			limit,
 		])) as SQLResultSet | null;

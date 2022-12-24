@@ -1,60 +1,40 @@
-import {MaterialIcons} from "@expo/vector-icons";
-import {NavigationProp} from "@react-navigation/native";
-import {Box, Heading, HStack, Icon, Pressable, Text} from "native-base";
+import { Feather } from "@expo/vector-icons";
+import { NavigationProp } from "@react-navigation/native";
+import {
+	Heading,
+	HStack,
+	Icon,
+	IconButton,
+	useColorModeValue,
+} from "native-base";
 import screens from "../constants/screens";
-import LoadingHeader from "./LoadingHeader";
 
 interface HeaderComponentProps {
-	state: {
-		loading: boolean;
-		initialLoad: boolean;
-	};
 	navigation: NavigationProp<any>;
 }
 
-export default function HomeHeader({
-	state,
-	navigation,
-}: HeaderComponentProps) {
-	const {loading, initialLoad} = state;
+export default function HomeHeader({ navigation }: HeaderComponentProps) {
 	const goToSearchPage = () => navigation.navigate(screens.SEARCH.screenName);
-
+	const color = useColorModeValue("brand-dark", "brand-light");
 	return (
-	  <Box
-		w={"full"}
-		_dark={{bg: "brand-dark"}}
-		_light={{bg: "brand-light"}}
-		pb={2}
-		safeAreaTop
-	  >
-		  <Heading fontSize={44} mt={4} ml={2}>
-			  Home
-		  </Heading>
-		  <Pressable
-			w="full"
+		<HStack
+			w={"full"}
+			_dark={{ bg: "brand-dark" }}
+			_light={{ bg: "brand-light" }}
+			justifyContent="space-between"
+			alignItems="center"
+			pb={3}
 			px={4}
 			py={4}
-			mt={3}
-			rounded={8}
-			_dark={{bg: "muted.900"}}
-			_light={{bg: "muted.200"}}
-			onPress={goToSearchPage}
-		  >
-			  <HStack alignItems="center" space={3}>
-				  <Icon
-					as={MaterialIcons}
-					name="search"
-					size={5}
-					_dark={{color: "muted.600"}}
-					_light={{color: "muted.400"}}
-				  />
-				  <Text _dark={{color: "muted.600"}} _light={{color: "muted.400"}}>
-					  Search...
-				  </Text>
-			  </HStack>
-		  </Pressable>
+			safeAreaTop
+		>
+			<Heading fontSize={44}>Home</Heading>
 
-		  {initialLoad && loading && <LoadingHeader/>}
-	  </Box>
+			<IconButton
+				icon={<Icon as={Feather} name="search" color={color} size={6} />}
+				onPress={goToSearchPage}
+				_pressed={{ opacity: 0.5 }}
+			/>
+		</HStack>
 	);
 }

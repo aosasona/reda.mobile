@@ -7,6 +7,7 @@ import HomeHeader from "../components/HomeHeader";
 import HomeSectionTitle from "../components/HomeSectionTitle";
 import HorizontalFileCard from "../components/HorizontalFileCard";
 import LargeHorizontalFileCard from "../components/LargeHorizontalFileCard";
+import LoadingHeader from "../components/LoadingHeader";
 import { CombinedFileResultType } from "../types/database";
 import { RedaService } from "../utils/internal.util";
 
@@ -32,7 +33,7 @@ export default function Home() {
 	const [initialLoad, setInitialLoad] = useState(true);
 	const [count, setCount] = useState(0);
 	const [data, setData] = useState<FlatDataState[]>([
-		{ title: "Continue reading", data: [] },
+		{ title: "continue", data: [] },
 		{ title: "Recently added", data: [] },
 		{ title: "Starred", data: [] },
 	]);
@@ -88,13 +89,11 @@ export default function Home() {
 					},
 				],
 			}))}
-			ListHeaderComponent={
-				<HomeHeader state={{ loading, initialLoad }} navigation={navigation} />
-			}
+			ListHeaderComponent={initialLoad && loading ? <LoadingHeader /> : null}
 			ListFooterComponent={<Box bg="transparent" my={10} />}
 			keyExtractor={(item, index) => item.key + index}
 			renderSectionHeader={({ section }) =>
-				section?.data?.[0]?.list?.length > 0 ? (
+				section?.data?.[0]?.list?.length > 0 && section.title != "continue" ? (
 					<HomeSectionTitle title={section.title} />
 				) : null
 			}
@@ -105,7 +104,7 @@ export default function Home() {
 						horizontal
 						showsHorizontalScrollIndicator={false}
 						renderItem={({ item, index }) =>
-							section.title == "Continue reading" ? (
+							section.title == "continue" ? (
 								<LargeHorizontalFileCard
 									data={item}
 									index={index}
@@ -123,23 +122,19 @@ export default function Home() {
 						ListEmptyComponent={<EmptySection title={item.key} />}
 						alwaysBounceVertical={false}
 						alwaysBounceHorizontal={false}
-						initialNumToRender={20}
+						initialNumToRender={15}
 						bounces={false}
 						px={0}
 						mx={0}
+						mt={section.title == "continue" ? 4 : 0}
 					/>
 				) : null
 			}
 			refreshControl={
-				<RefreshControl
-					refreshing={loading}
-					onRefresh={fetchAllFiles}
-					progressViewOffset={40}
-				/>
+				<RefreshControl refreshing={loading} onRefresh={fetchAllFiles} />
 			}
 			showsVerticalScrollIndicator={false}
 			stickySectionHeadersEnabled={false}
-			alwaysBounceVertical={false}
 		/>
 	);
 }
