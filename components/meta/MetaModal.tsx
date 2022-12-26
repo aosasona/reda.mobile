@@ -1,7 +1,7 @@
 import {Actionsheet, PresenceTransition} from "native-base";
-import {ActionSheetProps} from "../constants/props";
-import {backwardTransition, forwardTransition, transitionAnimation} from "../constants/transition";
-import {MetaModalProps, MetaModalSteps} from "../types/import";
+import {ActionSheetProps} from "../../constants/props";
+import {backwardTransition, forwardTransition, transitionAnimation} from "../../constants/transition";
+import {MetaModalProps, MetaModalSteps} from "../../types/import";
 import MetaList from "./MetaList";
 import MetaPage from "./MetaPage";
 

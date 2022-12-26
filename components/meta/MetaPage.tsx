@@ -2,13 +2,13 @@ import {Entypo} from "@expo/vector-icons";
 import {AspectRatio, Box, Button, Heading, HStack, Icon, Image, Pressable, Text, VStack} from "native-base";
 import {useEffect, useState} from "react";
 import {Alert, useWindowDimensions} from "react-native";
-import {ButtonProps} from "../constants/props";
-import {FileModel, MetadataModel, SQLBoolean} from "../types/database";
-import {MetaPageProps} from "../types/import";
-import {saveFile} from "../utils/database.util";
-import {getThumbnail, showToast} from "../utils/misc.util";
-import {OpenLibraryService} from "../utils/request.util";
-import ImagePlaceholder from "./ImagePlaceholder";
+import {ButtonProps} from "../../constants/props";
+import {FileModel, MetadataModel, SQLBoolean} from "../../types/database";
+import {MetaPageProps} from "../../types/import";
+import {saveFile} from "../../utils/database.util";
+import {getThumbnail, showToast} from "../../utils/misc.util";
+import {OpenLibraryService} from "../../utils/request.util";
+import ImagePlaceholder from "../reusables/ImagePlaceholder";
 
 export default function MetaPage({state, functions}: MetaPageProps) {
 

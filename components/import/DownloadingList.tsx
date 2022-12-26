@@ -5,9 +5,9 @@ import {AspectRatio, Box, FlatList, Flex, HStack, Icon, Pressable, Text, useColo
 import {useEffect, useState} from "react";
 import {Alert, Animated, Platform, RefreshControl, useWindowDimensions} from "react-native";
 import {Swipeable} from "react-native-gesture-handler";
-import {DownloadingCardProps, DownloadingListProps, ImportStatesProps} from "../types/import";
+import {DownloadingCardProps, DownloadingListProps, ImportStatesProps} from "../../types/import";
 
-const DownloadingAnimation = require('../assets/animations/downloading.json');
+const DownloadingAnimation = require('../../assets/animations/downloading.json');
 
 export default function DownloadingList({state, setState, reset, HeaderComponent}: DownloadingListProps) {
 

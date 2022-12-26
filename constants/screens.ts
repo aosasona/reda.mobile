@@ -23,6 +23,10 @@ const screens = {
 		screenName: "ReadDocumentScreen",
 		screenTitle: "Read Document",
 	},
+	CATEGORY: {
+		screenName: "CategoryScreen",
+		screenTitle: "Category",
+	},
 };
 
 export default screens;

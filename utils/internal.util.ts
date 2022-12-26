@@ -86,7 +86,9 @@ export class RedaService {
   ): Promise<CombinedFileResultType[] | null> {
     const { limit, sort_by, sort_order } = filter;
 
-    const query = `SELECT ${this.fetchQueryFields} FROM files f INNER JOIN metadata m ON f.id = m.file_id WHERE f.is_starred = 1 ORDER BY m.${sort_by} ${sort_order} LIMIT ?;`;
+    const query = `SELECT ${this.fetchQueryFields
+      } FROM files f INNER JOIN metadata m ON f.id = m.file_id WHERE f.is_starred = 1 ORDER BY ${sort_by != "name" ? "m" : "f"
+      }.${sort_by} ${sort_order} LIMIT ?;`;
     const result = (await this.query(query, [limit])) as SQLResultSet | null;
     return this.extractResults(result);
   }
@@ -100,7 +102,9 @@ export class RedaService {
   ): Promise<CombinedFileResultType[]> {
     const { limit, sort_by, sort_order } = filter;
 
-    const query = `SELECT ${this.fetchQueryFields} FROM files f INNER JOIN metadata m ON f.id = m.file_id WHERE has_started = 1 ORDER BY m.${sort_by} ${sort_order} LIMIT ?;`;
+    const query = `SELECT ${this.fetchQueryFields
+      } FROM files f INNER JOIN metadata m ON f.id = m.file_id WHERE has_started = 1 ORDER BY ${sort_by != "name" ? "m" : "f"
+      }.${sort_by} ${sort_order} LIMIT ?;`;
 
     const result = (await this.query(query, [limit])) as SQLResultSet | null;
     return this.extractResults(result);

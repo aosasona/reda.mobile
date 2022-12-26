@@ -1,13 +1,16 @@
+import { Platform } from "expo-modules-core";
 import { ColorMode } from "native-base";
 import { getPrimaryColor, getSecondaryColor } from "../utils/color.util";
 import { colors } from "./theme";
+
+const isAndroid = Platform.OS === "android";
 
 export const iconOptions = (colorMode: ColorMode, focused: boolean) => {
   return focused
     ? getSecondaryColor(colorMode)
     : colorMode == "dark"
-    ? colors.brand["faded-dark"]
-    : colors.brand.faded;
+      ? colors.brand["faded-dark"]
+      : colors.brand.faded;
 };
 
 export const screenOptions = (colorMode: ColorMode) => ({
@@ -29,6 +32,7 @@ export const screenOptions = (colorMode: ColorMode) => ({
     display: "none",
   },
   tabBarStyle: {
+    height: isAndroid ? 65 : 80,
     backgroundColor: getPrimaryColor(colorMode),
     borderTopWidth: 0,
   },

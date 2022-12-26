@@ -79,7 +79,7 @@ export const InputProps = {
   borderWidth: 0,
   _light: { bg: "muted.200", _focus: { bg: "muted.200" } },
   _dark: { bg: "muted.900", _focus: { bg: "muted.900" } },
-  py: 5,
+  py: 3,
   rounded: 8,
 };
 

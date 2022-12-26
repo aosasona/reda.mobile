@@ -12,9 +12,9 @@ import {
 } from "native-base";
 import { useEffect } from "react";
 import { Alert, Dimensions, Platform, useWindowDimensions } from "react-native";
-import { ButtonProps, InputProps } from "../constants/props";
-import { MetaModalProps } from "../types/import";
-import MetaListCard from "./MetaListCard";
+import { ButtonProps, InputProps } from "../../constants/props";
+import { MetaModalProps } from "../../types/import";
+import MetaListCard from "../cards/MetaListCard";
 
 export default function MetaList({ functions, state }: MetaModalProps) {
 	const { meta } = state;
@@ -48,7 +48,7 @@ export default function MetaList({ functions, state }: MetaModalProps) {
 						functions={{ onPress: handleCurrentMetaChange }}
 					/>
 				)}
-				keyExtractor={(item, index) => index.toString()}
+				keyExtractor={(_, index) => index.toString()}
 				ListHeaderComponent={
 					<ListHeaderComponent state={state} functions={functions} />
 				}
@@ -104,16 +104,16 @@ export const ListHeaderComponent = ({ functions, state }: MetaModalProps) => {
 		>
 			<HStack justifyContent="space-between" alignItems="flex-end" my={2}>
 				<Heading
-					maxW={width * 0.7}
-					fontSize={40}
+					maxW={width * 0.66}
+					fontSize={36}
 					fontWeight="extrabold"
 					textAlign="left"
 					px={1}
 				>
 					Online Search
 				</Heading>
-				<Text maxW={width * 0.2} fontSize={12} opacity={0.5}>
-					Showing {meta?.all?.length || 0} results
+				<Text maxW={width * 0.24} fontSize={12} opacity={0.5}>
+					Showing {meta?.all?.length || 0} result{meta!.all!.length > 1 && "s"}
 				</Text>
 			</HStack>
 			<Input
@@ -122,7 +122,6 @@ export const ListHeaderComponent = ({ functions, state }: MetaModalProps) => {
 				placeholder="Search..."
 				onChangeText={handleSearchChange}
 				value={search}
-				selectionColor={"#0063ff"}
 				mt={1}
 				InputRightElement={
 					<Button

@@ -1,14 +1,15 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { Box, FlatList, SectionList } from "native-base";
+import { Box, FlatList, Flex, ScrollView, SectionList } from "native-base";
 import { useCallback, useState } from "react";
 import { Alert, RefreshControl } from "react-native";
-import EmptySection from "../components/EmptySection";
-import HomeHeader from "../components/HomeHeader";
-import HomeSectionTitle from "../components/HomeSectionTitle";
-import HorizontalFileCard from "../components/HorizontalFileCard";
-import LargeHorizontalFileCard from "../components/LargeHorizontalFileCard";
-import LoadingHeader from "../components/LoadingHeader";
+import EmptySection from "../components/reusables/EmptySection";
+import HomeHeader from "../components/home/HomeHeader";
+import HomeSectionTitle from "../components/home/HomeSectionTitle";
+import HorizontalFileCard from "../components/cards/HorizontalFileCard";
+import LargeHorizontalFileCard from "../components/cards/LargeHorizontalFileCard";
+import LoadingHeader from "../components/reusables/loading/LoadingHeader";
 import { CombinedFileResultType } from "../types/database";
+import { CategoryPageType } from "../types/general";
 import { RedaService } from "../utils/internal.util";
 
 interface FullDataState {
@@ -24,6 +25,7 @@ interface FullDataState {
 
 interface FlatDataState {
 	title: string;
+	category: CategoryPageType;
 	data: CombinedFileResultType[];
 }
 
@@ -33,9 +35,13 @@ export default function Home() {
 	const [initialLoad, setInitialLoad] = useState(true);
 	const [count, setCount] = useState(0);
 	const [data, setData] = useState<FlatDataState[]>([
-		{ title: "continue", data: [] },
-		{ title: "Recently added", data: [] },
-		{ title: "Starred", data: [] },
+		{
+			title: "continue",
+			category: CategoryPageType.CONTINUE_READING,
+			data: [],
+		},
+		{ title: "Recently added", category: CategoryPageType.ALL, data: [] },
+		{ title: "Starred", category: CategoryPageType.STARRED, data: [] },
 	]);
 
 	useFocusEffect(
@@ -50,10 +56,7 @@ export default function Home() {
 		try {
 			if (triggerLoad) setLoading(true);
 			const filesCount = await RedaService.count();
-			if (filesCount === 0) {
-				setCount(0);
-				return;
-			}
+			setCount(filesCount);
 			const { recentlyAdded, starred, continueReading } =
 				await RedaService.loadHomePageData();
 			setData((prevState) => [
@@ -77,11 +80,24 @@ export default function Home() {
 		}
 	};
 
+	if (count == 0) {
+		return (
+			<ScrollView
+				refreshControl={
+					<RefreshControl refreshing={loading} onRefresh={fetchAllFiles} />
+				}
+			>
+				<EmptySection title="all" />
+			</ScrollView>
+		);
+	}
+
 	return (
 		<SectionList
 			sections={data.map((d) => ({
 				title: d.title,
 				key: d.title,
+				category: d.category,
 				data: [
 					{
 						key: d.title,
@@ -94,7 +110,7 @@ export default function Home() {
 			keyExtractor={(item, index) => item.key + index}
 			renderSectionHeader={({ section }) =>
 				section?.data?.[0]?.list?.length > 0 && section.title != "continue" ? (
-					<HomeSectionTitle title={section.title} />
+					<HomeSectionTitle title={section.title} category={section.category} />
 				) : null
 			}
 			renderItem={({ item, section, index }) =>

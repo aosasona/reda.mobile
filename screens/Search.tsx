@@ -3,7 +3,8 @@ import { NavigationProp } from "@react-navigation/native";
 import { Box, FlatList, Flex, Icon, Input, Pressable, Text } from "native-base";
 import { useEffect, useState } from "react";
 import { Alert, useWindowDimensions } from "react-native";
-import SearchCard from "../components/SearchCard";
+import SearchInput from "../components/reusables/SearchInput";
+import SearchCard from "../components/cards/SearchCard";
 import { InputProps } from "../constants/props";
 import { CombinedFileResultType } from "../types/database";
 import { RedaService } from "../utils/internal.util";
@@ -87,47 +88,7 @@ function SearchHeader({
       py={3}
       mb={2}
     >
-      <Input
-        w="100%"
-        type="text"
-        keyboardType="web-search"
-        placeholder="Search"
-        onChangeText={setSearch}
-        value={search}
-        autoCapitalize="none"
-        autoCorrect={false}
-        px={2}
-        InputRightElement={
-          search ? (
-            <Pressable
-              _pressed={{ opacity: 0.5 }}
-              p={4}
-              onPress={() => setSearch("")}
-            >
-              <Icon
-                as={MaterialIcons}
-                name="cancel"
-                size={5}
-                _dark={{ color: "muted.800" }}
-                _light={{ color: "muted.400" }}
-              />
-            </Pressable>
-          ) : (
-            <></>
-          )
-        }
-        InputLeftElement={
-          <Icon
-            as={MaterialIcons}
-            name="search"
-            size="sm"
-            ml={3}
-            _dark={{ color: "muted.600" }}
-            _light={{ color: "muted.400" }}
-          />
-        }
-        {...InputProps}
-      />
+      <SearchInput search={search} setSearch={setSearch} />
     </Box>
   );
 }

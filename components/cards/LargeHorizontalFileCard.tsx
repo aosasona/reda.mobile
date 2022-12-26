@@ -9,10 +9,10 @@ import {
 	VStack,
 } from "native-base";
 import { useWindowDimensions } from "react-native";
-import screens from "../constants/screens";
-import { CombinedFileResultType } from "../types/database";
-import { getThumbnail } from "../utils/misc.util";
-import ImagePlaceholder from "./ImagePlaceholder";
+import screens from "../../constants/screens";
+import { CombinedFileResultType } from "../../types/database";
+import { getThumbnail } from "../../utils/misc.util";
+import ImagePlaceholder from "../reusables/ImagePlaceholder";
 
 interface HorizontalFileCardProps {
 	data: CombinedFileResultType;
@@ -55,7 +55,7 @@ export default function LargeHorizontalFileCard({
 					)}
 				</AspectRatio>
 				<Box px={0.5}>
-					<Heading fontSize={20} noOfLines={2}>
+					<Heading fontSize={22} noOfLines={2}>
 						{data?.name}
 					</Heading>
 					<Text fontSize={16} opacity={0.3} noOfLines={1} mt={1}>

@@ -2,9 +2,9 @@ import * as DocumentPicker from "expo-document-picker";
 import { useDisclose } from "native-base";
 import { useContext, useState } from "react";
 import { Alert } from "react-native";
-import DownloadingList from "../components/DownloadingList";
-import ImportHeader from "../components/ImportHeader";
-import MetaModal from "../components/MetaModal";
+import DownloadingList from "../components/import/DownloadingList";
+import ImportHeader from "../components/import/ImportHeader";
+import MetaModal from "../components/meta/MetaModal";
 import { GlobalContext } from "../context/GlobalContext";
 import CustomException from "../exceptions/CustomException";
 import { ImportStatesProps } from "../types/import";
@@ -77,6 +77,7 @@ export default function Import() {
 	const handleRemoteImport = async () => {
 		try {
 			showToast("Coming soon", "info");
+			return;
 			if (!mixedState.URL) return;
 			if (!mixedState.URL?.endsWith(".pdf"))
 				throw new CustomException("The URL must end with .pdf");

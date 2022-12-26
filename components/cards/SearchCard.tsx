@@ -10,10 +10,10 @@ import {
   VStack,
 } from "native-base";
 import { useWindowDimensions } from "react-native";
-import screens from "../constants/screens";
-import { CombinedFileResultType } from "../types/database";
-import { getThumbnail } from "../utils/misc.util";
-import ImagePlaceholder from "./ImagePlaceholder";
+import screens from "../../constants/screens";
+import { CombinedFileResultType } from "../../types/database";
+import { getThumbnail } from "../../utils/misc.util";
+import ImagePlaceholder from "../reusables/ImagePlaceholder";
 
 interface SearchCardProps {
   data: CombinedFileResultType;

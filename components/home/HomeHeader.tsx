@@ -7,7 +7,7 @@ import {
 	IconButton,
 	useColorModeValue,
 } from "native-base";
-import screens from "../constants/screens";
+import screens from "../../constants/screens";
 
 interface HeaderComponentProps {
 	navigation: NavigationProp<any>;

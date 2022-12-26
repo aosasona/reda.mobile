@@ -15,8 +15,8 @@ import {
 } from "native-base";
 import { ImageBackground } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { CombinedFileResultType } from "../types/database";
-import Back from "./Back";
+import { CombinedFileResultType } from "../../types/database";
+import Back from "../../assets/Back";
 
 interface PreviewHeaderProps {
   source: any;

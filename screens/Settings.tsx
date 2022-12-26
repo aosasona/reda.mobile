@@ -20,7 +20,7 @@ import {
   useColorModeValue,
 } from "native-base";
 import { ReactNode, useContext } from "react";
-import IconText from "../components/IconText";
+import IconText from "../components/reusables/IconText";
 import { DividerProps, HStackProps, PressableProps } from "../constants/props";
 import { GlobalContext } from "../context/GlobalContext";
 import SettingsUtil from "../utils/settings.util";

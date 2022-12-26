@@ -1,8 +1,9 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useColorMode } from "native-base";
-import HomeHeader from "../components/HomeHeader";
+import HomeHeader from "../components/home/HomeHeader";
 import { navigationConfig } from "../config/screens";
 import screens from "../constants/screens";
+import Category from "../screens/Category";
 import Home from "../screens/Home";
 import Preview from "../screens/Preview";
 import ReadDocument from "../screens/ReadDocument";
@@ -38,6 +39,7 @@ export default function HomeStack() {
 				options={{
 					title: screens.SEARCH.screenTitle,
 					headerShown: true,
+					headerShadowVisible: false,
 				}}
 			/>
 			<Stack.Screen
@@ -48,7 +50,16 @@ export default function HomeStack() {
 						(route?.params as any)?.data?.title ||
 						screens.READ_DOCUMENT.screenTitle,
 					headerShown: true,
+					headerShadowVisible: false,
 				})}
+			/>
+			<Stack.Screen
+				name={screens.CATEGORY.screenName}
+				component={Category}
+				options={{
+					headerTitle: screens.CATEGORY.screenTitle,
+					headerShown: false,
+				}}
 			/>
 		</Stack.Navigator>
 	);

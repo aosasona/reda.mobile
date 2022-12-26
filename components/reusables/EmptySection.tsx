@@ -27,9 +27,9 @@ export default function EmptySection({ title }: EmptySectionProps) {
 				/>
 				<Text
 					fontSize={16}
-					_dark={{ color: "muted.800" }}
-					_light={{ color: "muted.300" }}
-					mt={3}
+					_dark={{ color: "muted.700" }}
+					_light={{ color: "muted.400" }}
+					mt={2}
 				>
 					Nothing to see here yet...
 				</Text>

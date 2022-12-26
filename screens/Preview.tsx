@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { Alert, RefreshControl } from "react-native";
 import PreviewHeader, {
   PreviewNavigationHeader,
-} from "../components/PreviewHeader";
+} from "../components/preview/PreviewHeader";
 import { ButtonProps, DetailsProps, DividerProps } from "../constants/props";
 import screens from "../constants/screens";
 import { CombinedFileResultType, SQLBoolean } from "../types/database";
@@ -111,8 +111,8 @@ export default function Preview({ route, navigation }: ScreenProps) {
           {data?.has_started
             ? "Continue reading"
             : data?.has_finished
-            ? "Read Again"
-            : "Start Reading"}
+              ? "Read Again"
+              : "Start Reading"}
         </Button>
         <Box mt={5}>
           <Heading fontSize={24} mb={2}>
@@ -138,13 +138,17 @@ export default function Preview({ route, navigation }: ScreenProps) {
               {data?.current_page}
             </Text>
           </HStack>
-          <Divider {...DividerProps} />
-          <HStack {...DetailsProps}>
-            <Text fontSize={16}>Total Pages</Text>
-            <Text opacity={0.5} fontSize={16}>
-              {data?.total_pages}
-            </Text>
-          </HStack>
+          {data?.total_pages > 1 && (
+            <>
+              <Divider {...DividerProps} />
+              <HStack {...DetailsProps}>
+                <Text fontSize={16}>Total Pages</Text>
+                <Text opacity={0.5} fontSize={16}>
+                  {data?.total_pages}
+                </Text>
+              </HStack>
+            </>
+          )}
         </Box>
 
         <Box mt={5} mb={8}>
