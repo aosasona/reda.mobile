@@ -101,7 +101,7 @@ export default function Import() {
 				loading: { ...prevState.loading, local: true },
 			}));
 			const result = await DocumentPicker.getDocumentAsync({
-				type: ["application/pdf", "application/msword"],
+				type: ["application/pdf"],
 				copyToCacheDirectory: true,
 			});
 			if (result.type === "success") {

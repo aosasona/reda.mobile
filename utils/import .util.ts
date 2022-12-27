@@ -1,5 +1,5 @@
-import {StateSetter} from "../types/import";
-import {OpenLibraryService} from "./request.util";
+import { StateSetter } from "../types/import";
+import { OpenLibraryService } from "./request.util";
 
 export default class ImportUtil {
 	private readonly setState: StateSetter;
@@ -9,28 +9,42 @@ export default class ImportUtil {
 	}
 
 	public loadAllMeta = async (fileName: string) => {
-		this.setState(prevState => ({...prevState, loading: {...prevState.loading, meta: true}}));
-		const onlineMetadata = (await OpenLibraryService.search({title: fileName, limit: 50}))["docs"];
-		this.setAllMeta(onlineMetadata);
-		this.setState(prevState => ({...prevState, loading: {...prevState.loading, meta: false, local: false}}));
-	}
+		try {
+			this.setState((prevState) => ({
+				...prevState,
+				loading: { ...prevState.loading, meta: true },
+			}));
+			const onlineMetadata = (
+				await OpenLibraryService.search({ title: fileName, limit: 50 })
+			)["docs"];
+			this.setAllMeta(onlineMetadata);
+		} catch (err) {
+		} finally {
+			this.setState((prevState) => ({
+				...prevState,
+				loading: { ...prevState.loading, meta: false, local: false },
+			}));
+		}
+	};
 
-	public setAllMeta = (value: any[]) => this.setState((prevState) => ({
-		...prevState,
-		meta: {
-			...prevState.meta,
-			all: value,
-		},
-	}))
+	public setAllMeta = (value: any[]) =>
+		this.setState((prevState) => ({
+			...prevState,
+			meta: {
+				...prevState.meta,
+				all: value,
+			},
+		}));
 
-	public setCurrentMeta = (value: any, index: number) => this.setState((prevState) => ({
-		...prevState,
-		meta: {
-			...prevState.meta,
-			current: value,
-			currentIndex: index,
-		},
-	}))
+	public setCurrentMeta = (value: any, index: number) =>
+		this.setState((prevState) => ({
+			...prevState,
+			meta: {
+				...prevState.meta,
+				current: value,
+				currentIndex: index,
+			},
+		}));
 
 	public resetState = () => {
 		this.setState({
@@ -49,6 +63,6 @@ export default class ImportUtil {
 				remote: false,
 				meta: false,
 			},
-		})
-	}
+		});
+	};
 }

@@ -68,7 +68,7 @@ export default function MetaList({ functions, state }: MetaModalProps) {
 				safeAreaBottom={true}
 			>
 				<Button w="full" onPress={toggleStep} {...ButtonProps}>
-					Continue
+					{(meta?.all || [])?.length > 0 ? "Continue" : "Skip"}
 				</Button>
 			</Box>
 		</>
