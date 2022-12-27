@@ -11,7 +11,11 @@ import ImportStack from "../stacks/ImportStack";
 import HomeStack from "./HomeStack";
 import SettingsStack from "./SettingsStack";
 
-export default function MainStack() {
+interface MainStackProps {
+	onNavReady: () => void;
+}
+
+export default function MainStack({ onNavReady }: MainStackProps) {
 	const { colorMode } = useColorMode();
 
 	const Tab = createBottomTabNavigator();
@@ -21,7 +25,7 @@ export default function MainStack() {
 				animated={true}
 				style={colorMode === "dark" ? "light" : "dark"}
 			/>
-			<NavigationContainer>
+			<NavigationContainer onReady={onNavReady}>
 				<Tab.Navigator initialRouteName={tabs.HOME} backBehavior="history">
 					<Tab.Screen
 						name={tabs.HOME}

@@ -8,8 +8,18 @@ import {
 	AzeretMono_700Bold,
 	AzeretMono_800ExtraBold,
 	AzeretMono_900Black,
-} from '@expo-google-fonts/azeret-mono';
-import {Inter_100Thin, Inter_200ExtraLight, Inter_300Light, Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold, Inter_800ExtraBold, Inter_900Black} from '@expo-google-fonts/inter';
+} from "@expo-google-fonts/azeret-mono";
+import {
+	Inter_100Thin,
+	Inter_200ExtraLight,
+	Inter_300Light,
+	Inter_400Regular,
+	Inter_500Medium,
+	Inter_600SemiBold,
+	Inter_700Bold,
+	Inter_800ExtraBold,
+	Inter_900Black,
+} from "@expo-google-fonts/inter";
 import {
 	Outfit_100Thin,
 	Outfit_200ExtraLight,
@@ -21,7 +31,7 @@ import {
 	Outfit_800ExtraBold,
 	Outfit_900Black,
 	useFonts,
-} from '@expo-google-fonts/outfit';
+} from "@expo-google-fonts/outfit";
 import {
 	Poppins_100Thin,
 	Poppins_200ExtraLight,
@@ -32,21 +42,23 @@ import {
 	Poppins_700Bold,
 	Poppins_800ExtraBold,
 	Poppins_900Black,
-} from '@expo-google-fonts/poppins';
-import * as SplashScreen from 'expo-splash-screen';
-import {NativeBaseProvider, useColorMode} from "native-base";
-import React, {useEffect} from "react";
-import {Appearance} from "react-native";
-import {extendedTheme} from "./config/theme";
-import {GlobalContextProvider} from "./context/GlobalContext";
+} from "@expo-google-fonts/poppins";
+import * as SplashScreen from "expo-splash-screen";
+import { NativeBaseProvider } from "native-base";
+import React, { useEffect, useState } from "react";
+import { View, Appearance, useColorScheme } from "react-native";
+import { colors, extendedTheme } from "./config/theme";
+import { GlobalContextProvider } from "./context/GlobalContext";
 import MainStack from "./stacks/MainStack";
-import {colorModeManager} from "./utils/color.util";
-import {runMigration} from "./utils/database.util";
+import { colorModeManager } from "./utils/color.util";
+import { runMigration } from "./utils/database.util";
 
 (async () => await SplashScreen.preventAutoHideAsync())();
 
 export default function App() {
-	const {toggleColorMode} = useColorMode();
+	const [navReady, setNavReady] = useState(false);
+	const [appReady, setAppReady] = useState(false);
+
 	let [fontsLoaded] = useFonts({
 		Outfit_100Thin,
 		Outfit_200ExtraLight,
@@ -89,33 +101,35 @@ export default function App() {
 		AzeretMono_900Black,
 	});
 
-
 	useEffect(() => {
 		(async () => {
-			if (fontsLoaded) {
+			if (fontsLoaded && navReady && appReady) {
 				await SplashScreen.hideAsync();
 			}
-		})()
-	}, [fontsLoaded]);
+		})();
+	}, [fontsLoaded, navReady, appReady]);
 
-
-	if(typeof window !== 'undefined') {
-		Appearance.addChangeListener(({colorScheme}) => {
+	if (typeof window !== "undefined") {
+		Appearance.addChangeListener(({ colorScheme }) => {
 			colorModeManager.set(colorScheme);
 		});
 		(async () => await runMigration())();
 	}
-
 
 	if (!fontsLoaded) {
 		return null;
 	}
 
 	return (
-	  <GlobalContextProvider>
-		  <NativeBaseProvider theme={extendedTheme} colorModeManager={colorModeManager}>
-			  <MainStack/>
-		  </NativeBaseProvider>
-	  </GlobalContextProvider>
+		<View style={{ flex: 1 }} onLayout={() => setAppReady(true)}>
+			<GlobalContextProvider>
+				<NativeBaseProvider
+					theme={extendedTheme}
+					colorModeManager={colorModeManager}
+				>
+					<MainStack onNavReady={() => setNavReady(true)} />
+				</NativeBaseProvider>
+			</GlobalContextProvider>
+		</View>
 	);
 }
