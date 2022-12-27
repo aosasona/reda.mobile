@@ -111,7 +111,6 @@ export const PreviewNavigationHeader = ({
   navigation,
   functions,
 }: PreviewNavigationHeaderProps) => {
-  const { top } = useSafeAreaInsets();
   const { handleDelete, handleToggleStar, handleToggleReadStatus } = functions;
   return (
     <HStack
@@ -119,9 +118,10 @@ export const PreviewNavigationHeader = ({
       justifyContent="space-between"
       alignItems="center"
       px={3}
-      _ios={{ pt: top, py: 1 }}
+      _ios={{ py: 2 }}
       _android={{ py: 4 }}
       my={0}
+      safeAreaTop
     >
       <Back navigation={navigation} page="Home" />
       <HStack space={2} alignItems="center">

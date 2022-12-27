@@ -1,3 +1,4 @@
+import { useFocusEffect } from "@react-navigation/native";
 import {
   Box,
   Button,
@@ -7,7 +8,7 @@ import {
   ScrollView,
   Text,
 } from "native-base";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Alert, RefreshControl } from "react-native";
 import PreviewHeader, {
   PreviewNavigationHeader,
@@ -35,13 +36,19 @@ export default function Preview({ route, navigation }: ScreenProps) {
     navigation.setOptions({ title: data?.name || "Preview" });
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      (async () => await onRefresh(false))();
+    }, [])
+  );
+
   const openReadPage = () => {
     navigation.navigate(screens.READ_DOCUMENT.screenName, { data });
   };
 
-  const onRefresh = async () => {
+  const onRefresh = async (triggerRefresh: boolean = true) => {
     try {
-      setRefreshing(true);
+      if (triggerRefresh) setRefreshing(true);
       const currentData = await RedaService.getOne(data?.id);
       setData(currentData as CombinedFileResultType);
     } catch (e) {

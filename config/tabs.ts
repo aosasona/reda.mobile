@@ -32,7 +32,7 @@ export const screenOptions = (colorMode: ColorMode) => ({
     display: "none",
   },
   tabBarStyle: {
-    height: isAndroid ? 65 : 80,
+    height: isAndroid ? 65 : 75,
     backgroundColor: getPrimaryColor(colorMode),
     borderTopWidth: 0,
   },
