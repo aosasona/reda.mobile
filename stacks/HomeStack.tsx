@@ -29,8 +29,7 @@ export default function HomeStack() {
 				name={screens.PREVIEW.screenName}
 				component={Preview}
 				options={{
-					headerTitle: screens.PREVIEW.screenTitle,
-					headerShown: false,
+					headerShown: true,
 				}}
 			/>
 			<Stack.Screen

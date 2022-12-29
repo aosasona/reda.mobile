@@ -15,7 +15,7 @@ export default function ImportHeader({
 	};
 
 	return (
-		<Box mb={2} safeAreaTop>
+		<Box mb={2}>
 			<Heading fontSize={44} mt={4}>
 				Import
 			</Heading>

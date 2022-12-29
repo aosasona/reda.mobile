@@ -18,6 +18,7 @@ import {
 } from "../utils/file.util";
 import ImportUtil from "../utils/import .util";
 import { showToast } from "../utils/misc.util";
+import CustomSafeAreaView from "../components/reusables/CustomSafeAreaView";
 
 // Todo: implement resume-able downloads
 
@@ -130,7 +131,7 @@ export default function Import() {
 	};
 
 	return (
-		<>
+		<CustomSafeAreaView>
 			<DownloadingList
 				state={mixedState}
 				setState={setMixedState}
@@ -159,6 +160,6 @@ export default function Import() {
 					loadAllMeta,
 				}}
 			/>
-		</>
+		</CustomSafeAreaView>
 	);
 }

@@ -11,6 +11,7 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { Alert, RefreshControl } from "react-native";
 import PreviewHeader, {
+  PreviewHeaderRight,
   PreviewNavigationHeader,
 } from "../components/preview/PreviewHeader";
 import { ButtonProps, DetailsProps, DividerProps } from "../constants/props";
@@ -31,10 +32,6 @@ export default function Preview({ route, navigation }: ScreenProps) {
   const [data, setData] = useState<CombinedFileResultType>(initialData);
 
   const { thumb, fallback } = getThumbnail(data?.image);
-
-  useEffect(() => {
-    navigation.setOptions({ title: data?.name || "Preview" });
-  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -78,11 +75,30 @@ export default function Preview({ route, navigation }: ScreenProps) {
   const handleToggleReadStatus = async () => {
     try {
       await RedaService.toggleReadStatus(data?.id);
-      await onRefresh();
+      await onRefresh(false);
     } catch (e: any) {
       Alert.alert("Error", "Something went wrong!");
     }
   };
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: data?.name || "Preview",
+      headerRight: () => (
+        <PreviewHeaderRight
+          data={data}
+          navigation={navigation}
+          functions={{
+            handleToggleStar,
+            handleDelete,
+            handleToggleReadStatus,
+          }}
+        />
+      ),
+      headerBackTitle: "Home",
+      headerShadowVisible: false,
+    });
+  }, [navigation, data]);
 
   const filesizeInMB = byteToMB(data?.size);
 
@@ -90,20 +106,10 @@ export default function Preview({ route, navigation }: ScreenProps) {
     <ScrollView
       px={0}
       showsVerticalScrollIndicator={false}
-      stickyHeaderIndices={[0]}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <PreviewNavigationHeader
-        data={data}
-        navigation={navigation}
-        functions={{
-          handleToggleStar,
-          handleDelete,
-          handleToggleReadStatus,
-        }}
-      />
       <PreviewHeader source={thumb} defaultSource={fallback} data={data} />
       <Box px={4} py={4}>
         <Box mb={4}>

@@ -13,10 +13,8 @@ import {
   Progress,
   Text,
 } from "native-base";
-import { ImageBackground } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ImageBackground, useWindowDimensions } from "react-native";
 import { CombinedFileResultType } from "../../types/database";
-import Back from "../../assets/Back";
 
 interface PreviewHeaderProps {
   source: any;
@@ -39,7 +37,6 @@ export default function PreviewHeader({
   source,
   defaultSource,
 }: PreviewHeaderProps) {
-  const { top } = useSafeAreaInsets();
   const progress = Number(
     (data?.total_pages
       ? ((data?.current_page || 1) / data?.total_pages) * 100
@@ -48,13 +45,7 @@ export default function PreviewHeader({
   );
 
   return (
-    <AspectRatio
-      w="full"
-      position="relative"
-      _ios={{ mt: -top * 2 }}
-      _android={{ mt: -top }}
-      ratio={0.9}
-    >
+    <AspectRatio w="full" position="relative" ratio={1}>
       <ImageBackground
         source={source}
         defaultSource={defaultSource}
@@ -78,18 +69,20 @@ export default function PreviewHeader({
         >
           <Box mt="auto">
             <Box>
-              <Heading color="white" fontSize={42} noOfLines={4} shadow={3}>
+              <Heading color="white" fontSize={40} noOfLines={3} shadow={3}>
                 {data?.name}
               </Heading>
               <Text
                 color="white"
-                fontSize={16}
+                fontSize={14}
+                fontWeight="medium"
                 noOfLines={2}
                 shadow={3}
-                opacity={0.8}
+                opacity={0.75}
                 mt={2}
               >
-                {data?.author}, {data?.first_publish_year || "2022"}
+                {data?.author?.toUpperCase()},{" "}
+                {data?.first_publish_year || "2022"}
               </Text>
             </Box>
           </Box>
@@ -106,88 +99,80 @@ export default function PreviewHeader({
   );
 }
 
-export const PreviewNavigationHeader = ({
+export function PreviewHeaderRight({
   data,
   navigation,
   functions,
-}: PreviewNavigationHeaderProps) => {
+}: PreviewNavigationHeaderProps) {
+  const { width } = useWindowDimensions();
   const { handleDelete, handleToggleStar, handleToggleReadStatus } = functions;
+
+  const menuWidth = width * 0.65;
+
   return (
-    <HStack
-      w="full"
-      justifyContent="space-between"
-      alignItems="center"
-      px={3}
-      _ios={{ py: 2 }}
-      _android={{ py: 4 }}
-      my={0}
-      safeAreaTop
-    >
-      <Back navigation={navigation} page="Home" />
-      <HStack space={2} alignItems="center">
-        <IconButton
-          icon={
-            <Icon as={AntDesign} name={data?.is_starred ? "star" : "staro"} />
-          }
-          _icon={{
-            color: "yellow.400",
-            size: 6,
-          }}
-          _pressed={{
-            bg: "transparent",
-            _icon: {
-              opacity: 0.5,
-            },
-          }}
-          p={2}
-          m={0}
-          onPress={handleToggleStar}
-        />
-        <Menu
-          w={200}
-          trigger={(props) => (
-            <IconButton
-              icon={<Icon as={Entypo} name="dots-three-horizontal" />}
-              _icon={{ color: "muted.100", size: 5 }}
-              _pressed={{ bg: "transparent", _icon: { opacity: 0.5 } }}
-              p={2}
-              m={0}
-              {...props}
-            />
-          )}
-        >
-          <Menu.Item>
-            <Pressable
-              w="full"
-              _pressed={{ opacity: 0.5 }}
-              onPress={handleToggleReadStatus}
-            >
-              <HStack alignItems="center" space={2}>
-                <Icon
-                  as={Feather}
-                  name={data?.has_started ? "eye-off" : "eye"}
-                  size={4}
-                />
-                <Text>
-                  Mark as {data?.has_started ? "unread" : "completed"}
-                </Text>
-              </HStack>
-            </Pressable>
-          </Menu.Item>
-          <Menu.Item>
-            <Pressable
-              w="full"
-              _pressed={{ opacity: 0.5 }}
-              onPress={handleDelete}
-            >
-              <HStack alignItems="center" space={2}>
-                <Icon as={Feather} name="trash" size={4} color="red.500" />
-                <Text color="red.500">Delete</Text>
-              </HStack>
-            </Pressable>
-          </Menu.Item>
-        </Menu>
-      </HStack>
+    <HStack space={2} alignItems="center">
+      <IconButton
+        icon={
+          <Icon as={AntDesign} name={data?.is_starred ? "star" : "staro"} />
+        }
+        _icon={{
+          color: "yellow.400",
+          size: 6,
+        }}
+        _pressed={{
+          bg: "transparent",
+          _icon: {
+            opacity: 0.5,
+          },
+        }}
+        p={2}
+        m={0}
+        onPress={handleToggleStar}
+      />
+      <Menu
+        w={menuWidth < 200 ? 200 : menuWidth}
+        trigger={(props) => (
+          <IconButton
+            icon={<Icon as={Entypo} name="dots-three-horizontal" />}
+            _icon={{ size: 5 }}
+            _dark={{ _icon: { color: "muted.100" } }}
+            _light={{ _icon: { color: "muted.900" } }}
+            _pressed={{ bg: "transparent", _icon: { opacity: 0.5 } }}
+            p={2}
+            m={0}
+            {...props}
+          />
+        )}
+      >
+        <Menu.Item>
+          <Pressable
+            w="full"
+            _pressed={{ opacity: 0.5 }}
+            onPress={handleToggleReadStatus}
+          >
+            <HStack alignItems="center" space={2}>
+              <Icon
+                as={Feather}
+                name={data?.has_started ? "eye-off" : "eye"}
+                size={4}
+              />
+              <Text>Mark as {data?.has_started ? "unread" : "completed"}</Text>
+            </HStack>
+          </Pressable>
+        </Menu.Item>
+        <Menu.Item>
+          <Pressable
+            w="full"
+            _pressed={{ opacity: 0.5 }}
+            onPress={handleDelete}
+          >
+            <HStack alignItems="center" space={2}>
+              <Icon as={Feather} name="trash" size={4} color="red.500" />
+              <Text color="red.500">Delete</Text>
+            </HStack>
+          </Pressable>
+        </Menu.Item>
+      </Menu>
     </HStack>
   );
-};
+}

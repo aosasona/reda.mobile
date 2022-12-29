@@ -1,9 +1,8 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { Box, FlatList, Flex, ScrollView, SectionList } from "native-base";
+import { Box, FlatList, ScrollView, SectionList } from "native-base";
 import { useCallback, useState } from "react";
 import { Alert, RefreshControl } from "react-native";
 import EmptySection from "../components/reusables/EmptySection";
-import HomeHeader from "../components/home/HomeHeader";
 import HomeSectionTitle from "../components/home/HomeSectionTitle";
 import HorizontalFileCard from "../components/cards/HorizontalFileCard";
 import LargeHorizontalFileCard from "../components/cards/LargeHorizontalFileCard";
@@ -11,17 +10,6 @@ import LoadingHeader from "../components/reusables/loading/LoadingHeader";
 import { CombinedFileResultType } from "../types/database";
 import { CategoryPageType } from "../types/general";
 import { RedaService } from "../utils/internal.util";
-
-interface FullDataState {
-	title: string;
-	key: string;
-	data: [
-		{
-			key: string;
-			list: CombinedFileResultType[];
-		}
-	];
-}
 
 interface FlatDataState {
 	title: string;
