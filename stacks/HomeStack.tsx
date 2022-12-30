@@ -30,6 +30,12 @@ export default function HomeStack() {
 				component={Preview}
 				options={{
 					headerShown: true,
+					headerTitle: "",
+					headerTintColor: "white",
+					headerTransparent: true,
+					headerStyle: {
+						backgroundColor: "transparent",
+					},
 				}}
 			/>
 			<Stack.Screen

@@ -10,9 +10,8 @@ import {
 } from "native-base";
 import { useWindowDimensions } from "react-native";
 import screens from "../../constants/screens";
+import { useThumbnail } from "../../hooks/useThumbnail";
 import { CombinedFileResultType } from "../../types/database";
-import { getThumbnail } from "../../utils/misc.util";
-import ImagePlaceholder from "../reusables/ImagePlaceholder";
 
 interface HorizontalFileCardProps {
 	data: CombinedFileResultType;
@@ -26,7 +25,7 @@ export default function LargeHorizontalFileCard({
 	navigation,
 }: HorizontalFileCardProps) {
 	const { width } = useWindowDimensions();
-	const { thumb, fallback } = getThumbnail(data?.image);
+	const { thumb, fallback } = useThumbnail(data?.image, data.path);
 
 	const navigateToDocumentPage = () => {
 		navigation.navigate(screens.PREVIEW.screenName, { data });
@@ -40,19 +39,15 @@ export default function LargeHorizontalFileCard({
 		>
 			<VStack bg="transparent" space={3}>
 				<AspectRatio ratio={1}>
-					{data?.image ? (
-						<Image
-							w="full"
-							h="full"
-							source={thumb}
-							defaultSource={fallback}
-							resizeMode="cover"
-							alt={data?.name || ""}
-							rounded={8}
-						/>
-					) : (
-						<ImagePlaceholder />
-					)}
+					<Image
+						w="full"
+						h="full"
+						source={thumb}
+						defaultSource={fallback}
+						resizeMode="cover"
+						alt={data?.name || ""}
+						rounded={8}
+					/>
 				</AspectRatio>
 				<Box px={0.5}>
 					<Heading fontSize={22} noOfLines={2}>

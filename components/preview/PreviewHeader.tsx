@@ -12,6 +12,7 @@ import {
   Pressable,
   Progress,
   Text,
+  VStack,
 } from "native-base";
 import { ImageBackground, useWindowDimensions } from "react-native";
 import { CombinedFileResultType } from "../../types/database";
@@ -45,7 +46,7 @@ export default function PreviewHeader({
   );
 
   return (
-    <AspectRatio w="full" position="relative" ratio={1}>
+    <AspectRatio w="full" ratio={0.95}>
       <ImageBackground
         source={source}
         defaultSource={defaultSource}
@@ -57,7 +58,7 @@ export default function PreviewHeader({
           bottom={0}
           left={0}
           right={0}
-          bg="rgba(0,0,0,0.7)"
+          bg="rgba(0,0,0,0.75)"
         />
 
         <Flex
@@ -68,23 +69,27 @@ export default function PreviewHeader({
           pb={4}
         >
           <Box mt="auto">
-            <Box>
-              <Heading color="white" fontSize={40} noOfLines={3} shadow={3}>
+            <VStack space={1}>
+              <Heading color="white" fontSize={40} noOfLines={3} shadow={4}>
                 {data?.name}
               </Heading>
               <Text
-                color="white"
+                color="muted.400"
                 fontSize={14}
                 fontWeight="medium"
                 noOfLines={2}
-                shadow={3}
-                opacity={0.75}
-                mt={2}
+                shadow={4}
+                opacity={0.8}
               >
-                {data?.author?.toUpperCase()},{" "}
-                {data?.first_publish_year || "2022"}
+                {data?.author &&
+                  data?.author?.toLowerCase() !== "unknown author"
+                  ? data?.author?.toUpperCase()
+                  : ""}
+                {data?.first_publish_year
+                  ? `, ${data?.first_publish_year}`
+                  : ""}
               </Text>
-            </Box>
+            </VStack>
           </Box>
         </Flex>
 
@@ -134,9 +139,7 @@ export function PreviewHeaderRight({
         trigger={(props) => (
           <IconButton
             icon={<Icon as={Entypo} name="dots-three-horizontal" />}
-            _icon={{ size: 5 }}
-            _dark={{ _icon: { color: "muted.100" } }}
-            _light={{ _icon: { color: "muted.900" } }}
+            _icon={{ size: 5, color: "white" }}
             _pressed={{ bg: "transparent", _icon: { opacity: 0.5 } }}
             p={2}
             m={0}

@@ -13,8 +13,8 @@ import {
 } from "native-base";
 import { useEffect, useState } from "react";
 import { useWindowDimensions } from "react-native";
+import { useThumbnail } from "../../hooks/useThumbnail";
 import { MetaCardProps } from "../../types/import";
-import { getThumbnail } from "../../utils/misc.util";
 import { OpenLibraryService } from "../../utils/request.util";
 import ImagePlaceholder from "../reusables/ImagePlaceholder";
 
@@ -31,7 +31,9 @@ export default function MetaListCard({ state, functions }: MetaCardProps) {
 		}
 	}, [data]);
 
-	const { thumb, fallback } = getThumbnail(img);
+	const { thumb, fallback } = useThumbnail(img);
+
+	console.log(thumb, fallback);
 
 	return (
 		<Pressable

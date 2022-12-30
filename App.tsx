@@ -46,8 +46,8 @@ import {
 import * as SplashScreen from "expo-splash-screen";
 import { NativeBaseProvider } from "native-base";
 import React, { useEffect, useState } from "react";
-import { View, Appearance, useColorScheme } from "react-native";
-import { colors, extendedTheme } from "./config/theme";
+import { View, Appearance } from "react-native";
+import { extendedTheme } from "./config/theme";
 import { GlobalContextProvider } from "./context/GlobalContext";
 import MainStack from "./stacks/MainStack";
 import { colorModeManager } from "./utils/color.util";

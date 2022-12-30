@@ -67,8 +67,14 @@ export default function MetaList({ functions, state }: MetaModalProps) {
 				bottom={Platform.OS === "android" ? 10 : 2}
 				safeAreaBottom={true}
 			>
-				<Button w="full" onPress={toggleStep} {...ButtonProps}>
-					{(meta?.all || [])?.length > 0 ? "Continue" : "Skip"}
+				<Button
+					w="full"
+					_text={{ fontWeight: "medium", fontSize: 16 }}
+					shadow={5}
+					onPress={toggleStep}
+					{...ButtonProps}
+				>
+					{(meta?.all || [])?.length > 0 && meta?.current ? "Continue" : "Skip"}
 				</Button>
 			</Box>
 		</>

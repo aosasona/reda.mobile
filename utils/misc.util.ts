@@ -1,6 +1,10 @@
-import {Toast} from "native-base";
+import { Toast } from "native-base";
+import PdfThumbnail from "react-native-pdf-thumbnail";
 
-export const showToast = (message: string, type: "success" | "error" | "warning" | "info" = "success") => {
+export const showToast = (
+	message: string,
+	type: "success" | "error" | "warning" | "info" = "success"
+) => {
 	Toast.show({
 		description: message,
 		minW: "90%",
@@ -19,15 +23,24 @@ export const showToast = (message: string, type: "success" | "error" | "warning"
 			fontSize: 16,
 			noOfLines: 1,
 		},
-	})
-}
+	});
+};
 
-export const getThumbnail = (image: string | null | undefined) => {
-	const defaultThumb = require("../assets/default-book.jpg");
-	const thumb = !!image ? {uri: image} : defaultThumb;
-	return {thumb, fallback: defaultThumb};
-}
+export const getThumbnail = async (
+	image: string | null | undefined,
+	path: string | null = null
+): Promise<{ thumb: any; fallback: any }> => {
+	let defaultThumb = require("../assets/default-book.jpg");
+	if (path) {
+		try {
+			const { uri } = await PdfThumbnail.generate(path, 0);
+			defaultThumb = uri;
+		} catch (e) { }
+	}
+	const thumb = !!image && isNaN(parseInt(image)) ? image : defaultThumb;
+	return { thumb, fallback: defaultThumb };
+};
 
 export const byteToMB = (bytes: number) => {
 	return (bytes / 1024 / 1024)?.toFixed(2) + " MB";
-}
+};

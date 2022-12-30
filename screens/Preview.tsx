@@ -12,14 +12,14 @@ import { useCallback, useEffect, useState } from "react";
 import { Alert, RefreshControl } from "react-native";
 import PreviewHeader, {
   PreviewHeaderRight,
-  PreviewNavigationHeader,
 } from "../components/preview/PreviewHeader";
 import { ButtonProps, DetailsProps, DividerProps } from "../constants/props";
 import screens from "../constants/screens";
+import { useThumbnail } from "../hooks/useThumbnail";
 import { CombinedFileResultType, SQLBoolean } from "../types/database";
 import { ScreenProps } from "../types/general";
 import { RedaService } from "../utils/internal.util";
-import { byteToMB, getThumbnail } from "../utils/misc.util";
+import { byteToMB } from "../utils/misc.util";
 
 export default function Preview({ route, navigation }: ScreenProps) {
   const { data: initialData } = route.params;
@@ -31,7 +31,7 @@ export default function Preview({ route, navigation }: ScreenProps) {
   const [refreshing, setRefreshing] = useState(false);
   const [data, setData] = useState<CombinedFileResultType>(initialData);
 
-  const { thumb, fallback } = getThumbnail(data?.image);
+  const { thumb, fallback } = useThumbnail(data?.image, data?.path);
 
   useFocusEffect(
     useCallback(() => {
@@ -83,7 +83,6 @@ export default function Preview({ route, navigation }: ScreenProps) {
 
   useEffect(() => {
     navigation.setOptions({
-      title: data?.name || "Preview",
       headerRight: () => (
         <PreviewHeaderRight
           data={data}

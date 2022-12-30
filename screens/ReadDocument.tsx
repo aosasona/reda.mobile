@@ -6,6 +6,7 @@ import Pdf from "react-native-pdf";
 import { Alert, Dimensions } from "react-native";
 import { GlobalContext } from "../context/GlobalContext";
 import { RedaService } from "../utils/internal.util";
+import { colors } from "../config/theme";
 
 export default function ReadDocument({ route, navigation }: ScreenProps) {
 	const { state } = useContext(GlobalContext);
@@ -66,7 +67,7 @@ export default function ReadDocument({ route, navigation }: ScreenProps) {
 				enablePaging={state.useSinglePageLayout}
 				horizontal={state.useSinglePageLayout}
 				enableAntialiasing={true}
-				enableAnnotationRendering={true}
+				enableAnnotationRendering={false}
 				onLoadComplete={onLoadComplete}
 				onPageChanged={onPageChanged}
 				onError={onError}
@@ -74,7 +75,9 @@ export default function ReadDocument({ route, navigation }: ScreenProps) {
 					flex: 1,
 					width,
 					height,
-					backgroundColor: isDark ? "#000000" : "#F5F5F5",
+					backgroundColor: isDark
+						? colors["brand-dark"]
+						: colors["brand-light"],
 				}}
 			/>
 			<Box
