@@ -32,7 +32,7 @@ export default function LargeHorizontalFileCard({
 	};
 	return (
 		<Pressable
-			w={width * 0.75}
+			w={width * 0.78}
 			_pressed={{ opacity: 0.6 }}
 			mr={4}
 			onPress={navigateToDocumentPage}

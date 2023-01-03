@@ -32,7 +32,7 @@ export default function HorizontalFileCard({
 	};
 	return (
 		<Pressable
-			w={width * 0.4}
+			w={width * 0.45}
 			_pressed={{ opacity: 0.6 }}
 			mr={3}
 			onPress={navigateToDocumentPage}

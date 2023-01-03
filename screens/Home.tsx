@@ -97,7 +97,8 @@ export default function Home() {
 			ListFooterComponent={<Box bg="transparent" my={10} />}
 			keyExtractor={(item, index) => item.key + index}
 			renderSectionHeader={({ section }) =>
-				section?.data?.[0]?.list?.length > 0 && section.title != "continue" ? (
+				section?.data?.[0]?.list?.length > 0 &&
+					section.category !== CategoryPageType.CONTINUE_READING ? (
 					<HomeSectionTitle title={section.title} category={section.category} />
 				) : null
 			}
@@ -124,11 +125,10 @@ export default function Home() {
 						}
 						keyExtractor={(item, index) => index.toString()}
 						ListEmptyComponent={<EmptySection title={item.key} />}
-						alwaysBounceVertical={false}
-						alwaysBounceHorizontal={false}
 						initialNumToRender={15}
-						bounces={false}
-						px={0}
+						decelerationRate="fast"
+						pagingEnabled={true}
+						px={1}
 						mx={0}
 						mt={section.title == "continue" ? 4 : 0}
 					/>
