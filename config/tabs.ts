@@ -28,13 +28,14 @@ export const screenOptions = (colorMode: ColorMode) => ({
     shadowColor: "transparent",
   },
   tabBarLabelStyle: {
-    fontSize: 12,
+    fontSize: 10,
     display: "none",
   },
   tabBarStyle: {
-    height: isAndroid ? 65 : 75,
+    height: isAndroid ? 65 : 85,
     backgroundColor: getPrimaryColor(colorMode),
     borderTopWidth: 0,
+    paddingVertical: 5,
   },
 });
 

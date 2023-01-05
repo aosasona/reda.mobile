@@ -1,27 +1,27 @@
-import {Box, FlatList, Flex, Heading} from "native-base";
-import {useEffect, useState} from "react";
-import {ActivityIndicator, Dimensions, RefreshControl} from "react-native";
-import {useSafeAreaInsets} from "react-native-safe-area-context";
+import { Box, FlatList, Flex, Heading } from "native-base";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, Dimensions, RefreshControl } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import SearchCard from "../components/cards/SearchCard";
 import EmptySection from "../components/reusables/EmptySection";
 import SearchInput from "../components/reusables/SearchInput";
-import {RedaService} from "../services/local";
-import {CombinedFileResultType} from "../types/database";
-import {CategoryPageType, ScreenProps} from "../types/general";
-import {showToast} from "../utils/misc.util";
+import { RedaService } from "../services/local";
+import { CombinedFileResultType } from "../types/database";
+import { CategoryPageType, ScreenProps } from "../types/general";
+import { showToast } from "../utils/misc.util";
 
 interface DataState {
 	all: CombinedFileResultType[];
 	searchResults: CombinedFileResultType[];
 }
 
-export default function Category({route, navigation}: ScreenProps) {
+export default function Category({ route, navigation }: ScreenProps) {
 	const category = route?.params?.category as CategoryPageType;
 
 	if (!category) navigation.goBack();
 
-	const {height} = Dimensions.get("window");
-	const {top} = useSafeAreaInsets();
+	const { height } = Dimensions.get("window");
+	const { top } = useSafeAreaInsets();
 
 	const [refreshing, setRefreshing] = useState(false);
 	const [loading, setLoading] = useState(true);
@@ -50,11 +50,11 @@ export default function Category({route, navigation}: ScreenProps) {
 				});
 			} else if (category == CategoryPageType.STARRED) {
 				data =
-				  (await RedaService.getStarred({
-					  limit: count,
-					  sort_by: "name",
-					  sort_order: "ASC",
-				  })) || [];
+					(await RedaService.getStarred({
+						limit: count,
+						sort_by: "name",
+						sort_order: "ASC",
+					})) || [];
 			} else if (category == CategoryPageType.CONTINUE_READING) {
 				data = await RedaService.getContinueReading({
 					limit: count,
@@ -63,11 +63,10 @@ export default function Category({route, navigation}: ScreenProps) {
 				});
 			}
 
-			setData({all: data, searchResults: []});
+			setData({ all: data, searchResults: [] });
 			setSearchQuery("");
 			if (loading) setLoading(false);
-		}
-		catch (error) {
+		} catch (error) {
 			showToast("Something went wrong!", "error");
 			navigation.goBack();
 		}
@@ -75,48 +74,49 @@ export default function Category({route, navigation}: ScreenProps) {
 
 	const runSearch = () => {
 		const results = data?.all?.filter((item) =>
-		  item?.name?.toLowerCase()?.includes(searchQuery),
+			item?.name?.toLowerCase()?.includes(searchQuery)
 		);
-		setData((prev) => ({...prev, searchResults: results}));
+		setData((prev) => ({ ...prev, searchResults: results }));
 	};
 
 	if (loading) {
 		return (
-		  <Flex
-			h={height}
-			flex={1}
-			alignItems="center"
-			justifyContent="center"
-			_dark={{bg: "brand-dark"}}
-			_light={{bg: "brand-light"}}
-		  >
-			  <ActivityIndicator size="large"/>
-		  </Flex>
+			<Flex
+				h={height}
+				flex={1}
+				alignItems="center"
+				justifyContent="center"
+				_dark={{ bg: "brand-dark" }}
+				_light={{ bg: "brand-light" }}
+			>
+				<ActivityIndicator size="large" />
+			</Flex>
 		);
 	}
 
 	return (
-	  <FlatList
-		data={searchQuery ? data.searchResults : data.all}
-		renderItem={({item}) => (
-		  <SearchCard data={item} navigation={navigation}/>
-		)}
-		ListHeaderComponent={
-			<PageHeader
-			  data={{title: category, searchQuery}}
-			  functions={{setSearchQuery}}
-			/>
-		}
-		ListEmptyComponent={EmptySection}
-		stickyHeaderIndices={[0]}
-		refreshControl={
-			<RefreshControl
-			  refreshing={refreshing}
-			  onRefresh={fetchAllFiles}
-			  progressViewOffset={top}
-			/>
-		}
-	  />
+		<FlatList
+			data={searchQuery ? data.searchResults : data.all}
+			renderItem={({ item }) => (
+				<SearchCard data={item} navigation={navigation} />
+			)}
+			ListHeaderComponent={
+				<PageHeader
+					data={{ title: category, searchQuery }}
+					functions={{ setSearchQuery }}
+				/>
+			}
+			ListFooterComponent={<Box my={5} />}
+			ListEmptyComponent={EmptySection}
+			stickyHeaderIndices={[0]}
+			refreshControl={
+				<RefreshControl
+					refreshing={refreshing}
+					onRefresh={fetchAllFiles}
+					progressViewOffset={top}
+				/>
+			}
+		/>
 	);
 }
 
@@ -130,25 +130,25 @@ interface PageHeaderProps {
 	};
 }
 
-function PageHeader({data, functions}: PageHeaderProps) {
-	const {title, searchQuery} = data;
-	const {setSearchQuery} = functions;
+function PageHeader({ data, functions }: PageHeaderProps) {
+	const { title, searchQuery } = data;
+	const { setSearchQuery } = functions;
 
 	return (
-	  <Box
-		w={"full"}
-		_dark={{bg: "brand-dark"}}
-		_light={{bg: "brand-light"}}
-		pb={3}
-		px={0}
-		pt={3}
-		mb={4}
-		safeAreaTop
-	  >
-		  <Heading fontSize={44} mb={2}>
-			  {title}
-		  </Heading>
-		  <SearchInput search={searchQuery} setSearch={setSearchQuery}/>
-	  </Box>
+		<Box
+			w={"full"}
+			_dark={{ bg: "brand-dark" }}
+			_light={{ bg: "brand-light" }}
+			pb={3}
+			px={0}
+			pt={3}
+			mb={4}
+			safeAreaTop
+		>
+			<Heading fontSize={44} mb={2}>
+				{title}
+			</Heading>
+			<SearchInput search={searchQuery} setSearch={setSearchQuery} />
+		</Box>
 	);
 }

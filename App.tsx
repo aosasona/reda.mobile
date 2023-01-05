@@ -111,7 +111,7 @@ export default function App() {
 		})();
 	}, [fontsLoaded, navReady, appReady]);
 
-	useEffect(() => {
+	if (typeof window !== undefined) {
 		Appearance.addChangeListener(({ colorScheme }) => {
 			colorModeManager.set(colorScheme);
 		});
@@ -119,7 +119,7 @@ export default function App() {
 			await runMigration(migrateLegacyDB);
 			await syncLocalData();
 		})();
-	}, []);
+	}
 
 	if (!fontsLoaded) {
 		return null;

@@ -1,4 +1,3 @@
-import { View } from "native-base";
 import { WebView } from "react-native-webview";
 import CustomSafeAreaView from "../components/reusables/CustomSafeAreaView";
 import { ScreenProps } from "../types/general";
@@ -8,9 +7,12 @@ export default function BrowserPage({ route, navigation }: ScreenProps) {
 
   return (
     <CustomSafeAreaView>
-      <View flex={1}>
-        <WebView source={{ uri }} />
-      </View>
+      <WebView
+        source={{ uri }}
+        automaticallyAdjustContentInsets
+        pullToRefreshEnabled
+        style={{ flex: 1 }}
+      />
     </CustomSafeAreaView>
   );
 }

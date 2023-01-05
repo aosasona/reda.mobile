@@ -1,10 +1,9 @@
 import * as FileSystem from "expo-file-system";
 import { SQLResultSet } from "expo-sqlite";
-import { Alert } from "react-native";
 import { FileModel, MetadataModel, SQLBoolean } from "../../types/database";
 import { del, executeQuery, saveFile } from "../../utils/database.util";
 import { DEFAULT_REDA_DIRECTORY, extractFileName } from "../../utils/file.util";
-import { showToast } from "../../utils/misc.util";
+import { filterSupportedFiles, showToast } from "../../utils/misc.util";
 
 // This will check all files in the database vs all files in the storage and delete the records where the files don't exist
 export const removeMissingFileRecords = async () => {
@@ -14,7 +13,7 @@ export const removeMissingFileRecords = async () => {
 		const data = (paths as SQLResultSet)?.rows?._array;
 		if (!data) return;
 
-		data?.forEach(async (item) => {
+		for (const item of data) {
 			const relativePath = `${DEFAULT_REDA_DIRECTORY}${item.path}`;
 			const { exists } = await FileSystem.getInfoAsync(relativePath);
 			if (!exists) {
@@ -23,7 +22,7 @@ export const removeMissingFileRecords = async () => {
 					del({ table: "metadata", identifier: "file_id", id: item.id }),
 				]);
 			}
-		});
+		}
 	} catch (err) {
 		return;
 	}
@@ -32,21 +31,21 @@ export const removeMissingFileRecords = async () => {
 // This will check for new files that haven't been added to the database
 export const addNewFilesToDB = async () => {
 	try {
-		const allowedExts = ["pdf"];
-		let files = await FileSystem.readDirectoryAsync(DEFAULT_REDA_DIRECTORY);
-		files = files.filter((file) =>
-			allowedExts.includes(file?.split(".")?.pop() || "")
+		const allFiles = await FileSystem.readDirectoryAsync(
+			DEFAULT_REDA_DIRECTORY
 		);
+		const files = filterSupportedFiles(allFiles);
 
 		const res = await executeQuery("SELECT path FROM files");
 		let savedFiles = (res as SQLResultSet)?.rows?._array || [];
 		if (savedFiles.length > 0) {
 			savedFiles = savedFiles.map((item) => item.path);
 		}
+
 		let syncedCount = 0;
 
 		for (const file of files) {
-			if (savedFiles.includes(file)) continue;
+			if (savedFiles.includes(encodeURIComponent(file))) continue;
 			const fullPath = `${DEFAULT_REDA_DIRECTORY}${encodeURIComponent(file)}`;
 			const { exists, size, isDirectory } = await FileSystem.getInfoAsync(
 				fullPath
