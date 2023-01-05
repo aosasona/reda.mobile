@@ -39,10 +39,11 @@ export interface ImportStatesProps {
 export interface MetaModalProps {
 	functions: {
 		setState: StateSetter;
-		handleCurrentMetaChange: (value: any, index: number) => void;
-		handleModalDismiss: () => void;
 		toggleStep?: () => void;
 		loadAllMeta: (fileName: string) => Promise<void>;
+		handleCurrentMetaChange: (value: any, index: number) => void;
+		handleComplete: (args: CompleteInAppFlowArgs) => void;
+		handleModalDismiss: () => void;
 	};
 	state: {
 		isOpen: boolean;
@@ -62,6 +63,7 @@ export interface MetaPageProps {
 	functions: {
 		toggleStep: () => void;
 		handleModalDismiss: () => void;
+		handleComplete: (args: CompleteInAppFlowArgs) => void;
 	}
 }
 
@@ -92,4 +94,13 @@ export interface DownloadingCardProps {
 	item: DownloadingListState;
 	index: number;
 	onDelete: (index: number) => void;
+}
+
+export interface CompleteInAppFlowArgs {
+	data: any;
+	file: File;
+	img: string;
+	metadata: any;
+	setSaving: (value: boolean) => void;
+	handleModalDismiss: () => void;
 }

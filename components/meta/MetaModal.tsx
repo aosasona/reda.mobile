@@ -8,7 +8,7 @@ import MetaPage from "./MetaPage";
 export default function MetaModal({functions, state}: MetaModalProps) {
 
 	const {isOpen, step, file, meta} = state;
-	const {setState, handleModalDismiss} = functions;
+	const {setState, handleModalDismiss, handleComplete} = functions;
 
 	const toggleStep = () => setState(prevState => ({...prevState, step: prevState.step === MetaModalSteps.ONE ? MetaModalSteps.TWO : MetaModalSteps.ONE}));
 
@@ -34,7 +34,7 @@ export default function MetaModal({functions, state}: MetaModalProps) {
 				  initial={forwardTransition}
 				  animate={transitionAnimation}
 				>
-					<MetaPage state={{data: meta?.current, file}} functions={{toggleStep, handleModalDismiss}}/>
+					<MetaPage state={{data: meta?.current, file}} functions={{handleComplete, toggleStep, handleModalDismiss}}/>
 				</PresenceTransition>
 			</Actionsheet.Content>
 		  }

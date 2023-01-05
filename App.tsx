@@ -46,13 +46,14 @@ import {
 import * as SplashScreen from "expo-splash-screen";
 import { NativeBaseProvider } from "native-base";
 import React, { useEffect, useState } from "react";
-import { View, Appearance } from "react-native";
+import { Appearance, View } from "react-native";
 import { extendedTheme } from "./config/theme";
-import { GlobalContextProvider } from "./context/GlobalContext";
+import { AppContextProvider } from "./context/app/AppContext";
+import { SettingsContextProvider } from "./context/settings/SettingsContext";
+import { migrateLegacyDB, syncLocalData } from "./services/local/startup";
 import MainStack from "./stacks/MainStack";
 import { colorModeManager } from "./utils/color.util";
-import { DATABASE_NAME, runMigration } from "./utils/database.util";
-import { migrateLegacyDB } from "./utils/file.util";
+import { runMigration } from "./utils/database.util";
 
 (async () => await SplashScreen.preventAutoHideAsync())();
 
@@ -110,14 +111,15 @@ export default function App() {
 		})();
 	}, [fontsLoaded, navReady, appReady]);
 
-	if (typeof window !== "undefined") {
+	useEffect(() => {
 		Appearance.addChangeListener(({ colorScheme }) => {
 			colorModeManager.set(colorScheme);
 		});
 		(async () => {
 			await runMigration(migrateLegacyDB);
+			await syncLocalData();
 		})();
-	}
+	}, []);
 
 	if (!fontsLoaded) {
 		return null;
@@ -125,14 +127,16 @@ export default function App() {
 
 	return (
 		<View style={{ flex: 1 }} onLayout={() => setAppReady(true)}>
-			<GlobalContextProvider>
-				<NativeBaseProvider
-					theme={extendedTheme}
-					colorModeManager={colorModeManager}
-				>
-					<MainStack onNavReady={() => setNavReady(true)} />
-				</NativeBaseProvider>
-			</GlobalContextProvider>
+			<AppContextProvider>
+				<SettingsContextProvider>
+					<NativeBaseProvider
+						theme={extendedTheme}
+						colorModeManager={colorModeManager}
+					>
+						<MainStack onNavReady={() => setNavReady(true)} />
+					</NativeBaseProvider>
+				</SettingsContextProvider>
+			</AppContextProvider>
 		</View>
 	);
 }

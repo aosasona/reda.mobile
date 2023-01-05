@@ -1,8 +1,8 @@
 import { Entypo } from "@expo/vector-icons";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { Heading, HStack, Icon, Pressable } from "native-base";
-import screens from "../../constants/screens";
-import { CategoryPageType } from "../../types/general";
+import screens from "../../../constants/screens";
+import { CategoryPageType } from "../../../types/general";
 
 interface HomeSectionTitleProps {
 	title: string;

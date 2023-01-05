@@ -1,9 +1,9 @@
-import { Toast } from "native-base";
+import {Toast} from "native-base";
 import PdfThumbnail from "react-native-pdf-thumbnail";
 
 export const showToast = (
-	message: string,
-	type: "success" | "error" | "warning" | "info" = "success"
+  message: string,
+  type: "success" | "error" | "warning" | "info" = "success"
 ) => {
 	Toast.show({
 		description: message,
@@ -26,19 +26,30 @@ export const showToast = (
 	});
 };
 
+export const generateRandomString = (length: number) => {
+	const chars =
+	  "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	let result = "";
+	for (let i = length; i > 0; --i)
+		result += chars[Math.floor(Math.random() * chars.length)];
+	return result;
+}
+
 export const getThumbnail = async (
-	image: string | null | undefined,
-	path: string | null = null
+  image: string | null | undefined,
+  path: string | null = null
 ): Promise<{ thumb: any; fallback: any }> => {
 	let defaultThumb = require("../assets/default-book.jpg");
 	if (path) {
 		try {
-			const { uri } = await PdfThumbnail.generate(path, 0);
+			const {uri} = await PdfThumbnail.generate(path, 0);
 			defaultThumb = uri;
-		} catch (e) { }
+		}
+		catch (e) {
+		}
 	}
 	const thumb = !!image && isNaN(parseInt(image)) ? image : defaultThumb;
-	return { thumb, fallback: defaultThumb };
+	return {thumb, fallback: defaultThumb};
 };
 
 export const byteToMB = (bytes: number) => {

@@ -2,6 +2,7 @@ import {createNativeStackNavigator} from "@react-navigation/native-stack"
 import {useColorMode} from "native-base";
 import {navigationConfig} from "../config/screens";
 import screens from "../constants/screens";
+import BrowserPage from "../screens/Browser";
 import Settings from "../screens/Settings";
 
 
@@ -15,6 +16,11 @@ export default function SettingsStack() {
 			  headerTitle: screens.SETTINGS.screenTitle,
 			  headerShown: false,
 		  }}/>
+		  <Stack.Screen
+			name={screens.BROWSER.screenName}
+			component={BrowserPage}
+			options={{headerTitle: "", headerShown: false, presentation: "transparentModal"}}
+		  />
 	  </Stack.Navigator>
 	)
 }

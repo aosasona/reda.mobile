@@ -15,7 +15,7 @@ import {
   VStack,
 } from "native-base";
 import { ImageBackground, useWindowDimensions } from "react-native";
-import { CombinedFileResultType } from "../../types/database";
+import { CombinedFileResultType } from "../../../types/database";
 
 interface PreviewHeaderProps {
   source: any;

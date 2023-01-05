@@ -27,7 +27,7 @@ export class OpenLibraryService {
 
 	static async getBookDataByKey(key: string) {
 		const url = `${this.BASE_URL}books/${key}.json`
-		const { data } = await axios.get(url)
+		const {data} = await axios.get(url)
 		return data
 	}
 }

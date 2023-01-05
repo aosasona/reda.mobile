@@ -1,4 +1,4 @@
-export enum ConfigKeys {
+export enum Keys {
 	FONT_SIZE = "@font-size",
 	FONT_FAMILY = "@font-family",
 	COLOR_MODE = "@color-mode",

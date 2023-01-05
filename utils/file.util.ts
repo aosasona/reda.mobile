@@ -1,8 +1,8 @@
-import { DocumentResult } from "expo-document-picker";
+import {DocumentResult} from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
-import { SQLResultSet } from "expo-sqlite";
+import {SQLResultSet} from "expo-sqlite";
 import CustomException from "../exceptions/CustomException";
-import { executeQuery } from "./database.util";
+import {executeQuery} from "./database.util";
 
 export interface File {
 	name: string;
@@ -18,39 +18,9 @@ export interface ExtractFileOptions {
 
 export const DEFAULT_REDA_DIRECTORY = FileSystem.documentDirectory as string;
 
-// this will check all files in the database vs all files in the storage and delete the records where the files don't exist
-export const removeMissingFileRecords = async () => {
-	const dbPaths = await executeQuery("SELECT id, path FROM files");
-	console.log(dbPaths);
-};
-
-// this will check for new files that haven't been added to the database
-export const addNewFilesToDB = async () => { };
-
-export const syncStorageToDB = async () => {
-	await removeMissingFileRecords();
-	await addNewFilesToDB();
-};
-
-export const migrateLegacyDB = async (currentName: string) => {
-	try {
-		const legacyPath = `${DEFAULT_REDA_DIRECTORY}/SQLite/reda.db`;
-		const currentPath = `${DEFAULT_REDA_DIRECTORY}/SQLite/${currentName}`;
-
-		const { exists } = await FileSystem.getInfoAsync(
-			DEFAULT_REDA_DIRECTORY + "/SQLite/reda.db"
-		);
-		if (!exists) return;
-		await FileSystem.moveAsync({
-			from: legacyPath,
-			to: currentPath,
-		});
-	} catch (err) { }
-};
-
 export const extractFileName = (
-	rawName: string,
-	options: ExtractFileOptions = { isURI: false }
+  rawName: string,
+  options: ExtractFileOptions = {isURI: false},
 ) => {
 	if (options.isURI) {
 		rawName = extractFileNameFromUri(rawName);
@@ -68,26 +38,18 @@ export const extractFileNameFromUri = (uri: string) => {
 export const processFileName = (filename: string, max: number = 3) => {
 	const slimFileNameArray = (filename || "")?.split(/[\s-_]/);
 	return slimFileNameArray
-		?.slice(
-			0,
-			slimFileNameArray?.length >= max ? max : slimFileNameArray.length
-		)
-		?.join(" ");
-};
-
-export const createFolder = async (name: string) => {
-	const path = DEFAULT_REDA_DIRECTORY + name;
-	const { exists } = await FileSystem.getInfoAsync(path);
-	if (!exists) {
-		await FileSystem.makeDirectoryAsync(path, { intermediates: true });
-	}
+	  ?.slice(
+		0,
+		slimFileNameArray?.length >= max ? max : slimFileNameArray.length,
+	  )
+	  ?.join(" ");
 };
 
 export const copyToFolder = async (uri: string) => {
 	const path = DEFAULT_REDA_DIRECTORY;
-	const { exists } = await FileSystem.getInfoAsync(path);
+	const {exists} = await FileSystem.getInfoAsync(path);
 	if (!exists) {
-		await FileSystem.makeDirectoryAsync(path, { intermediates: true });
+		await FileSystem.makeDirectoryAsync(path, {intermediates: true});
 	}
 	const newPath = path + uri.split("/").pop();
 	await FileSystem.copyAsync({
@@ -115,10 +77,10 @@ export const deleteAll = async () => {
 export const handleFileCleanup = async (url: string | undefined) => {
 	if (!url) return;
 	const res = (await executeQuery(
-		`SELECT COUNT(*) as count
+	  `SELECT COUNT(*) as count
        FROM files
        WHERE path = ?`,
-		[url]
+	  [url],
 	)) as SQLResultSet;
 
 	const count = res?.rows?._array[0]?.count || 0;
@@ -129,7 +91,7 @@ export const handleFileCleanup = async (url: string | undefined) => {
 };
 
 export const handleFilePick = async (
-	data: DocumentResult
+  data: DocumentResult,
 ): Promise<File | null> => {
 	if (data.type !== "success") return null;
 	const uri = data?.uri;
