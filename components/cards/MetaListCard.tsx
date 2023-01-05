@@ -33,8 +33,6 @@ export default function MetaListCard({ state, functions }: MetaCardProps) {
 
 	const { thumb, fallback } = useThumbnail(img);
 
-	console.log(thumb, fallback);
-
 	return (
 		<Pressable
 			_pressed={{ opacity: 0.6 }}

@@ -1,41 +1,45 @@
 import * as SQLite from "expo-sqlite";
-import {SQLError, SQLResultSet} from "expo-sqlite";
-import {FileModel, MetadataModel} from "../types/database";
+import { SQLError, SQLResultSet } from "expo-sqlite";
+import { FileModel, MetadataModel } from "../types/database";
 
-const DATABASE_NAME = "reda.db";
+export const DATABASE_NAME = ".reda.db";
 
 const db = SQLite.openDatabase(
   DATABASE_NAME,
   "1.0",
-  "Local data store for Reda",
+  "Local data store for Reda"
 );
 
 export const executeQuery = async (
   query: string,
-  params: any[] = [],
+  params: any[] = []
 ): Promise<SQLResultSet | SQLError> => {
-	return new Promise((resolve, reject) => {
-		db.transaction(
-		  (tx) => {
-			  tx.executeSql(query, params, (_, res) => {
-				  resolve(res);
-			  });
-		  },
-		  (error) => reject(error),
-		);
-	});
+  return new Promise((resolve, reject) => {
+    db.transaction(
+      (tx) => {
+        tx.executeSql(query, params, (_, res) => {
+          resolve(res);
+        });
+      },
+      (error) => reject(error)
+    );
+  });
 };
 
-export const runMigration = async () => {
-	interface MigrationDefinition {
-		name: string;
-		query: string;
-	}
+export const runMigration = async (
+  migrateLegacyDB: (currentName: string) => Promise<void>
+) => {
+  interface MigrationDefinition {
+    name: string;
+    query: string;
+  }
 
-	const migrations: MigrationDefinition[] = [
-		{
-			name: "create_files_table",
-			query: `
+  await migrateLegacyDB(DATABASE_NAME);
+
+  const migrations: MigrationDefinition[] = [
+    {
+      name: "create_files_table",
+      query: `
                 CREATE TABLE IF NOT EXISTS files
                 (
                     id            INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -49,10 +53,10 @@ export const runMigration = async () => {
                     created_at    DATETIME                          NOT NULL DEFAULT CURRENT_TIMESTAMP,
                     CONSTRAINT path_unique UNIQUE (path)
                 )`,
-		},
-		{
-			name: "create_metadata_table",
-			query: `
+    },
+    {
+      name: "create_metadata_table",
+      query: `
                 CREATE TABLE IF NOT EXISTS metadata
                 (
                     id                 INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -72,103 +76,99 @@ export const runMigration = async () => {
                     updated_at         DATETIME                          NOT NULL DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY (file_id) REFERENCES files (id)
                 )`,
-		},
-	];
-	const enablePragma = `PRAGMA foreign_keys = ON;`;
+    },
+  ];
+  const enablePragma = `PRAGMA foreign_keys = ON;`;
 
-	const migrationTableQuery = `CREATE TABLE IF NOT EXISTS migrations
+  const migrationTableQuery = `CREATE TABLE IF NOT EXISTS migrations
                                  (
                                      id         INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                                      name       TEXT                              NOT NULL,
                                      created_at DATETIME                          NOT NULL DEFAULT CURRENT_TIMESTAMP
                                  )`;
 
-	db.transaction(
-	  (tx: any) => {
-		  tx.executeSql(enablePragma);
-		  tx.executeSql(migrationTableQuery);
-		  migrations.forEach((migration) => {
-			  tx.executeSql(
-				`SELECT *
+  db.transaction(
+    (tx: any) => {
+      tx.executeSql(enablePragma);
+      tx.executeSql(migrationTableQuery);
+      migrations.forEach((migration) => {
+        tx.executeSql(
+          `SELECT *
                  FROM migrations
                  WHERE name = ?`,
-				[migration.name],
-				(tx: any, res: any) => {
-					if (res.rows.length === 0) {
-						tx.executeSql(migration.query);
-						tx.executeSql(
-						  `INSERT INTO migrations (name)
+          [migration.name],
+          (tx: any, res: any) => {
+            if (res.rows.length === 0) {
+              tx.executeSql(migration.query);
+              tx.executeSql(
+                `INSERT INTO migrations (name)
                            VALUES (?)`,
-						  [migration.name],
-						);
-					}
-				},
-			  );
-		  });
-	  },
-	  (error) => console.log(error.message),
-	);
+                [migration.name]
+              );
+            }
+          }
+        );
+      });
+    },
+    (error) => console.log(error.message)
+  );
 };
 
 export const clearDatabase = async () => {
-	await executeQuery(`DROP TABLE IF EXISTS files;`);
-	await executeQuery(`DROP TABLE IF EXISTS metadata;`);
-	await executeQuery(`DROP TABLE IF EXISTS migrations;`);
-	await runMigration();
+  await executeQuery(`DELETE FROM files;`);
+  await executeQuery(`DELETE FROM metadata;`);
+  // await executeQuery(`DROP TABLE IF EXISTS migrations;`);
 };
 
 export const insert = async (table: string, data: any) => {
-	const keys = Object.keys(data);
-	const values = Object.values(data);
+  const keys = Object.keys(data);
+  const values = Object.values(data);
 
-	const query = `INSERT INTO ${table} (${keys.join(", ")})
-                   VALUES (${keys
-                           .map(() => "?")
-                           .join(", ")});`;
+  const query = `INSERT INTO ${table} (${keys.join(", ")})
+                   VALUES (${keys.map(() => "?").join(", ")});`;
 
-	return await executeQuery(query, values);
+  return await executeQuery(query, values);
 };
 
 export const update = async (
   target: { table: string; identifier: string },
   id: number,
-  data: any,
+  data: any
 ) => {
-	const {table, identifier} = target;
-	const keys = Object.keys(data);
-	const values = Object.values(data);
-	const columns = keys.map((key: string, _) => `${key} = ?`).join(", ");
+  const { table, identifier } = target;
+  const keys = Object.keys(data);
+  const values = Object.values(data);
+  const columns = keys.map((key: string, _) => `${key} = ?`).join(", ");
 
-	const query = `UPDATE ${table}
+  const query = `UPDATE ${table}
                    SET ${columns}
                    WHERE ${identifier} = ?`;
-	const replacement = [...values, id];
+  const replacement = [...values, id];
 
-	return await executeQuery(query, replacement);
+  return await executeQuery(query, replacement);
 };
 
 export const del = async (data: {
-	table: string;
-	identifier: string;
-	id: number;
+  table: string;
+  identifier: string;
+  id: number;
 }) => {
-	const query = `DELETE
+  const query = `DELETE
                    FROM ${data.table}
                    WHERE ${data.identifier} = ?`;
-	return await executeQuery(query, [data.id]);
+  return await executeQuery(query, [data.id]);
 };
 
 export const saveFile = async (file: FileModel, meta: MetadataModel) => {
-	try {
-		const savedFile = (await insert("files", file)) as SQLResultSet;
-		const {insertId} = savedFile;
-		const savedMeta = (await insert("metadata", {
-			...meta,
-			file_id: insertId,
-		})) as SQLResultSet;
-		return {...savedFile.rows._array, meta: savedMeta.rows._array};
-	}
-	catch (e) {
-		throw e;
-	}
+  try {
+    const savedFile = (await insert("files", file)) as SQLResultSet;
+    const { insertId } = savedFile;
+    const savedMeta = (await insert("metadata", {
+      ...meta,
+      file_id: insertId,
+    })) as SQLResultSet;
+    return { ...savedFile.rows._array, meta: savedMeta.rows._array };
+  } catch (e) {
+    throw e;
+  }
 };

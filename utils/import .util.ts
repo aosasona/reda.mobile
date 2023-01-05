@@ -65,4 +65,6 @@ export default class ImportUtil {
 			},
 		});
 	};
+
+	public loadAllFilesOnAppStart = () => { };
 }

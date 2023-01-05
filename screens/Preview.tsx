@@ -169,6 +169,11 @@ export default function Preview({ route, navigation }: ScreenProps) {
             {data?.subjects}
           </Text>
         </Box>
+
+        <Box opacity={0.4} mb={4}>
+          <Text fontSize={12}>{data?.path?.split("/").pop()}</Text>
+          <Text fontSize={12}>{data?.created_at}</Text>
+        </Box>
       </Box>
     </ScrollView>
   );

@@ -1,12 +1,10 @@
 import {
   Feather,
-  Foundation,
   MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
 import constants from "expo-constants";
 import {
-  AspectRatio,
   Box,
   Divider,
   Heading,
@@ -25,10 +23,11 @@ import { DividerProps, HStackProps, PressableProps } from "../constants/props";
 import { GlobalContext } from "../context/GlobalContext";
 import SettingsUtil from "../utils/settings.util";
 import { REDA_URL } from "../constants/url";
-import { Linking } from "react-native";
 import CustomSafeAreaView from "../components/reusables/CustomSafeAreaView";
+import WebUtil from "../utils/web.util";
+import { ScreenProps } from "../types/general";
 
-export default function Settings() {
+export default function Settings({ navigation }: ScreenProps) {
   const { toggleColorMode, colorMode } = useColorMode();
   const { state, dispatch } = useContext(GlobalContext);
 
@@ -38,7 +37,7 @@ export default function Settings() {
 
   const openRedaServicePage = (url: string) => {
     const uri = REDA_URL + url;
-    Linking.openURL(uri);
+    WebUtil.openBrowserPage(navigation, uri);
   };
   const bg = useColorModeValue("brand-light", "brand-dark");
 

@@ -3,6 +3,7 @@ import { useColorMode } from "native-base";
 import HomeHeader from "../components/home/HomeHeader";
 import { navigationConfig } from "../config/screens";
 import screens from "../constants/screens";
+import BrowserPage from "../screens/Browser";
 import Category from "../screens/Category";
 import Home from "../screens/Home";
 import Preview from "../screens/Preview";
@@ -65,6 +66,11 @@ export default function HomeStack() {
 					headerTitle: screens.CATEGORY.screenTitle,
 					headerShown: false,
 				}}
+			/>
+			<Stack.Screen
+				name={screens.BROWSER.screenName}
+				component={BrowserPage}
+				options={{ headerTitle: "", headerShown: false }}
 			/>
 		</Stack.Navigator>
 	);

@@ -1,7 +1,11 @@
-import * as WebBrowser from "expo-web-browser";
+import { NavigationProp } from "@react-navigation/native";
+import screens from "../constants/screens";
 
 export default class WebUtil {
-  public static openWebBrowser = async (url: string) => {
-    await WebBrowser.openBrowserAsync(url);
+  public static openBrowserPage = async (
+    navigation: NavigationProp<any>,
+    uri: string
+  ) => {
+    return navigation.navigate(screens.BROWSER.screenName, { uri });
   };
 }

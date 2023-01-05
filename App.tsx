@@ -51,7 +51,8 @@ import { extendedTheme } from "./config/theme";
 import { GlobalContextProvider } from "./context/GlobalContext";
 import MainStack from "./stacks/MainStack";
 import { colorModeManager } from "./utils/color.util";
-import { runMigration } from "./utils/database.util";
+import { DATABASE_NAME, runMigration } from "./utils/database.util";
+import { migrateLegacyDB } from "./utils/file.util";
 
 (async () => await SplashScreen.preventAutoHideAsync())();
 
@@ -113,7 +114,9 @@ export default function App() {
 		Appearance.addChangeListener(({ colorScheme }) => {
 			colorModeManager.set(colorScheme);
 		});
-		(async () => await runMigration())();
+		(async () => {
+			await runMigration(migrateLegacyDB);
+		})();
 	}
 
 	if (!fontsLoaded) {

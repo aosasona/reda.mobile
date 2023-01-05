@@ -46,5 +46,6 @@ export default {
     ],
     "@config-plugins/react-native-blob-util",
     "@config-plugins/react-native-pdf",
+    ["./plugins/withUISupportsDocumentBrowser"],
   ],
 };

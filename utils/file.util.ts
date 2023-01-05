@@ -18,6 +18,36 @@ export interface ExtractFileOptions {
 
 export const DEFAULT_REDA_DIRECTORY = FileSystem.documentDirectory as string;
 
+// this will check all files in the database vs all files in the storage and delete the records where the files don't exist
+export const removeMissingFileRecords = async () => {
+	const dbPaths = await executeQuery("SELECT id, path FROM files");
+	console.log(dbPaths);
+};
+
+// this will check for new files that haven't been added to the database
+export const addNewFilesToDB = async () => { };
+
+export const syncStorageToDB = async () => {
+	await removeMissingFileRecords();
+	await addNewFilesToDB();
+};
+
+export const migrateLegacyDB = async (currentName: string) => {
+	try {
+		const legacyPath = `${DEFAULT_REDA_DIRECTORY}/SQLite/reda.db`;
+		const currentPath = `${DEFAULT_REDA_DIRECTORY}/SQLite/${currentName}`;
+
+		const { exists } = await FileSystem.getInfoAsync(
+			DEFAULT_REDA_DIRECTORY + "/SQLite/reda.db"
+		);
+		if (!exists) return;
+		await FileSystem.moveAsync({
+			from: legacyPath,
+			to: currentPath,
+		});
+	} catch (err) { }
+};
+
 export const extractFileName = (
 	rawName: string,
 	options: ExtractFileOptions = { isURI: false }

@@ -27,6 +27,10 @@ const screens = {
 		screenName: "CategoryScreen",
 		screenTitle: "Category",
 	},
+	BROWSER: {
+		screenName: "BrowserScreen",
+		screenTitle: "Browser",
+	},
 };
 
 export default screens;
