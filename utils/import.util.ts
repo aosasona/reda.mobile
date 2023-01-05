@@ -1,9 +1,9 @@
-import {Alert} from "react-native";
-import {OpenLibraryService} from "../services/cloud";
-import {FileModel, MetadataModel, SQLBoolean} from "../types/database";
-import {CompleteInAppFlowArgs, StateSetter} from "../types/import";
-import {saveFile} from "./database.util";
-import {showToast} from "./misc.util";
+import { Alert } from "react-native";
+import { OpenLibraryService } from "../services/cloud";
+import { FileModel, MetadataModel, SQLBoolean } from "../types/database";
+import { CompleteInAppFlowArgs, StateSetter } from "../types/import";
+import { saveFile } from "./database.util";
+import { showToast } from "./misc.util";
 
 export default class ImportUtil {
 	private readonly setState: StateSetter;
@@ -16,41 +16,39 @@ export default class ImportUtil {
 		try {
 			this.setState((prevState) => ({
 				...prevState,
-				loading: {...prevState.loading, meta: true},
+				loading: { ...prevState.loading, meta: true },
 			}));
 			const onlineMetadata = (
-			  await OpenLibraryService.search({title: fileName, limit: 50})
+				await OpenLibraryService.search({ title: fileName, limit: 50 })
 			)["docs"];
 			this.setAllMeta(onlineMetadata);
-		}
-		catch (err) {
-		}
-		finally {
+		} catch (err) {
+		} finally {
 			this.setState((prevState) => ({
 				...prevState,
-				loading: {...prevState.loading, meta: false, local: false},
+				loading: { ...prevState.loading, meta: false, local: false },
 			}));
 		}
 	};
 
 	public setAllMeta = (value: any[]) =>
-	  this.setState((prevState) => ({
-		  ...prevState,
-		  meta: {
-			  ...prevState.meta,
-			  all: value,
-		  },
-	  }));
+		this.setState((prevState) => ({
+			...prevState,
+			meta: {
+				...prevState.meta,
+				all: value,
+			},
+		}));
 
 	public setCurrentMeta = (value: any, index: number) =>
-	  this.setState((prevState) => ({
-		  ...prevState,
-		  meta: {
-			  ...prevState.meta,
-			  current: value,
-			  currentIndex: index,
-		  },
-	  }));
+		this.setState((prevState) => ({
+			...prevState,
+			meta: {
+				...prevState.meta,
+				current: value,
+				currentIndex: index,
+			},
+		}));
 
 	public resetState = () => {
 		this.setState({
@@ -72,7 +70,14 @@ export default class ImportUtil {
 		});
 	};
 
-	public completeInAppImport = async ({file, data, img, metadata, setSaving, handleModalDismiss}: CompleteInAppFlowArgs) => {
+	public completeInAppImport = async ({
+		file,
+		data,
+		img,
+		metadata,
+		setSaving,
+		handleModalDismiss,
+	}: CompleteInAppFlowArgs) => {
 		try {
 			setSaving(true);
 			const file_data: FileModel = {
@@ -90,22 +95,22 @@ export default class ImportUtil {
 				author: data?.author_name[0] || "Unknown author",
 				raw: JSON.stringify(data),
 				table_of_contents: JSON.stringify(
-				  metadata?.data?.table_of_contents || [],
+					metadata?.data?.table_of_contents || []
 				),
 				subjects:
-				  data?.subject_facet?.join(", ") ||
-				  metadata?.data?.subjects?.join(", ") ||
-				  "",
+					data?.subject_facet?.join(", ") ||
+					metadata?.data?.subjects?.join(", ") ||
+					"",
 				first_publish_year:
-				  data?.first_publish_year ||
-				  metadata?.data?.first_publish_year ||
-				  data?.publish_year?.[0] ||
-				  0,
+					data?.first_publish_year ||
+					metadata?.data?.first_publish_year ||
+					data?.publish_year?.[0] ||
+					0,
 				book_key: data?.edition_key?.[0] || "",
 				chapters: metadata?.data?.table_of_contents?.length || 1,
 				current_page: 1,
 				total_pages:
-				  metadata?.data?.number_of_pages || data?.number_of_pages_median || 1,
+					metadata?.data?.number_of_pages || data?.number_of_pages_median || 1,
 			};
 			const res = await saveFile(file_data, meta);
 			if (res) {
@@ -114,12 +119,10 @@ export default class ImportUtil {
 				showToast("An error occurred while saving file.", "error");
 			}
 			handleModalDismiss();
-		}
-		catch (e) {
+		} catch (e) {
 			Alert.alert("Error", "An error occurred!");
-		}
-		finally {
+		} finally {
 			setSaving(false);
 		}
-	}
+	};
 }

@@ -1,5 +1,5 @@
-import {Dispatch, SetStateAction} from "react";
-import {File} from "../utils/file.util";
+import { Dispatch, SetStateAction } from "react";
+import { File } from "../utils/file.util";
 
 export enum MetaModalSteps {
 	ONE,
@@ -14,9 +14,8 @@ export interface ImportHeaderProps {
 	callbacks: {
 		handleRemoteImport: () => void;
 		handleLocalImport: () => void;
-	}
+	};
 }
-
 
 export interface ImportStatesProps {
 	file: File | null;
@@ -33,7 +32,7 @@ export interface ImportStatesProps {
 		local: boolean;
 		remote: boolean;
 		meta: boolean;
-	}
+	};
 }
 
 export interface MetaModalProps {
@@ -52,7 +51,7 @@ export interface MetaModalProps {
 		file: File;
 		meta: ImportStatesProps["meta"];
 		loading: ImportStatesProps["loading"];
-	}
+	};
 }
 
 export interface MetaPageProps {
@@ -64,7 +63,7 @@ export interface MetaPageProps {
 		toggleStep: () => void;
 		handleModalDismiss: () => void;
 		handleComplete: (args: CompleteInAppFlowArgs) => void;
-	}
+	};
 }
 
 export interface MetaCardProps {
@@ -75,7 +74,7 @@ export interface MetaCardProps {
 	};
 	functions: {
 		onPress: (item: any, index: number) => void;
-	}
+	};
 }
 
 export interface DownloadingListProps {
@@ -99,7 +98,7 @@ export interface DownloadingCardProps {
 export interface CompleteInAppFlowArgs {
 	data: any;
 	file: File;
-	img: string;
+	img: string | null | undefined;
 	metadata: any;
 	setSaving: (value: boolean) => void;
 	handleModalDismiss: () => void;

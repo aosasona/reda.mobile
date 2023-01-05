@@ -1,6 +1,6 @@
-import {createContext, useEffect, useReducer} from "react";
+import { createContext, useEffect, useReducer } from "react";
 import App from "./app";
-import {AppReducer} from "./AppReducer";
+import { AppReducer } from "./AppReducer";
 
 export interface AppStateType {
 	isSyncing: boolean;
@@ -14,28 +14,28 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType>(null as any);
 
-const AppContextProvider = ({children}: any) => {
+const AppContextProvider = ({ children }: any) => {
 	const initialState: AppStateType = {
 		isSignedIn: false,
 		isSyncing: false,
 	};
 
-	const [reducerState, dispatch] = useReducer(AppReducer, initialState);
+	const [state, dispatch] = useReducer(AppReducer, initialState);
 
 	useEffect(() => {
-		(new App(dispatch)).load().then();
+		new App(dispatch).load().then();
 	}, []);
 
 	return (
-	  <AppContext.Provider
-		value={{
-			state: reducerState,
-			dispatch,
-		}}
-	  >
-		  {children}
-	  </AppContext.Provider>
+		<AppContext.Provider
+			value={{
+				state,
+				dispatch,
+			}}
+		>
+			{children}
+		</AppContext.Provider>
 	);
 };
 
-export {AppContext, AppContextProvider};
+export { AppContext, AppContextProvider };

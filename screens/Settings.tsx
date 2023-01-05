@@ -18,22 +18,33 @@ import {
 	useColorModeValue,
 } from "native-base";
 import { ReactNode, useContext } from "react";
+import { ActivityIndicator } from "react-native";
 import CustomSafeAreaView from "../components/reusables/CustomSafeAreaView";
 import IconText from "../components/reusables/IconText";
 import { DividerProps, HStackProps, PressableProps } from "../constants/props";
 import { REDA_URL } from "../constants/url";
+import { AppContext } from "../context/app/AppContext";
+import { AppActionType } from "../context/app/AppReducer";
 import { default as SettingsUtil } from "../context/settings/settings";
 import { SettingsContext } from "../context/settings/SettingsContext";
+import { syncLocalData } from "../services/local/startup";
 import { ScreenProps } from "../types/general";
 import WebUtil from "../utils/web.util";
 
 export default function Settings({ navigation }: ScreenProps) {
 	const { toggleColorMode, colorMode } = useColorMode();
 	const { state, dispatch } = useContext(SettingsContext);
+	const { state: appState, dispatch: appDispatch } = useContext(AppContext);
 
 	const settings = new SettingsUtil(dispatch);
 
 	const handleSettingsReset = () => settings.resetSettings();
+
+	const handleSync = async () => {
+		appDispatch({ type: AppActionType.TOGGLE_IS_SYNCING });
+		await syncLocalData();
+		appDispatch({ type: AppActionType.TOGGLE_IS_SYNCING });
+	};
 
 	const openRedaServicePage = (url: string) => {
 		const uri = REDA_URL + url;
@@ -120,6 +131,20 @@ export default function Settings({ navigation }: ScreenProps) {
 				</SettingsSection>
 
 				<SettingsSection title="App Controls">
+					<Pressable
+						onPress={handleSync}
+						disabled={appState.isSyncing}
+						_disabled={{ opacity: 0.6 }}
+						{...PressableProps}
+					>
+						<HStack {...HStackProps}>
+							<IconText name="refresh-cw" text="Sync" />
+							{appState.isSyncing && <ActivityIndicator size="small" />}
+						</HStack>
+					</Pressable>
+					<Box>
+						<Divider {...DividerProps} />
+					</Box>
 					<Pressable onPress={handleSettingsReset} {...PressableProps}>
 						<Box px={4} py={4}>
 							<Text color="red.500">Reset settings</Text>
