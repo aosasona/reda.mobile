@@ -4,6 +4,8 @@ import { SQLResultSet } from "expo-sqlite";
 import CustomException from "../exceptions/CustomException";
 import { executeQuery } from "./database.util";
 import { filterSupportedFiles } from "./misc.util";
+import * as Sharing from "expo-sharing";
+import { Alert } from "react-native";
 
 export interface File {
 	name: string;
@@ -107,4 +109,14 @@ export const handleFilePick = async (
 		size: data.size as number,
 		mimeType: data.type,
 	};
+};
+
+export const shareFile = async (file: string) => {
+	try {
+		const sharingIsAvailable = await Sharing.isAvailableAsync();
+		if (!sharingIsAvailable) return;
+		await Sharing.shareAsync(file);
+	} catch (err) {
+		Alert.alert("Error", "Something went wrong!");
+	}
 };

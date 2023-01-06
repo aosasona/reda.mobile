@@ -44,6 +44,13 @@ export default {
         iCloudContainerEnvironment: "Production",
       },
     ],
+    [
+      "expo-notifications",
+      {
+        icon: "./assets/icon.png",
+        color: "#2563eb",
+      },
+    ],
     "@config-plugins/react-native-blob-util",
     "@config-plugins/react-native-pdf",
     ["./plugins/withUISupportsDocumentBrowser"],

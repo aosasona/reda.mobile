@@ -134,6 +134,7 @@ export function PreviewHeaderRight({
         m={0}
         onPress={handleToggleStar}
       />
+
       <Menu
         w={menuWidth < 200 ? 200 : menuWidth}
         trigger={(props) => (

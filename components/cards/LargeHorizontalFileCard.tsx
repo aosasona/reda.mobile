@@ -1,3 +1,4 @@
+import { MenuView, NativeActionEvent } from "@react-native-menu/menu";
 import { NavigationProp } from "@react-navigation/native";
 import {
 	AspectRatio,
@@ -12,6 +13,7 @@ import { useWindowDimensions } from "react-native";
 import screens from "../../constants/screens";
 import { useThumbnail } from "../../hooks/useThumbnail";
 import { CombinedFileResultType } from "../../types/database";
+import { getActions, handleMenuEvent } from "../../utils/preview.util";
 
 interface HorizontalFileCardProps {
 	data: CombinedFileResultType;
@@ -30,6 +32,12 @@ export default function LargeHorizontalFileCard({
 	const navigateToDocumentPage = () => {
 		navigation.navigate(screens.PREVIEW.screenName, { data });
 	};
+
+	const actions = getActions(data);
+
+	const handleMenuEventPress = async ({ nativeEvent }: NativeActionEvent) => {
+		await handleMenuEvent(nativeEvent.event, data, navigation);
+	};
 	return (
 		<Pressable
 			w={width * 0.78}
@@ -38,17 +46,23 @@ export default function LargeHorizontalFileCard({
 			onPress={navigateToDocumentPage}
 		>
 			<VStack bg="transparent" space={3}>
-				<AspectRatio ratio={1}>
-					<Image
-						w="full"
-						h="full"
-						source={thumb}
-						defaultSource={fallback}
-						resizeMode="cover"
-						alt={data?.name || ""}
-						rounded={8}
-					/>
-				</AspectRatio>
+				<MenuView
+					actions={actions}
+					onPressAction={handleMenuEventPress}
+					shouldOpenOnLongPress
+				>
+					<AspectRatio ratio={1}>
+						<Image
+							w="full"
+							h="full"
+							source={thumb}
+							defaultSource={fallback}
+							resizeMode="cover"
+							alt={data?.name || ""}
+							rounded={8}
+						/>
+					</AspectRatio>
+				</MenuView>
 				<Box px={0.5}>
 					<Heading fontSize={22} noOfLines={2}>
 						{data?.name}
