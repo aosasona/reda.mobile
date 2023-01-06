@@ -44,7 +44,6 @@ export default function HomeStack() {
 			options={{
 				title: screens.SEARCH.screenTitle,
 				headerShown: true,
-				headerShadowVisible: false,
 			}}
 		  />
 		  <Stack.Screen

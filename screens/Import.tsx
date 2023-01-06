@@ -5,7 +5,7 @@ import {Alert} from "react-native";
 import DownloadingList from "../components/page/import/DownloadingList";
 import ImportHeader from "../components/page/import/ImportHeader";
 import MetaModal from "../components/meta/MetaModal";
-import CustomSafeAreaView from "../components/reusables/CustomSafeAreaView";
+import CustomSafeAreaView from "../components/reusables/custom/CustomSafeAreaView";
 import {SettingsContext} from "../context/settings/SettingsContext";
 import CustomException from "../exceptions/CustomException";
 import {ImportStatesProps} from "../types/import";

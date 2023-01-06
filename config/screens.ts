@@ -3,6 +3,7 @@ import {getPrimaryColor, getSecondaryColor} from "../utils/color.util";
 
 export const screenOptions = (colorMode: ColorMode) => ({
 	headerShown: true,
+	headerShadowVisible: false,
 	headerTintColor: getSecondaryColor(colorMode),
 	headerTitleStyle: {
 		fontSize: 16,
@@ -15,5 +16,4 @@ export const screenOptions = (colorMode: ColorMode) => ({
 
 export const navigationConfig = (colorMode: ColorMode) => ({
 	screenOptions: screenOptions(colorMode),
-
 })

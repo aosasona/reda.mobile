@@ -7,9 +7,13 @@ const screens = {
 		screenName: "SettingsScreen",
 		screenTitle: "Settings",
 	},
+	BROWSER: {
+		screenName: "BrowserScreen",
+		screenTitle: "Browser",
+	},
 	IMPORT: {
 		screenName: "ImportScreen",
-		screenTitle: "Import File",
+		screenTitle: "Import",
 	},
 	SEARCH: {
 		screenName: "SearchScreen",
@@ -27,9 +31,13 @@ const screens = {
 		screenName: "CategoryScreen",
 		screenTitle: "Category",
 	},
-	BROWSER: {
-		screenName: "BrowserScreen",
-		screenTitle: "Browser",
+	LOCKSCREEN: {
+		screenName: "LockScreen",
+		screenTitle: "Locked",
+	},
+	SECURITY_SETTINGS: {
+		screenName: "SecuritySettingsScreen",
+		screenTitle: "Security",
 	},
 };
 

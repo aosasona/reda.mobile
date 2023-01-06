@@ -17,8 +17,8 @@ export const HStackProps = {
   _light: { borderColor: "muted.200" },
   justifyContent: "space-between",
   alignItems: "center",
-  px: 4,
-  py: 3,
+  px: 3,
+  py: 2,
 };
 
 export const VStackProps = {
@@ -54,6 +54,7 @@ export const PressableProps = {
   _dark: { borderColor: "muted.800" },
   _light: { borderColor: "muted.200" },
   _pressed: { opacity: 0.5 },
+  _disabled: { opacity: 0.5 },
   m: 0,
   p: 0,
 };

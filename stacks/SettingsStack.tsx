@@ -4,6 +4,7 @@ import { navigationConfig } from "../config/screens";
 import screens from "../constants/screens";
 import BrowserPage from "../screens/Browser";
 import Settings from "../screens/Settings";
+import Security from "../screens/settings/Security";
 
 const Stack = createNativeStackNavigator();
 
@@ -20,10 +21,19 @@ export default function SettingsStack() {
 				}}
 			/>
 			<Stack.Screen
+			  name={screens.SECURITY_SETTINGS.screenName}
+			  component={Security}
+			  options={{
+				  headerTitle: screens.SECURITY_SETTINGS.screenTitle,
+				  headerShown: true,
+				  headerBackTitle: "Settings",
+			  }}
+			/>
+			<Stack.Screen
 				name={screens.BROWSER.screenName}
 				component={BrowserPage}
 				options={{
-					headerTitle: "",
+					headerTitle: screens.BROWSER.screenTitle,
 					headerShown: false,
 				}}
 			/>

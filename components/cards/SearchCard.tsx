@@ -31,7 +31,6 @@ export default function SearchCard({ data, navigation }: SearchCardProps) {
   return (
     <Pressable
       w={width}
-      mb={2}
       _pressed={{ opacity: 0.6 }}
       onPress={navigateToDocumentPage}
     >
@@ -49,14 +48,7 @@ export default function SearchCard({ data, navigation }: SearchCardProps) {
             />
           </AspectRatio>
         </Box>
-        <VStack
-          w={width * 0.74}
-          borderBottomWidth={1}
-          _dark={{ borderBottomColor: "muted.900" }}
-          _light={{ borderBottomColor: "muted.200" }}
-          pt={0}
-          p={1}
-        >
+        <VStack w={width * 0.74} pt={0} px={1} py={1}>
           <Heading fontSize={20} noOfLines={1}>
             {data?.name}
           </Heading>

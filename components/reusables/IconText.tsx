@@ -22,7 +22,7 @@ export default function IconText(
 	return (
 		<HStack alignItems="center" space={2}>
 			<AspectRatio w={8} ratio={1}>
-				<Box alignItems="center" justifyContent="center" bg={color} rounded={8}>
+				<Box alignItems="center" justifyContent="center" bg={color} rounded={6}>
 					<Icon as={as || Feather} name={name} color={bg} size={4} />
 				</Box>
 			</AspectRatio>

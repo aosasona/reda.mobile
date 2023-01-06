@@ -1,5 +1,5 @@
 import { WebView } from "react-native-webview";
-import CustomSafeAreaView from "../components/reusables/CustomSafeAreaView";
+import CustomSafeAreaView from "../components/reusables/custom/CustomSafeAreaView";
 import { ScreenProps } from "../types/general";
 
 export default function BrowserPage({ route, navigation }: ScreenProps) {

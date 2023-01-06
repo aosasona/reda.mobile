@@ -1,7 +1,7 @@
 import { useColorMode } from "native-base";
 import React from "react";
 import SafeAreaView from "react-native-safe-area-view";
-import { colors } from "../../config/theme";
+import { colors } from "../../../config/theme";
 
 interface CustomSafeAreaViewProps {
   children: React.ReactNode;

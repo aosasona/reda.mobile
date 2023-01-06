@@ -1,34 +1,23 @@
-import {
-	Feather,
-	MaterialCommunityIcons,
-	MaterialIcons,
-} from "@expo/vector-icons";
+import {Feather, MaterialCommunityIcons, MaterialIcons} from "@expo/vector-icons";
 import constants from "expo-constants";
-import {
-	Box,
-	Divider,
-	Heading,
-	HStack,
-	Icon,
-	Pressable,
-	ScrollView,
-	Switch,
-	Text,
-	useColorMode,
-	useColorModeValue,
-} from "native-base";
-import { ReactNode, useContext } from "react";
-import { ActivityIndicator } from "react-native";
-import CustomSafeAreaView from "../components/reusables/CustomSafeAreaView";
+import {Box, Divider, Heading, HStack, Icon, Pressable, ScrollView, Switch, Text, useColorMode, useColorModeValue} from "native-base";
+import {useContext} from "react";
+import {ActivityIndicator} from "react-native";
+import SettingsSection from "../components/page/settings/SettingsSection";
+import StaticSettings from "../components/page/settings/StaticSettings";
+import CustomDivider from "../components/reusables/custom/CustomDivider";
+import PressableSettings from "../components/page/settings/PressableSettings";
+import CustomSafeAreaView from "../components/reusables/custom/CustomSafeAreaView";
 import IconText from "../components/reusables/IconText";
-import { DividerProps, HStackProps, PressableProps } from "../constants/props";
-import { REDA_URL } from "../constants/url";
-import { AppContext } from "../context/app/AppContext";
-import { AppActionType } from "../context/app/AppReducer";
-import { default as SettingsUtil } from "../context/settings/settings";
-import { SettingsContext } from "../context/settings/SettingsContext";
-import { syncLocalData } from "../services/local/startup";
-import { ScreenProps } from "../types/general";
+import {DividerProps, HStackProps, PressableProps} from "../constants/props";
+import screens from "../constants/screens";
+import {REDA_URL} from "../constants/url";
+import {AppContext} from "../context/app/AppContext";
+import {AppActionType} from "../context/app/AppReducer";
+import {default as SettingsUtil} from "../context/settings/settings";
+import {SettingsContext} from "../context/settings/SettingsContext";
+import {syncLocalData} from "../services/local/startup";
+import {ScreenProps} from "../types/general";
 import WebUtil from "../utils/web.util";
 
 export default function Settings({ navigation }: ScreenProps) {
@@ -60,104 +49,73 @@ export default function Settings({ navigation }: ScreenProps) {
 				</Box>
 
 				<SettingsSection title="Configure Reda">
-					<HStack {...HStackProps}>
+					<StaticSettings>
 						<IconText
 							name={colorMode == "dark" ? "sun" : "moon"}
 							text="Dark mode"
 						/>
 						<Switch
 							size="md"
-							onTrackColor="green.500"
 							onToggle={toggleColorMode}
 							value={colorMode === "dark"}
 						/>
-					</HStack>
-					<Box>
-						<Divider {...DividerProps} />
-					</Box>
-					<HStack {...HStackProps}>
+					</StaticSettings>
+					<StaticSettings>
 						<IconText name="book-open" text="Single page" />
 						<Switch
 							size="md"
-							onTrackColor="green.500"
 							onToggle={settings.toggleSinglePageLayout}
 							value={state.useSinglePageLayout}
 						/>
-					</HStack>
+					</StaticSettings>
+					<PressableSettings onPress={() => navigation.navigate(screens.SECURITY_SETTINGS.screenName)} hideDivider={true}>
+						<IconText name="lock" text="Security" />
+						<Icon as={Feather} name="chevron-right" size={4} />
+					</PressableSettings>
 				</SettingsSection>
 
 				<SettingsSection title="About Reda">
-					<Pressable
-						onPress={() => openRedaServicePage("/releases")}
-						{...PressableProps}
-					>
-						<HStack {...HStackProps}>
+					<PressableSettings onPress={() => openRedaServicePage("/releases")}>
 							<IconText
 								as={MaterialCommunityIcons}
 								name="new-box"
 								text="Release notes"
 							/>
 							<Icon as={Feather} name="arrow-up-right" size={4} />
-						</HStack>
-					</Pressable>
-					<Box>
-						<Divider {...DividerProps} />
-					</Box>
-					<Pressable
-						onPress={() => openRedaServicePage("/privacy")}
-						{...PressableProps}
-					>
-						<HStack {...HStackProps}>
+					</PressableSettings>
+
+					<PressableSettings onPress={() => openRedaServicePage("/privacy")}>
 							<IconText
 								as={MaterialIcons}
 								name="privacy-tip"
 								text="Privacy policy"
 							/>
 							<Icon as={Feather} name="arrow-up-right" size={4} />
-						</HStack>
-					</Pressable>
-					<Box>
-						<Divider {...DividerProps} />
-					</Box>
-					<Pressable
-						onPress={() => openRedaServicePage("/terms")}
-						{...PressableProps}
-					>
-						<HStack {...HStackProps}>
+					</PressableSettings>
+
+					<PressableSettings onPress={() => openRedaServicePage("/terms")} hideDivider={true}>
 							<IconText name="book" text="Terms of service" />
 							<Icon as={Feather} name="arrow-up-right" size={4} />
-						</HStack>
-					</Pressable>
+					</PressableSettings>
 				</SettingsSection>
 
 				<SettingsSection title="App Controls">
-					<Pressable
-						onPress={handleSync}
-						disabled={appState.isSyncing}
-						_disabled={{ opacity: 0.6 }}
-						{...PressableProps}
-					>
-						<HStack {...HStackProps}>
+					<PressableSettings onPress={handleSync} disabled={appState.isSyncing}>
 							<IconText name="refresh-cw" text="Sync" />
 							{appState.isSyncing && <ActivityIndicator size="small" />}
-						</HStack>
-					</Pressable>
-					<Box>
-						<Divider {...DividerProps} />
-					</Box>
-					<Pressable onPress={handleSettingsReset} {...PressableProps}>
-						<Box px={4} py={4}>
+					</PressableSettings>
+
+					<PressableSettings  onPress={handleSettingsReset}>
+						<Box py={2}>
 							<Text color="red.500">Reset settings</Text>
 						</Box>
-					</Pressable>
-					<Box>
-						<Divider {...DividerProps} />
-					</Box>
-					<Pressable onPress={settings.clearAllData} {...PressableProps}>
-						<Box w="full" px={4} py={4}>
+					</PressableSettings>
+
+					<PressableSettings  onPress={settings.clearAllData} hideDivider={true}>
+						<Box w="full" py={2}>
 							<Text color="red.500">Clear data</Text>
 						</Box>
-					</Pressable>
+					</PressableSettings >
 				</SettingsSection>
 
 				<Text
@@ -173,23 +131,3 @@ export default function Settings({ navigation }: ScreenProps) {
 		</CustomSafeAreaView>
 	);
 }
-
-const SettingsSection = ({
-	title,
-	children,
-}: {
-	title: string;
-	children: ReactNode;
-}) => (
-	<Box mt={6}>
-		<Text mb={2} px={4} opacity={0.5}>
-			{title}
-		</Text>
-		<Box
-			_dark={{ bg: "muted.900", borderColor: "muted.800" }}
-			_light={{ bg: "muted.100", borderColor: "muted.200" }}
-		>
-			<Box>{children}</Box>
-		</Box>
-	</Box>
-);

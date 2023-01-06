@@ -1,10 +1,13 @@
-import { Box, FlatList, Flex, Heading } from "native-base";
+import { FlashList } from "@shopify/flash-list";
+import { Box, Divider, Flex, Heading, View } from "native-base";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Dimensions, RefreshControl } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import SearchCard from "../components/cards/SearchCard";
+import CustomSafeAreaView from "../components/reusables/custom/CustomSafeAreaView";
 import EmptySection from "../components/reusables/EmptySection";
 import SearchInput from "../components/reusables/SearchInput";
+import { ViewProps } from "../constants/props";
 import { RedaService } from "../services/local";
 import { CombinedFileResultType } from "../types/database";
 import { CategoryPageType, ScreenProps } from "../types/general";
@@ -95,28 +98,33 @@ export default function Category({ route, navigation }: ScreenProps) {
 	}
 
 	return (
-		<FlatList
-			data={searchQuery ? data.searchResults : data.all}
-			renderItem={({ item }) => (
-				<SearchCard data={item} navigation={navigation} />
-			)}
-			ListHeaderComponent={
-				<PageHeader
-					data={{ title: category, searchQuery }}
-					functions={{ setSearchQuery }}
+		<CustomSafeAreaView>
+			<View flex={1} px={3} {...ViewProps}>
+				<FlashList
+					data={searchQuery ? data.searchResults : data.all}
+					renderItem={({ item }) => (
+						<SearchCard data={item} navigation={navigation} />
+					)}
+					ListHeaderComponent={() => (
+						<PageHeader
+							data={{ title: category, searchQuery }}
+							functions={{ setSearchQuery }}
+						/>
+					)}
+					ListFooterComponent={<Box my={5} />}
+					ListEmptyComponent={EmptySection}
+					ItemSeparatorComponent={() => <Divider opacity={0.3} my={2} p={0} />}
+					estimatedItemSize={200}
+					refreshControl={
+						<RefreshControl
+							refreshing={refreshing}
+							onRefresh={fetchAllFiles}
+							progressViewOffset={top}
+						/>
+					}
 				/>
-			}
-			ListFooterComponent={<Box my={5} />}
-			ListEmptyComponent={EmptySection}
-			stickyHeaderIndices={[0]}
-			refreshControl={
-				<RefreshControl
-					refreshing={refreshing}
-					onRefresh={fetchAllFiles}
-					progressViewOffset={top}
-				/>
-			}
-		/>
+			</View>
+		</CustomSafeAreaView>
 	);
 }
 
@@ -143,9 +151,8 @@ function PageHeader({ data, functions }: PageHeaderProps) {
 			px={0}
 			pt={3}
 			mb={4}
-			safeAreaTop
 		>
-			<Heading fontSize={44} mb={2}>
+			<Heading fontSize={40} px={0.5} mb={2}>
 				{title}
 			</Heading>
 			<SearchInput search={searchQuery} setSearch={setSearchQuery} />

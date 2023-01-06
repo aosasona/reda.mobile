@@ -1,12 +1,17 @@
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import { Icon, useColorMode } from "native-base";
-import React from "react";
+import React, { useContext } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { navigationConfig } from "../config/screens";
 import { iconOptions, screenOptions } from "../config/tabs";
+import screens from "../constants/screens";
 import tabs from "../constants/tabs";
+import { AppContext } from "../context/app/AppContext";
+import LockScreen from "../screens/LockScreen";
 import ImportStack from "../stacks/ImportStack";
 import HomeStack from "./HomeStack";
 import SettingsStack from "./SettingsStack";
@@ -17,62 +22,79 @@ interface MainStackProps {
 
 export default function MainStack({ onNavReady }: MainStackProps) {
 	const { colorMode } = useColorMode();
+	const { state } = useContext(AppContext);
 
 	const Tab = createBottomTabNavigator();
+	const Stack = createNativeStackNavigator();
+
 	return (
 		<SafeAreaProvider>
 			<StatusBar
 				animated={true}
 				style={colorMode === "dark" ? "light" : "dark"}
 			/>
+
 			<NavigationContainer onReady={onNavReady}>
-				<Tab.Navigator initialRouteName={tabs.HOME} backBehavior="history">
-					<Tab.Screen
-						name={tabs.HOME}
-						component={HomeStack}
-						options={{
-							tabBarIcon: ({ focused }) => (
-								<Icon
-									as={AntDesign}
-									name="home"
-									size={6}
-									color={iconOptions(colorMode, focused)}
-								/>
-							),
-							...(screenOptions(colorMode) as any),
-						}}
-					/>
-					<Tab.Screen
-						name={tabs.IMPORT}
-						component={ImportStack}
-						options={{
-							tabBarIcon: ({ focused }) => (
-								<Icon
-									as={AntDesign}
-									name="plussquareo"
-									size={6}
-									color={iconOptions(colorMode, focused)}
-								/>
-							),
-							...(screenOptions(colorMode) as any),
-						}}
-					/>
-					<Tab.Screen
-						name={tabs.SETTINGS}
-						component={SettingsStack}
-						options={{
-							tabBarIcon: ({ focused }) => (
-								<Icon
-									as={Ionicons}
-									name="settings-outline"
-									size={6}
-									color={iconOptions(colorMode, focused)}
-								/>
-							),
-							...(screenOptions(colorMode) as any),
-						}}
-					/>
-				</Tab.Navigator>
+				{state.hasPassword ? (
+					<Stack.Navigator {...navigationConfig(colorMode)}>
+						<Stack.Screen
+							name={screens.LOCKSCREEN.screenName}
+							component={LockScreen}
+							options={{
+								headerTitle: screens.LOCKSCREEN.screenTitle,
+								headerShown: false,
+							}}
+						/>
+					</Stack.Navigator>
+				) : (
+					<Tab.Navigator initialRouteName={tabs.HOME} backBehavior="history">
+						<Tab.Screen
+							name={tabs.HOME}
+							component={HomeStack}
+							options={{
+								tabBarIcon: ({ focused }) => (
+									<Icon
+										as={AntDesign}
+										name="home"
+										size={6}
+										color={iconOptions(colorMode, focused)}
+									/>
+								),
+								...(screenOptions(colorMode) as any),
+							}}
+						/>
+						<Tab.Screen
+							name={tabs.IMPORT}
+							component={ImportStack}
+							options={{
+								tabBarIcon: ({ focused }) => (
+									<Icon
+										as={AntDesign}
+										name="plussquareo"
+										size={6}
+										color={iconOptions(colorMode, focused)}
+									/>
+								),
+								...(screenOptions(colorMode) as any),
+							}}
+						/>
+						<Tab.Screen
+							name={tabs.SETTINGS}
+							component={SettingsStack}
+							options={{
+								tabBarIcon: ({ focused }) => (
+									<Icon
+										as={Ionicons}
+										name="settings-outline"
+										size={6}
+										color={iconOptions(colorMode, focused)}
+									/>
+								),
+								...(screenOptions(colorMode) as any),
+							}}
+						/>
+					</Tab.Navigator>
+				)}
 			</NavigationContainer>
 		</SafeAreaProvider>
 	);

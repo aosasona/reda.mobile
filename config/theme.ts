@@ -61,6 +61,11 @@ export const componentsConfig = {
 			px: 4,
 		}),
 	},
+	Switch: {
+		defaultProps: {
+			onTrackColor: colors.primary,
+		},
+	},
 };
 
 export const extendedTheme = extendTheme({
