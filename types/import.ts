@@ -41,7 +41,7 @@ export interface MetaModalProps {
 		toggleStep?: () => void;
 		loadAllMeta: (fileName: string) => Promise<void>;
 		handleCurrentMetaChange: (value: any, index: number) => void;
-		handleComplete: (args: CompleteInAppFlowArgs) => void;
+		handleComplete: (args: CompleteInAppFlowArgs) => Promise<void>;
 		handleModalDismiss: () => void;
 	};
 	state: {
@@ -62,7 +62,7 @@ export interface MetaPageProps {
 	functions: {
 		toggleStep: () => void;
 		handleModalDismiss: () => void;
-		handleComplete: (args: CompleteInAppFlowArgs) => void;
+		handleComplete: (args: CompleteInAppFlowArgs) => Promise<void>;
 	};
 }
 

@@ -5,14 +5,14 @@ import {
 	Divider,
 	Heading,
 	HStack,
+	Pressable,
 	ScrollView,
 	Text,
 } from "native-base";
 import { useCallback, useEffect, useState } from "react";
 import { Alert, RefreshControl } from "react-native";
-import PreviewHeader, {
-	PreviewHeaderRight,
-} from "../components/page/preview/PreviewHeader";
+import PreviewHeader from "../components/page/preview/PreviewHeader";
+import { PreviewHeaderRight } from "../components/page/preview/PreviewHeaderRight";
 import { ButtonProps, DetailsProps, DividerProps } from "../constants/props";
 import screens from "../constants/screens";
 import { useThumbnail } from "../hooks/useThumbnail";
@@ -30,6 +30,7 @@ export default function Preview({ route, navigation }: ScreenProps) {
 
 	const [refreshing, setRefreshing] = useState(false);
 	const [data, setData] = useState<CombinedFileResultType>(initialData);
+	const [descriptionLines, setDescriptionLines] = useState<number>(5);
 
 	const { thumb, fallback } = useThumbnail(data?.image, data?.path);
 
@@ -115,9 +116,11 @@ export default function Preview({ route, navigation }: ScreenProps) {
 					<Heading fontSize={24} mb={2}>
 						Description
 					</Heading>
-					<Text opacity={0.8} fontSize={16} noOfLines={10}>
-						{data?.description}
-					</Text>
+					<Pressable onPress={() => setDescriptionLines(250)}>
+						<Text opacity={0.8} fontSize={16} noOfLines={descriptionLines}>
+							{data?.description}
+						</Text>
+					</Pressable>
 				</Box>
 				<Button onPress={openReadPage} {...ButtonProps}>
 					{data?.has_started

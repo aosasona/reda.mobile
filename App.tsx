@@ -118,7 +118,7 @@ export default function App() {
 		const appStateSubscription = AppState.addEventListener(
 			"change",
 			(appState) => {
-				if (appState === "active" && migrationComplete) {
+				if (appState == "active" && migrationComplete) {
 					(async () => await syncLocalData())();
 				}
 			}
