@@ -1,9 +1,10 @@
 import { AppStateType } from "./AppContext";
 
 export enum AppActionType {
-	TOGGLE_IS_SYNCING = 1,
+	LOAD_INITIAL_CONTEXT = 1,
+	TOGGLE_IS_SYNCING,
 	TOGGLE_IS_SIGNED_IN,
-	LOAD_LOCAL_AUTH_STATUS,
+	TOGGLE_USE_BIOMETRICS,
 }
 
 export interface AppDispatchAction {
@@ -16,6 +17,11 @@ export const AppReducer = (
 	action: AppDispatchAction
 ): AppStateType => {
 	switch (action.type) {
+		case AppActionType.LOAD_INITIAL_CONTEXT:
+			return {
+				...state,
+				...action.payload,
+			};
 		case AppActionType.TOGGLE_IS_SYNCING:
 			return {
 				...state,
@@ -26,11 +32,11 @@ export const AppReducer = (
 				...state,
 				isSignedIn: !state.isSignedIn,
 			};
-		case AppActionType.LOAD_LOCAL_AUTH_STATUS:
+		case AppActionType.TOGGLE_USE_BIOMETRICS:
 			return {
 				...state,
-				hasPassword: true,
-				hasBiometrics: true,
+				isSignedIn: true,
+				useBiometrics: action.payload,
 			};
 		default:
 			return state;

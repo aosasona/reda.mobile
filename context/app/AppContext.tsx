@@ -1,12 +1,11 @@
 import { createContext, useEffect, useReducer } from "react";
-import App from "./app";
+import { default as App } from "./app";
 import { AppReducer } from "./AppReducer";
 
 export interface AppStateType {
 	isSyncing: boolean;
 	isSignedIn: boolean;
-	hasPassword: boolean;
-	hasBiometrics: boolean;
+	useBiometrics: boolean;
 }
 
 interface AppContextType {
@@ -20,8 +19,7 @@ const AppContextProvider = ({ children }: any) => {
 	const initialState: AppStateType = {
 		isSignedIn: false,
 		isSyncing: false,
-		hasPassword: false,
-		hasBiometrics: true,
+		useBiometrics: false,
 	};
 
 	const [state, dispatch] = useReducer(AppReducer, initialState);

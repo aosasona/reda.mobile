@@ -35,7 +35,7 @@ export default function MainStack({ onNavReady }: MainStackProps) {
 			/>
 
 			<NavigationContainer onReady={onNavReady}>
-				{state.hasPassword ? (
+				{!state?.isSignedIn && (state?.usePassword || state?.useBiometrics) ? (
 					<Stack.Navigator {...navigationConfig(colorMode)}>
 						<Stack.Screen
 							name={screens.LOCKSCREEN.screenName}

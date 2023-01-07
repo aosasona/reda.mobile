@@ -103,16 +103,17 @@ export default function Category({ route, navigation }: ScreenProps) {
 				renderItem={({ item }) => (
 					<SearchCard data={item} navigation={navigation} />
 				)}
-				ListHeaderComponent={() => (
+				ListHeaderComponent={
 					<PageHeader
 						data={{ title: category, searchQuery }}
 						functions={{ setSearchQuery }}
 					/>
-				)}
+				}
 				ListFooterComponent={<Box my={5} />}
 				ListEmptyComponent={EmptySection}
 				ItemSeparatorComponent={() => <Divider opacity={0.3} my={2} p={0} />}
 				stickyHeaderIndices={[0]}
+				showsVerticalScrollIndicator={false}
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}

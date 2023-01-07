@@ -6,7 +6,7 @@ export enum Keys {
 	MIGRATION_EXISTS = "@migration-exists",
 	SINGLE_PAGE_LAYOUT = "@single-page-layout",
 	APP_PASSWORD = "@app-password",
-	ENABLED_BIOMETRICS = "@enabled-biometrics",
+	USE_BIOMETRICS = "@use-biometrics",
 }
 
 export enum FolderNames {

@@ -110,7 +110,7 @@ export default function Home() {
 						horizontal
 						showsHorizontalScrollIndicator={false}
 						renderItem={({ item, index }) =>
-							section.title == "continue" ? (
+							section.category === CategoryPageType.CONTINUE_READING ? (
 								<LargeHorizontalFileCard
 									data={item}
 									index={index}
@@ -126,13 +126,9 @@ export default function Home() {
 						}
 						keyExtractor={(item, index) => index.toString()}
 						ListEmptyComponent={<EmptySection title={item.key} />}
-						initialNumToRender={15}
 						decelerationRate="fast"
 						pagingEnabled={true}
-						estimatedItemSize={183}
-						px={1}
-						mx={0}
-						mt={section.title == "continue" ? 4 : 0}
+						estimatedItemSize={200}
 					/>
 				) : null
 			}

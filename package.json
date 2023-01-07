@@ -37,6 +37,7 @@
     "expo-document-picker": "~11.0.1",
     "expo-file-system": "~15.1.1",
     "expo-font": "~11.0.1",
+    "expo-local-authentication": "~13.0.2",
     "expo-notifications": "~0.17.0",
     "expo-sharing": "~11.0.1",
     "expo-splash-screen": "~0.17.5",

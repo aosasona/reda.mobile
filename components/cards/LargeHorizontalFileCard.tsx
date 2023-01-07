@@ -43,6 +43,7 @@ export default function LargeHorizontalFileCard({
 			w={width * 0.78}
 			_pressed={{ opacity: 0.6 }}
 			mr={4}
+			mt={4}
 			onPress={navigateToDocumentPage}
 		>
 			<VStack bg="transparent" space={3}>

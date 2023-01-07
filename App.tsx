@@ -46,7 +46,7 @@ import {
 import * as SplashScreen from "expo-splash-screen";
 import { NativeBaseProvider } from "native-base";
 import React, { useEffect, useState } from "react";
-import { Appearance, View } from "react-native";
+import { Appearance, AppState, View } from "react-native";
 import { extendedTheme } from "./config/theme";
 import { AppContextProvider } from "./context/app/AppContext";
 import { SettingsContextProvider } from "./context/settings/SettingsContext";
@@ -60,6 +60,7 @@ import { runMigration } from "./utils/database.util";
 export default function App() {
 	const [navReady, setNavReady] = useState(false);
 	const [appReady, setAppReady] = useState(false);
+	const [migrationComplete, setMigrationComplete] = useState(false);
 
 	let [fontsLoaded] = useFonts({
 		Outfit_100Thin,
@@ -103,6 +104,7 @@ export default function App() {
 		AzeretMono_900Black,
 	});
 
+	// Hide splash screen when fonts and pages are ready
 	useEffect(() => {
 		(async () => {
 			if (fontsLoaded && navReady && appReady) {
@@ -111,6 +113,22 @@ export default function App() {
 		})();
 	}, [fontsLoaded, navReady, appReady]);
 
+	// Watch for app state and automatically
+	useEffect(() => {
+		const appStateSubscription = AppState.addEventListener(
+			"change",
+			(appState) => {
+				if (appState === "active" && migrationComplete) {
+					(async () => await syncLocalData())();
+				}
+			}
+		);
+
+		return () => {
+			appStateSubscription.remove();
+		};
+	}, []);
+
 	if (typeof window !== undefined) {
 		Appearance.addChangeListener(({ colorScheme }) => {
 			colorModeManager.set(colorScheme);
@@ -118,6 +136,9 @@ export default function App() {
 		(async () => {
 			await runMigration(migrateLegacyDB);
 			await syncLocalData();
+			if (!migrationComplete) {
+				setMigrationComplete(true);
+			}
 		})();
 	}
 

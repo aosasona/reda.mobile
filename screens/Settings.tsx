@@ -1,23 +1,34 @@
-import {Feather, MaterialCommunityIcons, MaterialIcons} from "@expo/vector-icons";
+import {
+	Feather,
+	MaterialCommunityIcons,
+	MaterialIcons,
+} from "@expo/vector-icons";
 import constants from "expo-constants";
-import {Box, Divider, Heading, HStack, Icon, Pressable, ScrollView, Switch, Text, useColorMode, useColorModeValue} from "native-base";
-import {useContext} from "react";
-import {ActivityIndicator} from "react-native";
+import {
+	Box,
+	Heading,
+	Icon,
+	ScrollView,
+	Switch,
+	Text,
+	useColorMode,
+	useColorModeValue,
+} from "native-base";
+import { useContext } from "react";
+import { ActivityIndicator } from "react-native";
 import SettingsSection from "../components/page/settings/SettingsSection";
 import StaticSettings from "../components/page/settings/StaticSettings";
-import CustomDivider from "../components/reusables/custom/CustomDivider";
 import PressableSettings from "../components/page/settings/PressableSettings";
 import CustomSafeAreaView from "../components/reusables/custom/CustomSafeAreaView";
 import IconText from "../components/reusables/IconText";
-import {DividerProps, HStackProps, PressableProps} from "../constants/props";
 import screens from "../constants/screens";
-import {REDA_URL} from "../constants/url";
-import {AppContext} from "../context/app/AppContext";
-import {AppActionType} from "../context/app/AppReducer";
-import {default as SettingsUtil} from "../context/settings/settings";
-import {SettingsContext} from "../context/settings/SettingsContext";
-import {syncLocalData} from "../services/local/startup";
-import {ScreenProps} from "../types/general";
+import { REDA_URL } from "../constants/url";
+import { AppContext } from "../context/app/AppContext";
+import { AppActionType } from "../context/app/AppReducer";
+import { default as SettingsUtil } from "../context/settings/settings";
+import { SettingsContext } from "../context/settings/SettingsContext";
+import { syncLocalData } from "../services/local/startup";
+import { ScreenProps } from "../types/general";
 import WebUtil from "../utils/web.util";
 
 export default function Settings({ navigation }: ScreenProps) {
@@ -68,7 +79,12 @@ export default function Settings({ navigation }: ScreenProps) {
 							value={state.useSinglePageLayout}
 						/>
 					</StaticSettings>
-					<PressableSettings onPress={() => navigation.navigate(screens.SECURITY_SETTINGS.screenName)} hideDivider={true}>
+					<PressableSettings
+						onPress={() =>
+							navigation.navigate(screens.SECURITY_SETTINGS.screenName)
+						}
+						hideDivider={true}
+					>
 						<IconText name="lock" text="Security" />
 						<Icon as={Feather} name="chevron-right" size={4} />
 					</PressableSettings>
@@ -76,46 +92,49 @@ export default function Settings({ navigation }: ScreenProps) {
 
 				<SettingsSection title="About Reda">
 					<PressableSettings onPress={() => openRedaServicePage("/releases")}>
-							<IconText
-								as={MaterialCommunityIcons}
-								name="new-box"
-								text="Release notes"
-							/>
-							<Icon as={Feather} name="arrow-up-right" size={4} />
+						<IconText
+							as={MaterialCommunityIcons}
+							name="new-box"
+							text="Release notes"
+						/>
+						<Icon as={Feather} name="arrow-up-right" size={4} />
 					</PressableSettings>
 
 					<PressableSettings onPress={() => openRedaServicePage("/privacy")}>
-							<IconText
-								as={MaterialIcons}
-								name="privacy-tip"
-								text="Privacy policy"
-							/>
-							<Icon as={Feather} name="arrow-up-right" size={4} />
+						<IconText
+							as={MaterialIcons}
+							name="privacy-tip"
+							text="Privacy policy"
+						/>
+						<Icon as={Feather} name="arrow-up-right" size={4} />
 					</PressableSettings>
 
-					<PressableSettings onPress={() => openRedaServicePage("/terms")} hideDivider={true}>
-							<IconText name="book" text="Terms of service" />
-							<Icon as={Feather} name="arrow-up-right" size={4} />
+					<PressableSettings
+						onPress={() => openRedaServicePage("/terms")}
+						hideDivider={true}
+					>
+						<IconText name="book" text="Terms of service" />
+						<Icon as={Feather} name="arrow-up-right" size={4} />
 					</PressableSettings>
 				</SettingsSection>
 
 				<SettingsSection title="App Controls">
 					<PressableSettings onPress={handleSync} disabled={appState.isSyncing}>
-							<IconText name="refresh-cw" text="Sync" />
-							{appState.isSyncing && <ActivityIndicator size="small" />}
+						<IconText name="refresh-cw" text="Sync" />
+						{appState.isSyncing && <ActivityIndicator size="small" />}
 					</PressableSettings>
 
-					<PressableSettings  onPress={handleSettingsReset}>
+					<PressableSettings onPress={handleSettingsReset}>
 						<Box py={2}>
 							<Text color="red.500">Reset settings</Text>
 						</Box>
 					</PressableSettings>
 
-					<PressableSettings  onPress={settings.clearAllData} hideDivider={true}>
+					<PressableSettings onPress={settings.clearAllData} hideDivider={true}>
 						<Box w="full" py={2}>
 							<Text color="red.500">Clear data</Text>
 						</Box>
-					</PressableSettings >
+					</PressableSettings>
 				</SettingsSection>
 
 				<Text

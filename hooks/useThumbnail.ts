@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getThumbnail } from "../utils/misc.util";
 
 export const useThumbnail = (
@@ -9,14 +9,21 @@ export const useThumbnail = (
 
   const [thumb, setThumb] = useState(defaultThumb);
   const [fallback, setFallback] = useState(defaultThumb);
+  const [hasFired, setHasFired] = useState(false);
 
-  useEffect(() => {
+  if (!hasFired) {
     (async () => {
-      const { thumb, fallback } = await getThumbnail(image, path);
-      if (thumb && isNaN(parseInt(thumb))) setThumb({ uri: thumb });
-      if (fallback && isNaN(parseInt(fallback))) setFallback({ uri: fallback });
+      const { thumb: generatedThumb, fallback: generatedFallback } =
+        await getThumbnail(image, path);
+      if (generatedThumb && isNaN(parseInt(generatedThumb))) {
+        setThumb({ uri: generatedThumb });
+      }
+      if (generatedFallback && isNaN(parseInt(generatedFallback))) {
+        setFallback({ uri: generatedFallback });
+      }
+      setHasFired(true);
     })();
-  }, [image, path]);
+  }
 
-  return { thumb, fallback };
+  return { thumb, fallback } as const;
 };
