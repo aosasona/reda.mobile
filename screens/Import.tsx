@@ -134,17 +134,10 @@ export default function Import() {
 
 	return (
 		<CustomSafeAreaView>
-			<DownloadingList
+			<ImportHeader
 				state={mixedState}
 				setState={setMixedState}
-				reset={resetState}
-				HeaderComponent={
-					<ImportHeader
-						state={mixedState}
-						setState={setMixedState}
-						callbacks={{ handleLocalImport, handleRemoteImport }}
-					/>
-				}
+				callbacks={{ handleLocalImport, handleRemoteImport }}
 			/>
 			<MetaModal
 				state={{

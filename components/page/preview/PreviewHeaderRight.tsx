@@ -2,6 +2,7 @@ import { AntDesign, Entypo, Feather, Ionicons } from "@expo/vector-icons";
 import { NavigationProp } from "@react-navigation/native";
 import { HStack, Icon, IconButton, Menu } from "native-base";
 import { useWindowDimensions } from "react-native";
+import screens from "../../../constants/screens";
 import { CombinedFileResultType } from "../../../types/database";
 import { shareFile } from "../../../utils/file.util";
 import PressableMenuItem from "./PressableMenuItem";
@@ -61,6 +62,14 @@ export function PreviewHeaderRight({
 					/>
 				)}
 			>
+				<PressableMenuItem
+					icon={{ as: AntDesign, name: "edit" }}
+					onPress={() =>
+						navigation.navigate(screens.EDIT_DETAILS.screenName, { data })
+					}
+				>
+					Edit details
+				</PressableMenuItem>
 				<PressableMenuItem
 					icon={{
 						as: Ionicons,

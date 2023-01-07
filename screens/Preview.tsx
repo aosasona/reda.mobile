@@ -1,4 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
 import {
 	Box,
 	Button,
@@ -110,6 +111,7 @@ export default function Preview({ route, navigation }: ScreenProps) {
 				<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
 			}
 		>
+			<StatusBar style="light" />
 			<PreviewHeader source={thumb} defaultSource={fallback} data={data} />
 			<Box px={4} py={4}>
 				<Box mb={4}>

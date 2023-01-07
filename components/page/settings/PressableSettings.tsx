@@ -1,19 +1,20 @@
-import CustomDivider from "../../reusables/custom/CustomDivider";
-import CustomPressable, {CustomPressableProps} from "../../reusables/custom/CustomPressable";
+import CustomPressable, {
+	CustomPressableProps,
+} from "../../reusables/custom/CustomPressable";
 import StaticSettings from "./StaticSettings";
 
-interface Props extends CustomPressableProps {
-	hideDivider?: boolean;
-}
+interface Props extends CustomPressableProps { }
 
-export default function PressableSettings({ children, hideDivider, onPress, disabled }: Props = { hideDivider: false, disabled: false, onPress: () => {}, children: null }) {
+export default function PressableSettings(
+	{ children, onPress, disabled }: Props = {
+		disabled: false,
+		onPress: () => { },
+		children: null,
+	}
+) {
 	return (
-	  <>
-		  <CustomPressable onPress={onPress} disabled={disabled}>
-			  <StaticSettings hideDivider={hideDivider}>
-				  {children}
-			  </StaticSettings>
-		  </CustomPressable>
-	  </>
-	)
+		<CustomPressable onPress={onPress} disabled={disabled}>
+			<StaticSettings>{children}</StaticSettings>
+		</CustomPressable>
+	);
 }

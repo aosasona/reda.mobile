@@ -84,7 +84,6 @@ export default function Settings({ navigation }: ScreenProps) {
 						onPress={() =>
 							navigation.navigate(screens.SECURITY_SETTINGS.screenName)
 						}
-						hideDivider={true}
 					>
 						<IconText name="lock" text="Security" />
 						<Icon as={Feather} name="chevron-right" size={4} />
@@ -110,10 +109,7 @@ export default function Settings({ navigation }: ScreenProps) {
 						<Icon as={Feather} name="arrow-up-right" size={4} />
 					</PressableSettings>
 
-					<PressableSettings
-						onPress={() => openRedaServicePage("/terms")}
-						hideDivider={true}
-					>
+					<PressableSettings onPress={() => openRedaServicePage("/terms")}>
 						<IconText name="book" text="Terms of service" />
 						<Icon as={Feather} name="arrow-up-right" size={4} />
 					</PressableSettings>
@@ -121,7 +117,9 @@ export default function Settings({ navigation }: ScreenProps) {
 
 				<SettingsSection title="App Controls">
 					<PressableSettings onPress={handleSync} disabled={appState.isSyncing}>
-						<IconText name="refresh-cw" text="Sync" />
+						<Text color="primary" py={2}>
+							Sync data
+						</Text>
 						{appState.isSyncing && <ActivityIndicator size="small" />}
 					</PressableSettings>
 
@@ -131,7 +129,7 @@ export default function Settings({ navigation }: ScreenProps) {
 						</Box>
 					</PressableSettings>
 
-					<PressableSettings onPress={settings.clearAllData} hideDivider={true}>
+					<PressableSettings onPress={settings.clearAllData}>
 						<Box w="full" py={2}>
 							<Text color="red.500">Clear data</Text>
 						</Box>
@@ -143,7 +141,7 @@ export default function Settings({ navigation }: ScreenProps) {
 					fontSize={13}
 					color="gray.400"
 					fontWeight={400}
-					mt={10}
+					my={10}
 				>
 					Version {constants?.manifest?.version}
 				</Text>

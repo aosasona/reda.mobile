@@ -1,20 +1,13 @@
-import {HStack, Switch} from "native-base";
-import {ReactNode} from "react";
-import {HStackProps} from "../../../constants/props";
-import CustomDivider from "../../reusables/custom/CustomDivider";
+import { HStack } from "native-base";
+import { ReactNode } from "react";
+import { HStackProps } from "../../../constants/props";
 
 interface Props {
 	children: ReactNode;
-	hideDivider?: boolean;
 }
 
-export default function StaticSettings({ children, hideDivider }: Props = { hideDivider: false, children: null }) {
-	return (
-	  <>
-		  <HStack {...HStackProps}>
-			  {children}
-		  </HStack>
-		  {!hideDivider && <CustomDivider />}
-	  </>
-	)
+export default function StaticSettings(
+	{ children }: Props = { children: null }
+) {
+	return <HStack {...HStackProps}>{children}</HStack>;
 }

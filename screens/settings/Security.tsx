@@ -24,7 +24,7 @@ export default function Security() {
 		<ScrollView px={0}>
 			<SettingsSection title="Security" hideTitle={true}>
 				{supportsBio ? (
-					<StaticSettings hideDivider={true}>
+					<StaticSettings>
 						<Text>Require FaceID/Fingerprint</Text>
 						<Switch
 							size="md"

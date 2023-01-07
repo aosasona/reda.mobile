@@ -6,7 +6,7 @@ import {
 } from "../constants/fonts";
 
 export const colors = {
-	primary: "#2563EB",
+	primary: "#006ee6",
 	"brand-dark": "#000000",
 	"brand-light": "#EEEEEE",
 	brand: {

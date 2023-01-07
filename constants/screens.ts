@@ -23,6 +23,10 @@ const screens = {
 		screenName: "PreviewScreen",
 		screenTitle: "Preview",
 	},
+	EDIT_DETAILS: {
+		screenName: "EditScreen",
+		screenTitle: "Edit Details",
+	},
 	READ_DOCUMENT: {
 		screenName: "ReadDocumentScreen",
 		screenTitle: "Read Document",
