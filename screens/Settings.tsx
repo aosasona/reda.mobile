@@ -14,7 +14,7 @@ import {
 	useColorMode,
 	useColorModeValue,
 } from "native-base";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ActivityIndicator } from "react-native";
 import SettingsSection from "../components/page/settings/SettingsSection";
 import StaticSettings from "../components/page/settings/StaticSettings";
@@ -50,11 +50,12 @@ export default function Settings({ navigation }: ScreenProps) {
 		const uri = REDA_URL + url;
 		WebUtil.openBrowserPage(navigation, uri).then();
 	};
+
 	const bg = useColorModeValue("brand-light", "brand-dark");
 
 	return (
 		<CustomSafeAreaView>
-			<ScrollView px={0}>
+			<ScrollView px={0} showsVerticalScrollIndicator={false}>
 				<Box bg={bg} px={3} mt={2}>
 					<Heading fontSize={40}>Settings</Heading>
 				</Box>

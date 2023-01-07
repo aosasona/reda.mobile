@@ -1,25 +1,31 @@
 import * as DocumentPicker from "expo-document-picker";
-import {useDisclose} from "native-base";
-import {useContext, useState} from "react";
-import {Alert} from "react-native";
+import { useDisclose } from "native-base";
+import { useContext, useState } from "react";
+import { Alert } from "react-native";
 import DownloadingList from "../components/page/import/DownloadingList";
 import ImportHeader from "../components/page/import/ImportHeader";
 import MetaModal from "../components/meta/MetaModal";
 import CustomSafeAreaView from "../components/reusables/custom/CustomSafeAreaView";
-import {SettingsContext} from "../context/settings/SettingsContext";
+import { SettingsContext } from "../context/settings/SettingsContext";
 import CustomException from "../exceptions/CustomException";
-import {ImportStatesProps} from "../types/import";
-import {handlePossibleNull} from "../exceptions/handlers";
-import {extractFileName, File, handleFileCleanup, handleFilePick, processFileName} from "../utils/file.util";
+import { ImportStatesProps } from "../types/import";
+import { handlePossibleNull } from "../exceptions/handlers";
+import {
+	extractFileName,
+	File,
+	handleFileCleanup,
+	handleFilePick,
+	processFileName,
+} from "../utils/file.util";
 import ImportUtil from "../utils/import.util";
-import {showToast} from "../utils/misc.util";
+import { showToast } from "../utils/misc.util";
 
 // Todo: implement resume-able downloads
 
 export default function Import() {
-	const {isOpen, onOpen, onClose} = useDisclose();
+	const { isOpen, onOpen, onClose } = useDisclose();
 
-	const {state: globalState} = useContext(SettingsContext);
+	const { state: globalState } = useContext(SettingsContext);
 
 	const [mixedState, setMixedState] = useState<ImportStatesProps>({
 		file: null,
@@ -46,21 +52,16 @@ export default function Import() {
 
 	const handleMetaSelection = (value: any, index: number) => {
 		if (
-		  mixedState.meta?.currentIndex !== null &&
-		  mixedState.meta?.currentIndex === index
+			mixedState.meta?.currentIndex !== null &&
+			mixedState.meta?.currentIndex === index
 		) {
 			setMixedState({
 				...mixedState,
-				meta: {...mixedState.meta, currentIndex: null, current: null},
+				meta: { ...mixedState.meta, currentIndex: null, current: null },
 			});
 			return;
 		}
 		importUtil.setCurrentMeta(value, index);
-	};
-
-	const meta = {
-		setAll: importUtil.setAllMeta,
-		setCurrent: importUtil.setCurrentMeta,
 	};
 
 	const handleModalDismiss = () => {
@@ -71,22 +72,27 @@ export default function Import() {
 
 	const handleRemoteImport = async () => {
 		try {
-			showToast("Coming soon", "info");
-			return;
 			if (!mixedState.URL) return;
-			if (!mixedState.URL?.endsWith(".pdf"))
+			if (!mixedState.URL?.endsWith(".pdf")) {
 				throw new CustomException("The URL must end with .pdf");
-		}
-		catch (e) {
-			console.log(e);
+			}
+			setMixedState((prev) => ({
+				...prev,
+				loading: { ...prev.loading, remote: true },
+			}));
+			await importUtil.saveRemoteImport(mixedState.URL);
+			setMixedState((prev) => ({
+				...prev,
+				URL: "",
+			}));
+		} catch (e) {
 			const msg =
-			  e instanceof CustomException ? e.message : "An error occurred";
+				e instanceof CustomException ? e.message : "An error occurred";
 			Alert.alert("Error", msg);
-		}
-		finally {
-			setMixedState((prevState) => ({
-				...prevState,
-				loading: {...prevState.loading, meta: false},
+		} finally {
+			setMixedState((prev) => ({
+				...prev,
+				loading: { ...prev.loading, remote: false },
 			}));
 		}
 	};
@@ -95,7 +101,7 @@ export default function Import() {
 		try {
 			setMixedState((prevState) => ({
 				...prevState,
-				loading: {...prevState.loading, local: true},
+				loading: { ...prevState.loading, local: true },
 			}));
 			const result = await DocumentPicker.getDocumentAsync({
 				type: ["application/pdf"],
@@ -114,51 +120,49 @@ export default function Import() {
 				await loadAllMeta(slimFileName);
 				!isOpen && onOpen();
 			}
-		}
-		catch (e) {
+		} catch (e) {
 			const msg =
-			  e instanceof CustomException ? e.message : "An error occurred";
+				e instanceof CustomException ? e.message : "An error occurred";
 			Alert.alert("Error", msg);
-		}
-		finally {
+		} finally {
 			setMixedState((prevState) => ({
 				...prevState,
-				loading: {...prevState.loading, meta: false, local: false},
+				loading: { ...prevState.loading, meta: false, local: false },
 			}));
 		}
 	};
 
 	return (
-	  <CustomSafeAreaView>
-		  <DownloadingList
-			state={mixedState}
-			setState={setMixedState}
-			reset={resetState}
-			HeaderComponent={
-				<ImportHeader
-				  state={mixedState}
-				  setState={setMixedState}
-				  callbacks={{handleLocalImport, handleRemoteImport}}
-				/>
-			}
-		  />
-		  <MetaModal
-			state={{
-				isOpen,
-				step: mixedState.step,
-				search: mixedState.search,
-				file: mixedState.file as File,
-				meta: mixedState.meta,
-				loading: mixedState.loading,
-			}}
-			functions={{
-				setState: setMixedState,
-				handleCurrentMetaChange: handleMetaSelection,
-				handleModalDismiss,
-				loadAllMeta,
-				handleComplete: importUtil.completeInAppImport,
-			}}
-		  />
-	  </CustomSafeAreaView>
+		<CustomSafeAreaView>
+			<DownloadingList
+				state={mixedState}
+				setState={setMixedState}
+				reset={resetState}
+				HeaderComponent={
+					<ImportHeader
+						state={mixedState}
+						setState={setMixedState}
+						callbacks={{ handleLocalImport, handleRemoteImport }}
+					/>
+				}
+			/>
+			<MetaModal
+				state={{
+					isOpen,
+					step: mixedState.step,
+					search: mixedState.search,
+					file: mixedState.file as File,
+					meta: mixedState.meta,
+					loading: mixedState.loading,
+				}}
+				functions={{
+					setState: setMixedState,
+					handleCurrentMetaChange: handleMetaSelection,
+					handleModalDismiss,
+					loadAllMeta,
+					handleComplete: importUtil.completeInAppImport,
+				}}
+			/>
+		</CustomSafeAreaView>
 	);
 }

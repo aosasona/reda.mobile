@@ -1,9 +1,12 @@
 import { Alert } from "react-native";
+import CustomException from "../exceptions/CustomException";
 import { OpenLibraryService } from "../services/cloud";
 import { FileModel, MetadataModel, SQLBoolean } from "../types/database";
 import { CompleteInAppFlowArgs, StateSetter } from "../types/import";
 import { saveFile } from "./database.util";
-import { showToast } from "./misc.util";
+import { showToast, validateURL } from "./misc.util";
+import * as FileSystem from "expo-file-system";
+import { DEFAULT_REDA_DIRECTORY, extractFileNameFromUri } from "./file.util";
 
 export default class ImportUtil {
 	private readonly setState: StateSetter;
@@ -67,6 +70,31 @@ export default class ImportUtil {
 				remote: false,
 				meta: false,
 			},
+		});
+	};
+
+	public saveRemoteImport = async (url: string) => {
+		const { msg } = validateURL(url);
+		if (msg) throw new CustomException(msg);
+		const rawFileName = extractFileNameFromUri(url);
+		const decodedFileName = decodeURIComponent(rawFileName) || rawFileName;
+		const filePath = DEFAULT_REDA_DIRECTORY + rawFileName;
+		const { exists } = await FileSystem.getInfoAsync(filePath);
+		if (exists) throw new CustomException("Oops, file already exists!");
+		const result = await FileSystem.downloadAsync(url, filePath);
+		const data = await FileSystem.getInfoAsync(result?.uri);
+		await this.completeInAppImport({
+			data: null,
+			file: {
+				name: decodedFileName,
+				uri: rawFileName,
+				size: data.size || 1000000,
+				mimeType: result.mimeType || "application/pdf",
+			},
+			metadata: null,
+			img: null,
+			setSaving: (val) => { },
+			handleModalDismiss: () => { },
 		});
 	};
 
