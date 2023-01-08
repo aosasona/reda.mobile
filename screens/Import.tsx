@@ -1,12 +1,10 @@
 import * as DocumentPicker from "expo-document-picker";
 import { useDisclose } from "native-base";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Alert } from "react-native";
-import DownloadingList from "../components/page/import/DownloadingList";
 import ImportHeader from "../components/page/import/ImportHeader";
 import MetaModal from "../components/meta/MetaModal";
 import CustomSafeAreaView from "../components/reusables/custom/CustomSafeAreaView";
-import { SettingsContext } from "../context/settings/SettingsContext";
 import CustomException from "../exceptions/CustomException";
 import { ImportStatesProps } from "../types/import";
 import { handlePossibleNull } from "../exceptions/handlers";
@@ -18,14 +16,11 @@ import {
 	processFileName,
 } from "../utils/file.util";
 import ImportUtil from "../utils/import.util";
-import { showToast } from "../utils/misc.util";
 
 // Todo: implement resume-able downloads
 
 export default function Import() {
 	const { isOpen, onOpen, onClose } = useDisclose();
-
-	const { state: globalState } = useContext(SettingsContext);
 
 	const [mixedState, setMixedState] = useState<ImportStatesProps>({
 		file: null,
@@ -73,9 +68,6 @@ export default function Import() {
 	const handleRemoteImport = async () => {
 		try {
 			if (!mixedState.URL) return;
-			if (!mixedState.URL?.endsWith(".pdf")) {
-				throw new CustomException("The URL must end with .pdf");
-			}
 			setMixedState((prev) => ({
 				...prev,
 				loading: { ...prev.loading, remote: true },

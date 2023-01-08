@@ -83,7 +83,10 @@ export const addNewFilesToDB = async () => {
 		}
 
 		if (syncedCount > 0) {
-			showToast(`Synced ${syncedCount} files from storage`, "info");
+			showToast(
+				`Synced ${syncedCount} file${syncedCount > 1 ? "s" : ""} from storage`,
+				"info"
+			);
 		}
 	} catch (err) {
 		return;

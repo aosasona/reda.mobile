@@ -6,6 +6,16 @@ export enum MetaModalSteps {
 	TWO,
 }
 
+export enum MimeTypes {
+	PDF = "application/pdf",
+	EPUB = "application/epub+zip",
+}
+
+export enum FileExtensions {
+	PDF = ".pdf",
+	EPUB = ".epub",
+}
+
 export type StateSetter = Dispatch<SetStateAction<ImportStatesProps>>;
 
 export interface ImportHeaderProps {

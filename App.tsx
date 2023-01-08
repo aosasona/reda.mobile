@@ -119,7 +119,7 @@ export default function App() {
 			"change",
 			(appState) => {
 				if (appState == "active" && migrationComplete) {
-					(async () => await syncLocalData())();
+					syncLocalData().then().catch();
 				}
 			}
 		);

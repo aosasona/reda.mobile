@@ -2,14 +2,25 @@ import { Alert } from "react-native";
 import CustomException from "../exceptions/CustomException";
 import { OpenLibraryService } from "../services/cloud";
 import { FileModel, MetadataModel, SQLBoolean } from "../types/database";
-import { CompleteInAppFlowArgs, StateSetter } from "../types/import";
+import {
+	CompleteInAppFlowArgs,
+	FileExtensions,
+	MimeTypes,
+	StateSetter,
+} from "../types/import";
 import { saveFile } from "./database.util";
 import { showToast, validateURL } from "./misc.util";
 import * as FileSystem from "expo-file-system";
-import { DEFAULT_REDA_DIRECTORY, extractFileNameFromUri } from "./file.util";
+import {
+	DEFAULT_REDA_DIRECTORY,
+	deleteFile,
+	extractFileNameFromUri,
+} from "./file.util";
 
 export default class ImportUtil {
 	private readonly setState: StateSetter;
+
+	private readonly supportedMimeTypes = [MimeTypes.PDF];
 
 	constructor(setState: StateSetter) {
 		this.setState = setState;
@@ -73,16 +84,44 @@ export default class ImportUtil {
 		});
 	};
 
+	// This function tries to make sure the file has the right extension
+	public inferFileName = (filename: string, mimeType: string) => {
+		const castMimeType = mimeType?.toLowerCase() as MimeTypes;
+		if (
+			this.supportedMimeTypes.includes(castMimeType) &&
+			!filename.endsWith(FileExtensions.PDF) &&
+			!filename.endsWith(FileExtensions.EPUB)
+		) {
+			if (castMimeType == MimeTypes.PDF) {
+				filename = filename + ".pdf";
+			}
+
+			if (castMimeType == MimeTypes.EPUB) {
+				filename = filename + ".epub";
+			}
+		}
+		return filename;
+	};
+
 	public saveRemoteImport = async (url: string) => {
 		const { msg } = validateURL(url);
 		if (msg) throw new CustomException(msg);
-		const rawFileName = extractFileNameFromUri(url);
+		let rawFileName = extractFileNameFromUri(url);
 		const decodedFileName = decodeURIComponent(rawFileName) || rawFileName;
 		const filePath = DEFAULT_REDA_DIRECTORY + rawFileName;
 		const { exists } = await FileSystem.getInfoAsync(filePath);
 		if (exists) throw new CustomException("Oops, file already exists!");
 		const result = await FileSystem.downloadAsync(url, filePath);
 		const data = await FileSystem.getInfoAsync(result?.uri);
+		if (
+			!this.supportedMimeTypes.includes(
+				result.mimeType?.toLowerCase() as MimeTypes
+			)
+		) {
+			await deleteFile(filePath);
+			throw new CustomException("File format not supported!");
+		}
+
 		await this.completeInAppImport({
 			data: null,
 			file: {
