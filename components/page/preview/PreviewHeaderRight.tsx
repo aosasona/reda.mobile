@@ -63,14 +63,6 @@ export function PreviewHeaderRight({
 				)}
 			>
 				<PressableMenuItem
-					icon={{ as: AntDesign, name: "edit" }}
-					onPress={() =>
-						navigation.navigate(screens.EDIT_DETAILS.screenName, { data })
-					}
-				>
-					Edit details
-				</PressableMenuItem>
-				<PressableMenuItem
 					icon={{
 						as: Ionicons,
 						name: data?.has_started ? "ios-eye-off-outline" : "ios-eye-outline",

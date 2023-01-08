@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { HStack, Icon, Menu, Pressable, Text } from "native-base";
+import { HStack, Icon, Menu, Text, useColorModeValue } from "native-base";
 import { ReactNode } from "react";
 
 interface PressableMenuItemProps {
@@ -19,6 +19,8 @@ export default function PressableMenuItem({
 	icon: { as, name, size },
 	onPress,
 }: PressableMenuItemProps) {
+	const defaultColor = useColorModeValue("muted.900", "muted.100");
+
 	return (
 		<Menu.Item w="full" onPress={onPress} py={3}>
 			<HStack alignItems="center" space={2}>
@@ -26,9 +28,9 @@ export default function PressableMenuItem({
 					as={as || Feather}
 					name={name}
 					size={size || 4}
-					color={color || "muted.100"}
+					color={color || defaultColor}
 				/>
-				<Text color={color || "muted.100"}>{children}</Text>
+				<Text color={color || defaultColor}>{children}</Text>
 			</HStack>
 		</Menu.Item>
 	);
