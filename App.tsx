@@ -46,7 +46,7 @@ import {
 import * as SplashScreen from "expo-splash-screen";
 import { NativeBaseProvider } from "native-base";
 import React, { useEffect, useState } from "react";
-import { Appearance, AppState, View } from "react-native";
+import { Appearance, View } from "react-native";
 import { extendedTheme } from "./config/theme";
 import { AppContextProvider } from "./context/app/AppContext";
 import { SettingsContextProvider } from "./context/settings/SettingsContext";
@@ -113,22 +113,6 @@ export default function App() {
 		})();
 	}, [fontsLoaded, navReady, appReady]);
 
-	// Watch for app state and automatically
-	useEffect(() => {
-		const appStateSubscription = AppState.addEventListener(
-			"change",
-			(appState) => {
-				if (appState == "active" && migrationComplete) {
-					syncLocalData().then().catch();
-				}
-			}
-		);
-
-		return () => {
-			appStateSubscription.remove();
-		};
-	}, []);
-
 	if (typeof window !== undefined) {
 		Appearance.addChangeListener(({ colorScheme }) => {
 			colorModeManager.set(colorScheme);
@@ -154,7 +138,10 @@ export default function App() {
 						theme={extendedTheme}
 						colorModeManager={colorModeManager}
 					>
-						<MainStack onNavReady={() => setNavReady(true)} />
+						<MainStack
+							migrationComplete={migrationComplete}
+							onNavReady={() => setNavReady(true)}
+						/>
 					</NativeBaseProvider>
 				</SettingsContextProvider>
 			</AppContextProvider>

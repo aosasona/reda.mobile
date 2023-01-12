@@ -19,7 +19,7 @@ export const colors = {
 		"faded-dark": "#A9A9A955",
 	},
 	muted: {
-		900: "#101010",
+		900: "#121212",
 	},
 };
 

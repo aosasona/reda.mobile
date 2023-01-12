@@ -4,7 +4,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import { Icon, useColorMode } from "native-base";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
+import { AppState } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { navigationConfig } from "../config/screens";
 import { iconOptions, screenOptions } from "../config/tabs";
@@ -12,17 +13,38 @@ import screens from "../constants/screens";
 import tabs from "../constants/tabs";
 import { AppContext } from "../context/app/AppContext";
 import LockScreen from "../screens/LockScreen";
+import { syncLocalData } from "../services/local/startup";
 import ImportStack from "../stacks/ImportStack";
 import HomeStack from "./HomeStack";
 import SettingsStack from "./SettingsStack";
 
 interface MainStackProps {
+	migrationComplete: boolean;
 	onNavReady: () => void;
 }
 
-export default function MainStack({ onNavReady }: MainStackProps) {
+export default function MainStack({
+	migrationComplete,
+	onNavReady,
+}: MainStackProps) {
 	const { colorMode } = useColorMode();
 	const { state } = useContext(AppContext);
+
+	// Watch for app state and automatically sync data when in focus
+	useEffect(() => {
+		const appStateSubscription = AppState.addEventListener(
+			"change",
+			(appState) => {
+				if (appState == "active" && migrationComplete) {
+					syncLocalData().then().catch();
+				}
+			}
+		);
+
+		return () => {
+			appStateSubscription.remove();
+		};
+	}, []);
 
 	const Tab = createBottomTabNavigator();
 	const Stack = createNativeStackNavigator();
@@ -35,7 +57,7 @@ export default function MainStack({ onNavReady }: MainStackProps) {
 			/>
 
 			<NavigationContainer onReady={onNavReady}>
-				{!state?.isSignedIn && (state?.usePassword || state?.useBiometrics) ? (
+				{!state?.isSignedIn && state?.useBiometrics ? (
 					<Stack.Navigator {...navigationConfig(colorMode)}>
 						<Stack.Screen
 							name={screens.LOCKSCREEN.screenName}

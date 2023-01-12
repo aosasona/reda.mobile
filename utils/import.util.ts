@@ -20,7 +20,7 @@ import {
 export default class ImportUtil {
 	private readonly setState: StateSetter;
 
-	private readonly supportedMimeTypes = [MimeTypes.PDF];
+	private readonly supportedMimeTypes = ["application/pdf"];
 
 	constructor(setState: StateSetter) {
 		this.setState = setState;
@@ -86,17 +86,17 @@ export default class ImportUtil {
 
 	// This function tries to make sure the file has the right extension
 	public inferFileName = (filename: string, mimeType: string) => {
-		const castMimeType = mimeType?.toLowerCase() as MimeTypes;
+		const castMimeType = mimeType?.toLowerCase();
 		if (
 			this.supportedMimeTypes.includes(castMimeType) &&
 			!filename.endsWith(FileExtensions.PDF) &&
 			!filename.endsWith(FileExtensions.EPUB)
 		) {
-			if (castMimeType == MimeTypes.PDF) {
+			if (castMimeType == (MimeTypes.PDF as string)) {
 				filename = filename + ".pdf";
 			}
 
-			if (castMimeType == MimeTypes.EPUB) {
+			if (castMimeType == (MimeTypes.EPUB as string)) {
 				filename = filename + ".epub";
 			}
 		}
@@ -113,11 +113,7 @@ export default class ImportUtil {
 		if (exists) throw new CustomException("Oops, file already exists!");
 		const result = await FileSystem.downloadAsync(url, filePath);
 		const data = await FileSystem.getInfoAsync(result?.uri);
-		if (
-			!this.supportedMimeTypes.includes(
-				result.mimeType?.toLowerCase() as MimeTypes
-			)
-		) {
+		if (!this.supportedMimeTypes.includes(result.mimeType?.toLowerCase())) {
 			await deleteFile(filePath);
 			throw new CustomException("File format not supported!");
 		}

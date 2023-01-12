@@ -1,6 +1,9 @@
+import { Platform } from "expo-modules-core";
 import { Toast } from "native-base";
 import PdfThumbnail from "react-native-pdf-thumbnail";
 import * as yup from "yup";
+
+export const isAndroid = Platform.OS === "android";
 
 export const validateURL = (
   url: string

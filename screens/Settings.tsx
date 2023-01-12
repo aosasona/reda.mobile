@@ -30,6 +30,7 @@ import { SettingsContext } from "../context/settings/SettingsContext";
 import { syncLocalData } from "../services/local/startup";
 import { ScreenProps } from "../types/general";
 import WebUtil from "../utils/web.util";
+import { isAndroid } from "../utils/misc.util";
 
 export default function Settings({ navigation }: ScreenProps) {
 	const { toggleColorMode, colorMode } = useColorMode();
@@ -67,7 +68,7 @@ export default function Settings({ navigation }: ScreenProps) {
 							text="Dark mode"
 						/>
 						<Switch
-							size="md"
+							size={isAndroid ? "lg" : "md"}
 							onToggle={toggleColorMode}
 							value={colorMode === "dark"}
 						/>
@@ -75,7 +76,7 @@ export default function Settings({ navigation }: ScreenProps) {
 					<StaticSettings>
 						<IconText name="book-open" text="Single page" />
 						<Switch
-							size="md"
+							size={isAndroid ? "lg" : "md"}
 							onToggle={settings.toggleSinglePageLayout}
 							value={state.useSinglePageLayout}
 						/>

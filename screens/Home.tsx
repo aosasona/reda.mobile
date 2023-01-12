@@ -1,5 +1,5 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { Box, FlatList, ScrollView, SectionList } from "native-base";
+import { Box, ScrollView, SectionList } from "native-base";
 import { useCallback, useState } from "react";
 import { Alert, RefreshControl } from "react-native";
 import HorizontalFileCard from "../components/cards/HorizontalFileCard";
@@ -109,22 +109,24 @@ export default function Home() {
 						data={item.list}
 						horizontal
 						showsHorizontalScrollIndicator={false}
+						keyExtractor={(item, index) => `${item.id}-${index}`}
 						renderItem={({ item, index }) =>
 							section.category === CategoryPageType.CONTINUE_READING ? (
 								<LargeHorizontalFileCard
+									key={index}
 									data={item}
 									index={index}
 									navigation={navigation}
 								/>
 							) : (
 								<HorizontalFileCard
+									key={index}
 									data={item}
 									index={index}
 									navigation={navigation}
 								/>
 							)
 						}
-						keyExtractor={(item, index) => index.toString()}
 						ListEmptyComponent={<EmptySection title={item.key} />}
 						decelerationRate="fast"
 						pagingEnabled={true}
