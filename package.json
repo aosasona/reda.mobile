@@ -9,7 +9,7 @@
     "web": "expo start --web",
     "build:submit": "eas build --profile production --platform all --auto-submit",
     "build:ios:dev": "eas build --local --profile development --platform ios",
-    "build:android:dev": "eas build --profile development --platform android",
+    "build:android:dev": "eas build --local --profile development --platform android",
     "eject": "expo eject",
     "start:clear": "expo start --dev-client --clear"
   },

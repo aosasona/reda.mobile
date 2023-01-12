@@ -1,12 +1,13 @@
 const IS_IN_DEVELOPMENT = process.env.APP_ENVIRONMENT === "development";
 
 export default {
-  name: IS_IN_DEVELOPMENT ? "Reda Development" : "Reda App",
+  name: IS_IN_DEVELOPMENT ? "Reda Dev" : "Reda App",
   slug: "reda",
-  version: "0.1.73",
+  version: "0.1.74",
   orientation: "portrait",
   icon: "./assets/" + (IS_IN_DEVELOPMENT ? "icon-dev.png" : "icon.png"),
   userInterfaceStyle: "automatic",
+  jsEngine: "hermes",
   splash: {
     image: "./assets/splash.png",
     resizeMode: "contain",
