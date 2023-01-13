@@ -13,9 +13,7 @@ export default function IconText(
 	const color = useColorModeValue("brand-dark", "brand-light");
 	return (
 		<HStack alignItems="center" space={3}>
-			<Box py={2}>
-				<Icon as={as || Feather} name={name} color={color} size={4} />
-			</Box>
+			<Icon as={as || Feather} name={name} color={color} size={5} my={2} />
 			<Text>{text}</Text>
 		</HStack>
 	);

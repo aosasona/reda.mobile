@@ -109,18 +109,18 @@ export default function Home() {
 						data={item.list}
 						horizontal
 						showsHorizontalScrollIndicator={false}
-						keyExtractor={(item, index) => `${item.id}-${index}`}
+						keyExtractor={(item, index) => index.toString()}
 						renderItem={({ item, index }) =>
 							section.category === CategoryPageType.CONTINUE_READING ? (
 								<LargeHorizontalFileCard
-									key={index}
+									key={`${index}-${item.id}-${item.created_at}`}
 									data={item}
 									index={index}
 									navigation={navigation}
 								/>
 							) : (
 								<HorizontalFileCard
-									key={index}
+									key={`${index}-${item.id}-${item.created_at}`}
 									data={item}
 									index={index}
 									navigation={navigation}

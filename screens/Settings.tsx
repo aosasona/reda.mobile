@@ -14,7 +14,7 @@ import {
 	useColorMode,
 	useColorModeValue,
 } from "native-base";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { ActivityIndicator } from "react-native";
 import SettingsSection from "../components/page/settings/SettingsSection";
 import StaticSettings from "../components/page/settings/StaticSettings";
@@ -57,7 +57,7 @@ export default function Settings({ navigation }: ScreenProps) {
 	return (
 		<CustomSafeAreaView>
 			<ScrollView px={0} showsVerticalScrollIndicator={false}>
-				<Box bg={bg} px={3} mt={2}>
+				<Box bg={bg} px={3} mt={4}>
 					<Heading fontSize={40}>Settings</Heading>
 				</Box>
 

@@ -65,12 +65,13 @@ export const ActionSheetProps = {
 };
 
 export const ButtonProps = {
-  fontSize: 12,
+  fontSize: 14,
+  fontWeight: "medium",
   _light: { bg: "muted.900", _text: { color: "muted.100" } },
   _dark: { bg: "muted.100", _text: { color: "muted.900" } },
-  _pressed: { opacity: 0.8, bg: "muted.400" },
+  _pressed: { opacity: 0.75, bg: "muted.400" },
   _loading: { bg: "muted.900", _text: { color: "muted.100" } },
-  rounded: 8,
+  rounded: 10,
   py: 5,
 };
 
@@ -81,7 +82,7 @@ export const InputProps = {
   _light: { bg: "muted.200", _focus: { bg: "muted.200" } },
   _dark: { bg: "muted.900", _focus: { bg: "muted.900" } },
   py: 3,
-  rounded: 8,
+  rounded: 10,
 };
 
 export const DividerProps = {

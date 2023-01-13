@@ -22,12 +22,12 @@ export default function EmptySection({ title }: EmptySectionProps) {
 					as={MaterialIcons}
 					name="folder"
 					size={32}
-					_dark={{ color: "muted.800" }}
+					_dark={{ color: "muted.900" }}
 					_light={{ color: "muted.300" }}
 				/>
 				<Text
 					fontSize={16}
-					_dark={{ color: "muted.700" }}
+					_dark={{ color: "muted.800" }}
 					_light={{ color: "muted.400" }}
 					mt={2}
 				>
