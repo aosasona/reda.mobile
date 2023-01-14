@@ -28,6 +28,7 @@
     "@react-navigation/native-stack": "^6.9.4",
     "@shopify/flash-list": "1.3.1",
     "axios": "^1.2.1",
+    "burnt": "^0.8.1",
     "expo": "~47.0.9",
     "expo-app-loading": "~2.1.1",
     "expo-asset": "~8.7.0",

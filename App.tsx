@@ -9,17 +9,7 @@ import {
 	AzeretMono_800ExtraBold,
 	AzeretMono_900Black,
 } from "@expo-google-fonts/azeret-mono";
-import {
-	Inter_100Thin,
-	Inter_200ExtraLight,
-	Inter_300Light,
-	Inter_400Regular,
-	Inter_500Medium,
-	Inter_600SemiBold,
-	Inter_700Bold,
-	Inter_800ExtraBold,
-	Inter_900Black,
-} from "@expo-google-fonts/inter";
+import {Inter_100Thin, Inter_200ExtraLight, Inter_300Light, Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold, Inter_800ExtraBold, Inter_900Black} from "@expo-google-fonts/inter";
 import {
 	Outfit_100Thin,
 	Outfit_200ExtraLight,
@@ -44,16 +34,16 @@ import {
 	Poppins_900Black,
 } from "@expo-google-fonts/poppins";
 import * as SplashScreen from "expo-splash-screen";
-import { NativeBaseProvider } from "native-base";
-import React, { useEffect, useState } from "react";
-import { Appearance, View } from "react-native";
-import { extendedTheme } from "./config/theme";
-import { AppContextProvider } from "./context/app/AppContext";
-import { SettingsContextProvider } from "./context/settings/SettingsContext";
-import { migrateLegacyDB, syncLocalData } from "./services/local/startup";
-import MainStack from "./stacks/MainStack";
-import { colorModeManager } from "./utils/color.util";
-import { runMigration } from "./utils/database.util";
+import {NativeBaseProvider} from "native-base";
+import React, {useEffect, useState} from "react";
+import {Appearance, View} from "react-native";
+import {extendedTheme} from "./src/config/theme";
+import {AppContextProvider} from "./src/context/app/AppContext";
+import {SettingsContextProvider} from "./src/context/settings/SettingsContext";
+import {migrateLegacyDB, syncLocalData} from "./src/services/local/startup";
+import MainStack from "./src/stacks/MainStack";
+import {colorModeManager} from "./src/utils/color.util";
+import {runMigration} from "./src/utils/database.util";
 
 (async () => await SplashScreen.preventAutoHideAsync())();
 
@@ -114,7 +104,7 @@ export default function App() {
 	}, [fontsLoaded, navReady, appReady]);
 
 	if (typeof window !== undefined) {
-		Appearance.addChangeListener(({ colorScheme }) => {
+		Appearance.addChangeListener(({colorScheme}) => {
 			colorModeManager.set(colorScheme);
 		});
 		(async () => {
@@ -131,20 +121,20 @@ export default function App() {
 	}
 
 	return (
-		<View style={{ flex: 1 }} onLayout={() => setAppReady(true)}>
-			<AppContextProvider>
-				<SettingsContextProvider>
-					<NativeBaseProvider
-						theme={extendedTheme}
-						colorModeManager={colorModeManager}
-					>
-						<MainStack
-							migrationComplete={migrationComplete}
-							onNavReady={() => setNavReady(true)}
-						/>
-					</NativeBaseProvider>
-				</SettingsContextProvider>
-			</AppContextProvider>
-		</View>
+	  <View style={{flex: 1}} onLayout={() => setAppReady(true)}>
+		  <AppContextProvider>
+			  <SettingsContextProvider>
+				  <NativeBaseProvider
+					theme={extendedTheme}
+					colorModeManager={colorModeManager}
+				  >
+					  <MainStack
+						migrationComplete={migrationComplete}
+						onNavReady={() => setNavReady(true)}
+					  />
+				  </NativeBaseProvider>
+			  </SettingsContextProvider>
+		  </AppContextProvider>
+	  </View>
 	);
 }

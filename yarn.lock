@@ -3347,6 +3347,11 @@ builtins@^1.0.3:
   resolved "https://registry.yarnpkg.com/builtins/-/builtins-1.0.3.tgz#cb94faeb61c8696451db36534e1422f94f0aee88"
   integrity sha512-uYBjakWipfaO/bXI7E8rq6kpwHRZK5cNYrUv2OzZSI/FvmdMyXJ2tG9dKcjEC5YHmHpUAwsargWIZNWdxb/bnQ==
 
+burnt@^0.8.1:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/burnt/-/burnt-0.8.1.tgz#ab00de8fa6a64e548ce1e446009966f3f869ed06"
+  integrity sha512-GEXrLANldYVdGLCdKA7EoD4+3QLvBUseEmHIXclTknczRV4ptovVUYNdE5+0P728keKxu1fnz3XIgcHVM8j1wA==
+
 bytes@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.0.0.tgz#d32815404d689699f85a4ea4fa8755dd13a96048"

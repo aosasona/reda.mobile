@@ -1,3 +1,5 @@
 # Reda
 
-Manage your lists and PDFs easily on-the-go.
+The way to own your library.
+
+Website: [usereda.app](https://www.usereda.app)
