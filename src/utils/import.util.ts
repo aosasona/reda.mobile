@@ -6,7 +6,8 @@ import {FileModel, MetadataModel, SQLBoolean} from "../types/database";
 import {CompleteInAppFlowArgs, FileExtensions, MimeTypes, StateSetter} from "../types/import";
 import {saveFile} from "./database.util";
 import {DEFAULT_REDA_DIRECTORY, deleteFile, extractFileNameFromUri} from "./file.util";
-import {showToast, validateURL} from "./misc.util";
+import {validateURL} from "./misc.util";
+import {showToast} from "./notification.util";
 
 export default class ImportUtil {
 	private readonly setState: StateSetter;
@@ -172,7 +173,7 @@ export default class ImportUtil {
 			};
 			const res = await saveFile(file_data, meta);
 			if (res) {
-				showToast("Local import", "One file added!");
+				showToast("Success", "One file added!");
 			} else {
 				showToast("Error", "Something went wrong!", "error");
 			}

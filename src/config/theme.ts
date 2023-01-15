@@ -4,20 +4,26 @@ import {isAndroid} from "../utils/misc.util";
 
 export const colors = {
 	primary: "#006ee6",
-	"brand-dark": "#000000",
-	"brand-light": "#EEEEEE",
-	"brand-faded-dark": "#0D0D0D",
-	brand: {
-		light: "#EEEEEE",
-		primary: "#FFD369",
-		dark: "#393E46",
-		"dark-brand": "#222831",
-		darker: "#000000",
-		faded: "#A9A9A9",
-		"faded-dark": "#A9A9A955",
+	dark: {
+		50: "#E3E3E3",
+		300: "#A9A9A9",
+		500: "#424242",
+		600: "#2A2A2A",
+		700: "#171717",
+		800: "#0D0D0D",
+		900: "#000000",
 	},
-	muted: {
-		900: "#202020",
+	light: {
+		50: "#FFFFFF",
+		100: "#F2F2F2",
+		200: "#EEEEEE",
+		300: "#E0E0E0",
+		400: "#BDBDBD",
+		500: "#9E9E9E",
+		600: "#757575",
+		700: "#616161",
+		800: "#424242",
+		900: "#212121",
 	},
 };
 
@@ -40,22 +46,22 @@ export const fonts = {
 export const componentsConfig = {
 	ScrollView: {
 		baseStyle: (props: any) => ({
-			_dark: {bg: colors.brand.darker},
-			_light: {bg: colors.brand.light},
+			_dark: {bg: colors.dark["900"]},
+			_light: {bg: colors.light["200"]},
 			px: 4,
 		}),
 	},
 	SectionList: {
 		baseStyle: (props: any) => ({
-			_dark: {bg: colors.brand.darker},
-			_light: {bg: colors.brand.light},
+			_dark: {bg: colors.dark["900"]},
+			_light: {bg: colors.light["200"]},
 			px: 4,
 		}),
 	},
 	FlatList: {
 		baseStyle: (props: any) => ({
-			_dark: {bg: colors.brand.darker},
-			_light: {bg: colors.brand.light},
+			_dark: {bg: colors.dark["900"]},
+			_light: {bg: colors.light["200"]},
 			px: 4,
 		}),
 	},

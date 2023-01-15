@@ -5,7 +5,7 @@ import {useCallback, useEffect, useState} from "react";
 import {Alert, RefreshControl} from "react-native";
 import PreviewHeader from "../components/page/preview/PreviewHeader";
 import {PreviewHeaderRight} from "../components/page/preview/PreviewHeaderRight";
-import {ButtonProps, DetailsProps, DividerProps} from "../constants/props";
+import {ButtonProps, DetailsProps, DividerProps} from "../config/props";
 import screens from "../constants/screens";
 import {useThumbnail} from "../hooks/useThumbnail";
 import {RedaService} from "../services/local";

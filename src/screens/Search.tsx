@@ -78,8 +78,8 @@ function SearchHeader({
 	return (
 	  <Box
 		w="full"
-		_dark={{bg: "brand-dark"}}
-		_light={{bg: "brand-light"}}
+		_dark={{bg: "dark.900"}}
+		_light={{bg: "light.200"}}
 		py={3}
 		mb={2}
 	  >

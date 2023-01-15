@@ -3,13 +3,13 @@ import {useEffect, useState} from "react";
 import {ActivityIndicator, Dimensions, RefreshControl} from "react-native";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 import SearchCard from "../components/cards/SearchCard";
-import CustomSafeAreaView from "../components/reusables/custom/CustomSafeAreaView";
+import CustomSafeAreaView from "../components/custom/CustomSafeAreaView";
 import EmptySection from "../components/reusables/EmptySection";
 import SearchInput from "../components/reusables/SearchInput";
 import {RedaService} from "../services/local";
 import {CombinedFileResultType} from "../types/database";
 import {CategoryPageType, ScreenProps} from "../types/general";
-import {showToast} from "../utils/misc.util";
+import {showToast} from "../utils/notification.util";
 
 interface DataState {
 	all: CombinedFileResultType[];
@@ -69,7 +69,7 @@ export default function Category({route, navigation}: ScreenProps) {
 			if (loading) setLoading(false);
 		}
 		catch (error) {
-			showToast("Something went wrong!", "error");
+			showToast("error", "Something went wrong", "error");
 			navigation.goBack();
 		}
 	};
@@ -88,8 +88,8 @@ export default function Category({route, navigation}: ScreenProps) {
 			flex={1}
 			alignItems="center"
 			justifyContent="center"
-			_dark={{bg: "brand-dark"}}
-			_light={{bg: "brand-light"}}
+			_dark={{bg: "dark.900"}}
+			_light={{bg: "light.200"}}
 		  >
 			  <ActivityIndicator size="large"/>
 		  </Flex>
@@ -143,8 +143,8 @@ function PageHeader({data, functions}: PageHeaderProps) {
 	return (
 	  <Box
 		w={"full"}
-		_dark={{bg: "brand-dark"}}
-		_light={{bg: "brand-light"}}
+		_dark={{bg: "dark.900"}}
+		_light={{bg: "light.200"}}
 		pb={3}
 		px={0}
 		pt={3}

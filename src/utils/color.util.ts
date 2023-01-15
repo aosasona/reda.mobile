@@ -4,11 +4,11 @@ import {Keys} from "../constants/keys";
 import defaultStorage from "../storage/default";
 
 export function getPrimaryColor(mode: ColorMode) {
-	return mode === "dark" ? colors.brand.darker : colors.brand.light;
+	return mode === "dark" ? colors.dark["900"] : colors.light["200"];
 }
 
 export function getSecondaryColor(mode: ColorMode) {
-	return mode === "dark" ? colors.brand.light : colors.brand.darker;
+	return mode === "dark" ? colors.light["200"] : colors.dark["900"];
 }
 
 export const colorModeManager: StorageManager = {

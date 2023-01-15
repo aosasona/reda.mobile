@@ -9,15 +9,15 @@ export const iconOptions = (colorMode: ColorMode, focused: boolean) => {
 	return focused
 	  ? getSecondaryColor(colorMode)
 	  : colorMode == "dark"
-		? colors.brand["faded-dark"]
-		: colors.brand.faded;
+		? colors.dark["600"]
+		: colors.light["400"];
 };
 
 export const screenOptions = (colorMode: ColorMode) => ({
 	tabBarHideOnKeyboard: true,
 	tabBarActiveTintColor: getSecondaryColor(colorMode),
 	tabBarInactiveTintColor:
-	  colorMode == "dark" ? colors.brand["faded-dark"] : colors.brand.faded,
+	  colorMode == "dark" ? colors.dark["600"] : colors.light["400"],
 	headerShown: false,
 	headerTintColor: getSecondaryColor(colorMode),
 	headerTitleStyle: {

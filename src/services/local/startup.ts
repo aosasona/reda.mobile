@@ -3,7 +3,8 @@ import {SQLResultSet} from "expo-sqlite";
 import {FileModel, MetadataModel, SQLBoolean} from "../../types/database";
 import {del, executeQuery, saveFile} from "../../utils/database.util";
 import {DEFAULT_REDA_DIRECTORY, extractFileName} from "../../utils/file.util";
-import {filterSupportedFiles, showToast} from "../../utils/misc.util";
+import {filterSupportedFiles} from "../../utils/misc.util";
+import {showToast} from "../../utils/notification.util";
 
 // This will check all files in the database vs all files in the storage and delete the records where the files don't exist
 export const removeMissingFileRecords = async () => {
@@ -85,7 +86,7 @@ export const addNewFilesToDB = async () => {
 
 		if (syncedCount > 0) {
 			showToast(
-			  "Sync",
+			  "Sync complete",
 			  `Synced ${syncedCount} file${syncedCount > 1 ? "s" : ""}`,
 			);
 		}

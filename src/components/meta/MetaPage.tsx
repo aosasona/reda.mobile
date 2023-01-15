@@ -2,7 +2,7 @@ import {Entypo} from "@expo/vector-icons";
 import {AspectRatio, Box, Button, Heading, HStack, Icon, Image, Pressable, Text, VStack} from "native-base";
 import {useEffect, useState} from "react";
 import {useWindowDimensions} from "react-native";
-import {ButtonProps} from "../../constants/props";
+import {ButtonProps} from "../../config/props";
 import {useThumbnail} from "../../hooks/useThumbnail";
 import {OpenLibraryService} from "../../services/cloud";
 import {MetaPageProps} from "../../types/import";

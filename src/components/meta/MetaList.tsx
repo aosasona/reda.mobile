@@ -2,7 +2,7 @@ import {Entypo} from "@expo/vector-icons";
 import {Box, Button, FlatList, Flex, Heading, HStack, Icon, Input, Text} from "native-base";
 import {useEffect} from "react";
 import {Alert, Dimensions, Platform, useWindowDimensions} from "react-native";
-import {ButtonProps, InputProps} from "../../constants/props";
+import {ButtonProps, InputProps} from "../../config/props";
 import {MetaModalProps} from "../../types/import";
 import MetaListCard from "../cards/MetaListCard";
 
@@ -93,7 +93,7 @@ export const ListHeaderComponent = ({functions, state}: MetaModalProps) => {
 	return (
 	  <Box
 		w="full"
-		_dark={{bg: "muted.900"}}
+		_dark={{bg: "dark.700"}}
 		_light={{bg: "muted.100"}}
 		pb={4}
 		mb={2}
@@ -134,7 +134,7 @@ export const ListHeaderComponent = ({functions, state}: MetaModalProps) => {
 					  as={Entypo}
 					  name="magnifying-glass"
 					  size={5}
-					  _dark={{color: "muted.900"}}
+					  _dark={{color: "dark.700"}}
 					  _light={{color: "muted.100"}}
 					/>
 				</Button>

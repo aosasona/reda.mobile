@@ -148,7 +148,7 @@ export function DownloadingCard({item, index, onDelete}: DownloadingCardProps) {
 
 	return (
 	  <Swipeable renderRightActions={renderRightActions} containerStyle={{marginBottom: 10}}>
-		  <HStack w="full" _light={{bg: "muted.200"}} _dark={{bg: "muted.900"}} alignItems="center" space={3} rounded={8} px={3} py={3}>
+		  <HStack w="full" _light={{bg: "muted.200"}} _dark={{bg: "dark.700"}} alignItems="center" space={3} rounded={8} px={3} py={3}>
 			  <Box w={12} h={12} rounded="full">
 				  <DownloadingAnim/>
 			  </Box>

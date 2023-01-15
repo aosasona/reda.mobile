@@ -1,5 +1,5 @@
 import {Box, Button, Heading, Input, Text, VStack} from "native-base";
-import {ButtonProps, InputProps} from "../../../constants/props";
+import {ButtonProps, InputProps} from "../../../config/props";
 import {ImportHeaderProps} from "../../../types/import";
 
 export default function ImportHeader({

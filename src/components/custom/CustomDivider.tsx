@@ -1,5 +1,5 @@
 import {Divider} from "native-base";
-import {DividerProps} from "../../../constants/props";
+import {DividerProps} from "../../config/props";
 
 export default function CustomDivider() {
 	return <Divider {...DividerProps} />

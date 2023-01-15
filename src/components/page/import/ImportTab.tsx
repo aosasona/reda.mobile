@@ -13,7 +13,7 @@ export default function ImportTab({tabs, currentTab, onTabChange}: ImportTabProp
 		if (tab !== currentTab) {
 			return "transparent";
 		} else {
-			return (colorMode === "dark") ? "muted.900" : "muted.200"
+			return (colorMode === "dark") ? "dark.700" : "muted.200"
 		}
 	};
 

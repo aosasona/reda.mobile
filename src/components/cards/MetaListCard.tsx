@@ -57,7 +57,7 @@ export default function MetaListCard({state, functions}: MetaCardProps) {
 						<AspectRatio
 						  ratio={1}
 						  w="full"
-						  bg="muted.900"
+						  bg="dark.700"
 						  opacity={0.8}
 						  justifyContent="center"
 						  alignItems="center"

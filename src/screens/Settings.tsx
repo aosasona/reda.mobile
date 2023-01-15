@@ -1,12 +1,13 @@
-import {Feather, MaterialCommunityIcons, MaterialIcons} from "@expo/vector-icons";
+import {Feather, Ionicons, MaterialIcons} from "@expo/vector-icons";
 import constants from "expo-constants";
-import {Box, Heading, Icon, ScrollView, Switch, Text, useColorMode, useColorModeValue} from "native-base";
+import {Box, Heading, Icon, ScrollView, Switch, Text, useColorMode, useColorModeValue, VStack} from "native-base";
 import {useContext} from "react";
 import {ActivityIndicator} from "react-native";
+import CustomDivider from "../components/custom/CustomDivider";
+import CustomSafeAreaView from "../components/custom/CustomSafeAreaView";
 import PressableSettings from "../components/page/settings/PressableSettings";
 import SettingsSection from "../components/page/settings/SettingsSection";
 import StaticSettings from "../components/page/settings/StaticSettings";
-import CustomSafeAreaView from "../components/reusables/custom/CustomSafeAreaView";
 import IconText from "../components/reusables/IconText";
 import screens from "../constants/screens";
 import {REDA_URL} from "../constants/url";
@@ -38,7 +39,7 @@ export default function Settings({navigation}: ScreenProps) {
 		WebUtil.openBrowserPage(navigation, uri).then();
 	};
 
-	const bg = useColorModeValue("brand-light", "brand-dark");
+	const bg = useColorModeValue("light.200", "dark.900");
 
 	return (
 	  <CustomSafeAreaView>
@@ -47,76 +48,92 @@ export default function Settings({navigation}: ScreenProps) {
 				  <Heading fontSize={40}>Settings</Heading>
 			  </Box>
 
-			  <SettingsSection title="Configure Reda">
-				  <StaticSettings>
-					  <IconText
-						name={colorMode == "dark" ? "sun" : "moon"}
-						text="Dark mode"
-					  />
-					  <Switch onToggle={toggleColorMode} value={colorMode === "dark"}/>
-				  </StaticSettings>
-				  <StaticSettings>
-					  <IconText name="book-open" text="Single page"/>
-					  <Switch
-						onToggle={settings.toggleSinglePageLayout}
-						value={state.useSinglePageLayout}
-					  />
-				  </StaticSettings>
-				  <PressableSettings
-					onPress={() =>
-					  navigation.navigate(screens.SECURITY_SETTINGS.screenName)
-					}
-				  >
-					  <IconText name="lock" text="Security"/>
-					  <Icon as={Feather} name="chevron-right" size={4}/>
-				  </PressableSettings>
-			  </SettingsSection>
+			  <VStack mt={1} space={8} divider={<CustomDivider/>}>
+				  <SettingsSection title="Configure Reda">
+					  <StaticSettings>
+						  <IconText
+							name={colorMode == "dark" ? "sun" : "moon"}
+							text="Dark mode"
+						  />
+						  <Switch onToggle={toggleColorMode} value={colorMode === "dark"}/>
+					  </StaticSettings>
+					  <StaticSettings>
+						  <IconText name="book-open" text="Single page"/>
+						  <Switch
+							onToggle={settings.toggleSinglePageLayout}
+							value={state.useSinglePageLayout}
+						  />
+					  </StaticSettings>
+					  <PressableSettings
+						onPress={() =>
+						  navigation.navigate(screens.SECURITY_SETTINGS.screenName)
+						}
+					  >
+						  <IconText name="lock" text="Security"/>
+						  <Icon as={Feather} name="chevron-right" size={4}/>
+					  </PressableSettings>
+				  </SettingsSection>
 
-			  <SettingsSection title="About Reda">
-				  <PressableSettings onPress={() => openRedaServicePage("/releases")}>
-					  <IconText
-						as={MaterialCommunityIcons}
-						name="new-box"
-						text="Release notes"
-					  />
-					  <Icon as={Feather} name="arrow-up-right" size={4}/>
-				  </PressableSettings>
+				  <SettingsSection title="About Reda">
+					  <PressableSettings onPress={() => openRedaServicePage("/releases")}>
+						  <IconText
+							as={MaterialIcons}
+							name="new-releases"
+							text="Release notes"
+						  />
+						  <Icon as={Feather} name="arrow-up-right" size={4}/>
+					  </PressableSettings>
 
-				  <PressableSettings onPress={() => openRedaServicePage("/privacy")}>
-					  <IconText
-						as={MaterialIcons}
-						name="privacy-tip"
-						text="Privacy policy"
-					  />
-					  <Icon as={Feather} name="arrow-up-right" size={4}/>
-				  </PressableSettings>
+					  <PressableSettings onPress={() => openRedaServicePage("/privacy")}>
+						  <IconText
+							as={MaterialIcons}
+							name="privacy-tip"
+							text="Privacy policy"
+						  />
+						  <Icon as={Feather} name="arrow-up-right" size={4}/>
+					  </PressableSettings>
 
-				  <PressableSettings onPress={() => openRedaServicePage("/terms")}>
-					  <IconText name="book" text="Terms of service"/>
-					  <Icon as={Feather} name="arrow-up-right" size={4}/>
-				  </PressableSettings>
-			  </SettingsSection>
+					  <PressableSettings onPress={() => openRedaServicePage("/terms")}>
+						  <IconText name="book" text="Terms of service"/>
+						  <Icon as={Feather} name="arrow-up-right" size={4}/>
+					  </PressableSettings>
 
-			  <SettingsSection title="App Controls">
-				  <PressableSettings onPress={handleSync} disabled={appState.isSyncing}>
-					  <Text color="primary" py={2}>
-						  Sync data
-					  </Text>
-					  {appState.isSyncing && <ActivityIndicator size="small"/>}
-				  </PressableSettings>
+					  <PressableSettings
+						onPress={() =>
+						  WebUtil.openBrowserPage(
+							navigation,
+							"https://twitter.com/useredaapp",
+						  ).then()
+						}
+					  >
+						  <IconText as={Ionicons} name="help-outline" text="Help"/>
+						  <Icon as={Feather} name="arrow-up-right" size={4}/>
+					  </PressableSettings>
+				  </SettingsSection>
 
-				  <PressableSettings onPress={handleSettingsReset}>
-					  <Box py={2}>
-						  <Text color="red.500">Reset settings</Text>
-					  </Box>
-				  </PressableSettings>
+				  <SettingsSection title="App Controls">
+					  <PressableSettings
+						onPress={handleSync}
+						disabled={appState.isSyncing}
+					  >
+						  <IconText as={Ionicons} name="ios-sync" text="Sync data"/>
+						  {appState.isSyncing && <ActivityIndicator size="small"/>}
+					  </PressableSettings>
 
-				  <PressableSettings onPress={settings.clearAllData}>
-					  <Box w="full" py={2}>
-						  <Text color="red.500">Clear data</Text>
-					  </Box>
-				  </PressableSettings>
-			  </SettingsSection>
+					  <PressableSettings onPress={handleSettingsReset}>
+						  <IconText
+							as={MaterialIcons}
+							name="settings-backup-restore"
+							color="red.500"
+							text="Reset settings"
+						  />
+					  </PressableSettings>
+
+					  <PressableSettings onPress={settings.clearAllData}>
+						  <IconText name="trash" color="red.500" text="Clear data"/>
+					  </PressableSettings>
+				  </SettingsSection>
+			  </VStack>
 
 			  <Text
 				textAlign="center"

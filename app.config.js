@@ -49,11 +49,11 @@ export default {
 			"expo-notifications",
 			{
 				icon: "./assets/icon.png",
-				color: "#2563eb",
+				color: "#006ee6",
 			},
 		],
 		"@config-plugins/react-native-blob-util",
 		"@config-plugins/react-native-pdf",
-		["./plugins/withUISupportsDocumentBrowser"],
+		["./src/plugins/withUISupportsDocumentBrowser"],
 	],
 };

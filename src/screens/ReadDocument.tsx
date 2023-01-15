@@ -2,7 +2,6 @@ import {Box, Text, useColorMode, View} from "native-base";
 import {useContext, useEffect, useState} from "react";
 import {Alert, Dimensions} from "react-native";
 import Pdf from "react-native-pdf";
-import {colors} from "../config/theme";
 import {SettingsContext} from "../context/settings/SettingsContext";
 import {RedaService} from "../services/local";
 import {CombinedFileResultType} from "../types/database";
@@ -58,7 +57,7 @@ export default function ReadDocument({route, navigation}: ScreenProps) {
 		flex={1}
 		justifyContent="flex-start"
 		alignItems="center"
-		_dark={{bg: "brand-dark"}}
+		_dark={{bg: "dark.900"}}
 		px={0}
 	  >
 		  <Pdf
@@ -76,15 +75,15 @@ export default function ReadDocument({route, navigation}: ScreenProps) {
 				width,
 				height,
 				backgroundColor: isDark
-				  ? colors["brand-dark"]
-				  : colors["brand-light"],
+				  ? "dark.900"
+				  : "light.200",
 			}}
 		  />
 		  <Box
 			position="absolute"
 			top={2}
 			right={2}
-			_dark={{bg: "muted.900"}}
+			_dark={{bg: "dark.700"}}
 			_light={{bg: "muted.100"}}
 			shadow={2}
 			rounded={6}
@@ -96,5 +95,5 @@ export default function ReadDocument({route, navigation}: ScreenProps) {
 			  </Text>
 		  </Box>
 	  </View>
-	);
+	)
 }

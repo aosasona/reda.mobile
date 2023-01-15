@@ -1,6 +1,6 @@
 import Lottie from "lottie-react-native";
 
-const LoadingAnimation = require('../../../../assets/animations/loading-bars.json');
+const LoadingAnimation = require('../../../assets/animations/loading-bars.json');
 
 
 export default function LoadingAnim() {
