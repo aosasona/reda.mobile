@@ -1,14 +1,13 @@
-import {Keys} from "../../constants/keys";
+import { Keys } from "../../constants/keys";
 import defaultStorage from "../../storage/default";
-import {SettingsStateType} from "./SettingsContext";
+import { SettingsStateType } from "./SettingsContext";
 
 export enum SettingsActionType {
 	SET_FONT_SIZE = 1,
 	SET_SINGLE_PAGE_LAYOUT_OPTION,
+	TOGGLE_ALLOW_NOTIFICATIONS,
 	RESET_SETTINGS,
 	LOAD_SETTINGS,
-	SET_FONT_FAMILY,
-	SET_DELETE_FILES_AFTER_IMPORT,
 }
 
 export interface SettingsDispatchAction {
@@ -17,20 +16,22 @@ export interface SettingsDispatchAction {
 }
 
 export const SettingsReducer = (
-  state: SettingsStateType,
-  action: SettingsDispatchAction,
+	state: SettingsStateType,
+	action: SettingsDispatchAction
 ): SettingsStateType => {
 	switch (action.type) {
 		case SettingsActionType.RESET_SETTINGS:
 			defaultStorage.clearAll();
 			return {
 				useSinglePageLayout: false,
+				allowNotifications: false,
 			};
 
 		case SettingsActionType.LOAD_SETTINGS:
 			return {
 				...state,
 				useSinglePageLayout: action?.payload?.useSinglePageLayout,
+				allowNotifications: action?.payload?.allowNotifications,
 			};
 
 		case SettingsActionType.SET_SINGLE_PAGE_LAYOUT_OPTION:
@@ -38,6 +39,12 @@ export const SettingsReducer = (
 			return {
 				...state,
 				useSinglePageLayout: action?.payload,
+			};
+
+		case SettingsActionType.TOGGLE_ALLOW_NOTIFICATIONS:
+			return {
+				...state,
+				allowNotifications: !state.allowNotifications,
 			};
 
 		default:

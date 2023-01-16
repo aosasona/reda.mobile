@@ -43,6 +43,10 @@ const screens = {
 		screenName: "SecuritySettingsScreen",
 		screenTitle: "Security",
 	},
+	NOTIFICATIONS_SETTINGS: {
+		screenName: "NotificationsSettingsScreen",
+		screenTitle: "Notifications preferences",
+	},
 };
 
 export default screens;

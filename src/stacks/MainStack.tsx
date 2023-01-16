@@ -18,11 +18,20 @@ import { isAndroid } from "../utils/misc.util";
 import HomeStack from "./HomeStack";
 import ImportStack from "./ImportStack";
 import SettingsStack from "./SettingsStack";
+import * as Notifications from "expo-notifications";
 
 interface MainStackProps {
 	migrationComplete: boolean;
 	onNavReady: () => void;
 }
+
+Notifications.setNotificationHandler({
+	handleNotification: async () => ({
+		shouldShowAlert: true,
+		shouldSetBadge: true,
+		shouldPlaySound: true,
+	}),
+});
 
 export default function MainStack({
 	migrationComplete,
@@ -31,7 +40,7 @@ export default function MainStack({
 	const { colorMode } = useColorMode();
 	const { state } = useContext(AppContext);
 
-	// Watch for app state and automatically sync data when in focus
+	// Watch for app state and notifications and automatically sync data when in focus
 	useEffect(() => {
 		const appStateSubscription = AppState.addEventListener(
 			"change",

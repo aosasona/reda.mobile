@@ -7,6 +7,7 @@ export enum Keys {
 	SINGLE_PAGE_LAYOUT = "@single-page-layout",
 	APP_PASSWORD = "@app-password",
 	USE_BIOMETRICS = "@use-biometrics",
+	ALLOW_NOTIFICATIONS = "@allow-notifications",
 }
 
 export enum FolderNames {

@@ -1,7 +1,9 @@
 import * as FileSystem from "expo-file-system";
 import { Alert } from "react-native";
+import screens from "../constants/screens";
 import CustomException from "../exceptions/CustomException";
 import { OpenLibraryService } from "../services/cloud";
+import { RedaService } from "../services/local";
 import { FileModel, MetadataModel, SQLBoolean } from "../types/database";
 import {
 	CompleteInAppFlowArgs,
@@ -10,13 +12,9 @@ import {
 	StateSetter,
 } from "../types/import";
 import { saveFile } from "./database.util";
-import {
-	DEFAULT_REDA_DIRECTORY,
-	deleteFile,
-	extractFileNameFromUri,
-} from "./file.util";
+import { DEFAULT_REDA_DIRECTORY, extractFileNameFromUri } from "./file.util";
 import { generateRandomString, validateURL } from "./misc.util";
-import { showToast } from "./notification.util";
+import { sendNotification, showToast } from "./notification.util";
 
 export default class ImportUtil {
 	private readonly setState: StateSetter;
@@ -175,9 +173,17 @@ export default class ImportUtil {
 			};
 			const res = await saveFile(file_data, meta);
 			if (res) {
-				showToast("Success", "One file added!");
+				const savedFile = await RedaService.getOne(res.id);
+				await sendNotification(
+					"📚 Import complete",
+					`${savedFile?.name} has been added to your library`,
+					{ route: screens.PREVIEW.screenName, data: savedFile }
+				);
 			} else {
-				showToast("Error", "Something went wrong!", "error");
+				await sendNotification("Error ☹️", "Failed to import item", {
+					route: screens.IMPORT.screenName,
+					data: null,
+				});
 			}
 			handleModalDismiss();
 		} catch (e) {

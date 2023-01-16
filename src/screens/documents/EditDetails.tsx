@@ -31,10 +31,7 @@ export default function EditDetails({ route, navigation }: ScreenProps) {
 	};
 
 	const renameDocument = async () => {
-		if (filename == data?.name) {
-			showToast("Info", "No changes");
-			return;
-		}
+		if (filename == data?.name) return;
 		await RedaService.rename(data.id, filename);
 		setData((prev) => ({ ...prev, name: filename }));
 	};

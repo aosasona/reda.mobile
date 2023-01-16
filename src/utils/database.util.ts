@@ -1,6 +1,6 @@
 import * as SQLite from "expo-sqlite";
-import {SQLError, SQLResultSet} from "expo-sqlite";
-import {FileModel, MetadataModel} from "../types/database";
+import { SQLError, SQLResultSet } from "expo-sqlite";
+import { FileModel, MetadataModel } from "../types/database";
 
 export const DATABASE_NAME = ".reda.db";
 
@@ -137,7 +137,7 @@ export const update = async (
   id: number,
   data: any
 ) => {
-  const {table, identifier} = target;
+  const { table, identifier } = target;
   const keys = Object.keys(data);
   const values = Object.values(data);
   const columns = keys.map((key: string, _) => `${key} = ?`).join(", ");
@@ -161,17 +161,19 @@ export const del = async (data: {
   return await executeQuery(query, [data.id]);
 };
 
-export const saveFile = async (file: FileModel, meta: MetadataModel) => {
+export const saveFile = async (
+  file: FileModel,
+  meta: MetadataModel
+): Promise<{ id: number }> => {
   try {
     const savedFile = (await insert("files", file)) as SQLResultSet;
-    const {insertId} = savedFile;
+    const { insertId } = savedFile;
     const savedMeta = (await insert("metadata", {
       ...meta,
       file_id: insertId,
     })) as SQLResultSet;
-    return {...savedFile.rows._array, meta: savedMeta.rows._array};
-  }
-  catch (e) {
+    return { id: insertId || 0 };
+  } catch (e) {
     throw e;
   }
 };

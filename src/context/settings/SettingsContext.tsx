@@ -1,9 +1,10 @@
-import {createContext, useEffect, useReducer} from "react";
+import { createContext, useEffect, useReducer } from "react";
 import Settings from "./settings";
-import {SettingsReducer} from "./SettingsReducer";
+import { SettingsReducer } from "./SettingsReducer";
 
 export interface SettingsStateType {
 	useSinglePageLayout: boolean;
+	allowNotifications: boolean;
 }
 
 interface SettingsContextType {
@@ -13,27 +14,28 @@ interface SettingsContextType {
 
 const SettingsContext = createContext<SettingsContextType>(null as any);
 
-const SettingsContextProvider = ({children}: any) => {
+const SettingsContextProvider = ({ children }: any) => {
 	const initialState: SettingsStateType = {
 		useSinglePageLayout: true,
+		allowNotifications: false,
 	};
 
 	const [reducerState, dispatch] = useReducer(SettingsReducer, initialState);
 
 	useEffect(() => {
-		(new Settings(dispatch)).load().then();
+		new Settings(dispatch).load().then();
 	}, []);
 
 	return (
-	  <SettingsContext.Provider
-		value={{
-			state: reducerState,
-			dispatch,
-		}}
-	  >
-		  {children}
-	  </SettingsContext.Provider>
+		<SettingsContext.Provider
+			value={{
+				state: reducerState,
+				dispatch,
+			}}
+		>
+			{children}
+		</SettingsContext.Provider>
 	);
 };
 
-export {SettingsContext, SettingsContextProvider};
+export { SettingsContext, SettingsContextProvider };

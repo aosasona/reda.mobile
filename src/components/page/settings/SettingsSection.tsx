@@ -9,7 +9,7 @@ interface Props {
 
 export default function SettingsSection({ title, children, hideTitle }: Props) {
 	return (
-		<Box py={3} px={2}>
+		<Box py={3} px={1}>
 			<VStack>{children}</VStack>
 		</Box>
 	);

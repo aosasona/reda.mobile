@@ -20,8 +20,8 @@ export default {
 	ios: {
 		supportsTablet: false,
 		bundleIdentifier: IS_IN_DEVELOPMENT
-		  ? "com.wytehq.reda.dev"
-		  : "com.wytehq.reda",
+			? "com.wytehq.reda.dev"
+			: "com.wytehq.reda",
 	},
 	android: {
 		adaptiveIcon: {
@@ -29,6 +29,7 @@ export default {
 			backgroundColor: "#000000",
 		},
 		package: IS_IN_DEVELOPMENT ? "com.wytehq.reda.dev" : "com.wytehq.reda",
+		useNextNotificationsApi: true,
 	},
 	web: {
 		favicon: "./assets/favicon.png",
