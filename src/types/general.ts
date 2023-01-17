@@ -10,3 +10,13 @@ export enum CategoryPageType {
 	STARRED = "Starred",
 	CONTINUE_READING = "Continue reading",
 }
+
+export enum SupportedMimeTypes {
+	PDF = "application/pdf",
+	EPUB = "application/epub+zip",
+}
+
+export enum SupportedFileExtensions {
+	PDF = "pdf",
+	EPUB = "epub",
+}

@@ -16,7 +16,7 @@ export default function NotificationsPreference() {
   };
 
   return (
-    <ScrollView>
+    <ScrollView px={0}>
       <StaticSettings>
         <Text>Allow notifications</Text>
         <Switch
