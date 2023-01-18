@@ -125,10 +125,8 @@ export default function Import() {
     }
   };
 
-  const Wrapper = isAndroid ? CustomSafeAreaView : Fragment;
-
   return (
-    <Wrapper>
+    <CustomSafeAreaView>
       <Box flex={1} _ios={{ pt: 4 }} {...ViewProps}>
         <ImportHeader
           state={mixedState}
@@ -153,6 +151,6 @@ export default function Import() {
           }}
         />
       </Box>
-    </Wrapper>
+    </CustomSafeAreaView>
   );
 }

@@ -18,7 +18,7 @@ export default {
 	},
 	assetBundlePatterns: ["**/*"],
 	ios: {
-		associatedDomains: "applinks:usereda.app",
+		associatedDomains: ["applinks:reda.app", "applinks:www.reda.app"],
 		usesIcloudStorage: true,
 		usesAppleSignIn: true,
 		supportsTablet: false,
@@ -37,6 +37,10 @@ export default {
 	},
 	web: {
 		favicon: "./assets/favicon.png",
+	},
+	notification: {
+		icon: "./assets/96x96.png",
+		color: "#000000",
 	},
 	extra: {
 		eas: {

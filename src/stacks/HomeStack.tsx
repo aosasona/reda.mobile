@@ -49,7 +49,6 @@ export default function HomeStack() {
 				name={screens.IMPORT.screenName}
 				component={Import}
 				options={{
-					presentation: "modal",
 					headerTitle: screens.IMPORT.screenTitle,
 					headerShown: false,
 				}}
