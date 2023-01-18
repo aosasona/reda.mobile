@@ -1,18 +1,21 @@
-import {WebView} from "react-native-webview";
+import { Fragment } from "react";
+import { WebView } from "react-native-webview";
 import CustomSafeAreaView from "../components/custom/CustomSafeAreaView";
-import {ScreenProps} from "../types/general";
+import { ScreenProps } from "../types/general";
+import { isAndroid } from "../utils/misc.util";
 
-export default function BrowserPage({route, navigation}: ScreenProps) {
-	const {uri} = route.params;
+export default function BrowserPage({ route, navigation }: ScreenProps) {
+  const { uri } = route.params;
 
-	return (
-	  <CustomSafeAreaView>
-		  <WebView
-			source={{uri}}
-			automaticallyAdjustContentInsets
-			pullToRefreshEnabled
-			style={{flex: 1}}
-		  />
-	  </CustomSafeAreaView>
-	);
+  const Wrapper = isAndroid ? CustomSafeAreaView : Fragment;
+  return (
+    <Wrapper>
+      <WebView
+        source={{ uri }}
+        automaticallyAdjustContentInsets
+        pullToRefreshEnabled
+        style={{ flex: 1 }}
+      />
+    </Wrapper>
+  );
 }

@@ -150,6 +150,7 @@ export default function Home() {
         renderInPortal={false}
         shadow={3}
         bottom={6}
+        right={6}
         _dark={{ bg: "light.100" }}
         _light={{ bg: "dark.900" }}
         icon={
