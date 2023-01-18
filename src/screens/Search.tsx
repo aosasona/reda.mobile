@@ -23,6 +23,7 @@ export default function Search({ route, navigation }: ScreenProps) {
 
 	const StickyHeader = (props: any) => (
 		<Box
+			width="full"
 			mt={3}
 			mx="auto"
 			px={3}
