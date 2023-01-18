@@ -1,6 +1,7 @@
+import { AntDesign } from "@expo/vector-icons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
-import { Box, ScrollView, SectionList, View } from "native-base";
+import { Box, Fab, Icon, ScrollView, SectionList, View } from "native-base";
 import { useCallback, useState } from "react";
 import { Alert, RefreshControl } from "react-native";
 import HorizontalFileCard from "../components/cards/HorizontalFileCard";
@@ -8,6 +9,7 @@ import LargeHorizontalFileCard from "../components/cards/LargeHorizontalFileCard
 import LoadingHeader from "../components/loading/LoadingHeader";
 import HomeSectionTitle from "../components/page/home/HomeSectionTitle";
 import EmptySection from "../components/reusables/EmptySection";
+import screens from "../constants/screens";
 import { RedaService } from "../services/local";
 import { CombinedFileResultType } from "../types/database";
 import { CategoryPageType } from "../types/general";
@@ -143,6 +145,23 @@ export default function Home() {
 				}
 				showsVerticalScrollIndicator={false}
 				stickySectionHeadersEnabled={false}
+			/>
+			<Fab
+				renderInPortal={false}
+				shadow={3}
+				bottom={6}
+				_dark={{ bg: "light.100" }}
+				_light={{ bg: "dark.900" }}
+				icon={
+					<Icon
+						_dark={{ color: "dark.900" }}
+						_light={{ color: "light.200" }}
+						as={AntDesign}
+						name="plus"
+						size="2xl"
+					/>
+				}
+				onPress={() => navigation.navigate(screens.IMPORT.screenName)}
 			/>
 		</View>
 	);

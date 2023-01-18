@@ -22,128 +22,113 @@ import * as Notifications from "expo-notifications";
 import SearchStack from "./SearchStack";
 
 interface MainStackProps {
-	migrationComplete: boolean;
-	onNavReady: () => void;
+  migrationComplete: boolean;
+  onNavReady: () => void;
 }
 
 Notifications.setNotificationHandler({
-	handleNotification: async () => ({
-		shouldShowAlert: true,
-		shouldSetBadge: true,
-		shouldPlaySound: true,
-	}),
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldSetBadge: true,
+    shouldPlaySound: true,
+  }),
 });
 
 export default function MainStack({
-	migrationComplete,
-	onNavReady,
+  migrationComplete,
+  onNavReady,
 }: MainStackProps) {
-	const { colorMode } = useColorMode();
-	const { state } = useContext(AppContext);
+  const { colorMode } = useColorMode();
+  const { state } = useContext(AppContext);
 
-	// Watch for app state and notifications and automatically sync data when in focus
-	useEffect(() => {
-		const appStateSubscription = AppState.addEventListener(
-			"change",
-			(appState) => {
-				if (appState == "active" && migrationComplete && !isAndroid) {
-					syncLocalData().then().catch();
-				}
-			}
-		);
+  // Watch for app state and notifications and automatically sync data when in focus
+  useEffect(() => {
+    const appStateSubscription = AppState.addEventListener(
+      "change",
+      (appState) => {
+        if (appState == "active" && migrationComplete && !isAndroid) {
+          syncLocalData().then().catch();
+        }
+      }
+    );
 
-		return () => {
-			appStateSubscription.remove();
-		};
-	}, []);
+    return () => {
+      appStateSubscription.remove();
+    };
+  }, []);
 
-	const Tab = createBottomTabNavigator();
-	const Stack = createNativeStackNavigator();
+  const Tab = createBottomTabNavigator();
+  const Stack = createNativeStackNavigator();
 
-	return (
-		<SafeAreaProvider>
-			<StatusBar
-				animated={true}
-				style={colorMode === "dark" ? "light" : "dark"}
-			/>
+  return (
+    <SafeAreaProvider>
+      <StatusBar
+        animated={true}
+        style={colorMode === "dark" ? "light" : "dark"}
+      />
 
-			<NavigationContainer onReady={onNavReady}>
-				{!state?.isSignedIn && state?.useBiometrics ? (
-					<Stack.Navigator {...navigationConfig(colorMode)}>
-						<Stack.Screen
-							name={screens.LOCKSCREEN.screenName}
-							component={LockScreen}
-							options={{
-								headerTitle: screens.LOCKSCREEN.screenTitle,
-								headerShown: false,
-							}}
-						/>
-					</Stack.Navigator>
-				) : (
-					<Tab.Navigator initialRouteName={tabs.HOME} backBehavior="history">
-						<Tab.Screen
-							name={tabs.HOME}
-							component={HomeStack}
-							options={{
-								tabBarIcon: ({ focused }) => (
-									<Icon
-										as={AntDesign}
-										name="home"
-										size={6}
-										color={iconOptions(colorMode, focused)}
-									/>
-								),
-								...(screenOptions(colorMode) as any),
-							}}
-						/>
-						<Tab.Screen
-							name={tabs.SEARCH}
-							component={SearchStack}
-							options={{
-								tabBarIcon: ({ focused }) => (
-									<Icon
-										as={Feather}
-										name="search"
-										size={6}
-										color={iconOptions(colorMode, focused)}
-									/>
-								),
-								...(screenOptions(colorMode) as any),
-							}}
-						/>
-						<Tab.Screen
-							name={tabs.IMPORT}
-							component={ImportStack}
-							options={{
-								tabBarIcon: ({ focused }) => (
-									<Icon
-										as={AntDesign}
-										name="plussquareo"
-										size={6}
-										color={iconOptions(colorMode, focused)}
-									/>
-								),
-								...(screenOptions(colorMode) as any),
-							}}
-						/>
-						<Tab.Screen
-							name={tabs.SETTINGS}
-							component={SettingsStack}
-							options={{
-								tabBarIcon: ({ focused }) => (
-									<Icon
-										as={Ionicons}
-										name="settings-outline"
-										size={6}
-										color={iconOptions(colorMode, focused)}
-									/>
-								),
-								...(screenOptions(colorMode) as any),
-							}}
-						/>
-					</Tab.Navigator>
-				)}
-			</NavigationContainer>
-		</SafeAreaProvider>
-	);
+      <NavigationContainer onReady={onNavReady}>
+        {!state?.isSignedIn && state?.useBiometrics ? (
+          <Stack.Navigator {...navigationConfig(colorMode)}>
+            <Stack.Screen
+              name={screens.LOCKSCREEN.screenName}
+              component={LockScreen}
+              options={{
+                headerTitle: screens.LOCKSCREEN.screenTitle,
+                headerShown: false,
+              }}
+            />
+          </Stack.Navigator>
+        ) : (
+          <Tab.Navigator initialRouteName={tabs.HOME} backBehavior="history">
+            <Tab.Screen
+              name={tabs.HOME}
+              component={HomeStack}
+              options={{
+                tabBarIcon: ({ focused }) => (
+                  <Icon
+                    as={AntDesign}
+                    name="home"
+                    size={6}
+                    color={iconOptions(colorMode, focused)}
+                  />
+                ),
+                ...(screenOptions(colorMode) as any),
+              }}
+            />
+            <Tab.Screen
+              name={tabs.SEARCH}
+              component={SearchStack}
+              options={{
+                tabBarIcon: ({ focused }) => (
+                  <Icon
+                    as={Feather}
+                    name="search"
+                    size={6}
+                    color={iconOptions(colorMode, focused)}
+                  />
+                ),
+                ...(screenOptions(colorMode) as any),
+              }}
+            />
+            <Tab.Screen
+              name={tabs.SETTINGS}
+              component={SettingsStack}
+              options={{
+                tabBarIcon: ({ focused }) => (
+                  <Icon
+                    as={Ionicons}
+                    name="settings-outline"
+                    size={6}
+                    color={iconOptions(colorMode, focused)}
+                  />
+                ),
+                ...(screenOptions(colorMode) as any),
+              }}
+            />
+          </Tab.Navigator>
+        )}
+      </NavigationContainer>
+    </SafeAreaProvider>
+  );
 }

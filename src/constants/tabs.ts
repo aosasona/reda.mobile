@@ -1,7 +1,7 @@
 const tabs = {
 	HOME: "Home",
 	SEARCH: "Search",
-	IMPORT: "Import",
+	FOLDERS: "Folders",
 	SETTINGS: "Settings",
 };
 

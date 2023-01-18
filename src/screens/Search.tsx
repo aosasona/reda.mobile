@@ -7,6 +7,7 @@ import SearchCard from "../components/cards/SearchCard";
 import CustomSafeAreaView from "../components/custom/CustomSafeAreaView";
 import AnimatedHeader from "../components/reusables/AnimatedHeader";
 import SearchInput from "../components/reusables/SearchInput";
+import { ViewProps } from "../config/props";
 import useScrollThreshold from "../hooks/useScroll";
 import { RedaService } from "../services/local";
 import { CombinedFileResultType } from "../types/database";
@@ -22,14 +23,12 @@ export default function Search({ route, navigation }: ScreenProps) {
 
 	const StickyHeader = (props: any) => (
 		<Box
-			width="full"
-			_dark={{ bg: "dark.900" }}
-			_light={{ bg: "light.200" }}
 			mt={3}
 			mx="auto"
 			px={3}
 			pb={4}
 			safeAreaTop
+			{...ViewProps}
 		>
 			<SearchInput search={search} setSearch={setSearch} {...props} />
 		</Box>
@@ -49,7 +48,6 @@ export default function Search({ route, navigation }: ScreenProps) {
 		<CustomSafeAreaView>
 			<AnimatedHeader
 				Component={StickyHeader}
-				navigation={navigation}
 				page={page}
 			/>
 			<View flex={1} px={3}>
