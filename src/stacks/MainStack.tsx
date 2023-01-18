@@ -1,4 +1,4 @@
-import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -19,6 +19,7 @@ import HomeStack from "./HomeStack";
 import ImportStack from "./ImportStack";
 import SettingsStack from "./SettingsStack";
 import * as Notifications from "expo-notifications";
+import SearchStack from "./SearchStack";
 
 interface MainStackProps {
 	migrationComplete: boolean;
@@ -88,6 +89,21 @@ export default function MainStack({
 									<Icon
 										as={AntDesign}
 										name="home"
+										size={6}
+										color={iconOptions(colorMode, focused)}
+									/>
+								),
+								...(screenOptions(colorMode) as any),
+							}}
+						/>
+						<Tab.Screen
+							name={tabs.SEARCH}
+							component={SearchStack}
+							options={{
+								tabBarIcon: ({ focused }) => (
+									<Icon
+										as={Feather}
+										name="search"
 										size={6}
 										color={iconOptions(colorMode, focused)}
 									/>

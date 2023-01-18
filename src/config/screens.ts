@@ -1,5 +1,5 @@
-import {ColorMode} from "native-base";
-import {getPrimaryColor, getSecondaryColor} from "../utils/color.util";
+import { ColorMode } from "native-base";
+import { getPrimaryColor, getSecondaryColor } from "../utils/color.util";
 
 export const screenOptions = (colorMode: ColorMode) => ({
 	headerShown: true,
@@ -12,8 +12,9 @@ export const screenOptions = (colorMode: ColorMode) => ({
 		backgroundColor: getPrimaryColor(colorMode),
 		shadowColor: "transparent",
 	},
-})
+	gestureDirection: "horizontal",
+});
 
 export const navigationConfig = (colorMode: ColorMode) => ({
 	screenOptions: screenOptions(colorMode),
-})
+});

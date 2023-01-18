@@ -13,6 +13,7 @@ import Search from "../screens/Search";
 import * as Notifications from "expo-notifications";
 import { parseNotification } from "../utils/notification.util";
 import { useNavigation } from "@react-navigation/native";
+import Import from "../screens/Import";
 
 const Stack = createNativeStackNavigator();
 
@@ -45,6 +46,14 @@ export default function HomeStack() {
 				}}
 			/>
 			<Stack.Screen
+				name={screens.IMPORT.screenName}
+				component={Import}
+				options={{
+					headerTitle: screens.IMPORT.screenTitle,
+					headerShown: false,
+				}}
+			/>
+			<Stack.Screen
 				name={screens.PREVIEW.screenName}
 				component={Preview}
 				options={{
@@ -55,14 +64,6 @@ export default function HomeStack() {
 					headerStyle: {
 						backgroundColor: "transparent",
 					},
-				}}
-			/>
-			<Stack.Screen
-				name={screens.SEARCH.screenName}
-				component={Search}
-				options={{
-					title: screens.SEARCH.screenTitle,
-					headerShown: true,
 				}}
 			/>
 			<Stack.Screen

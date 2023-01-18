@@ -17,8 +17,6 @@ import {
 } from "../utils/file.util";
 import ImportUtil from "../utils/import.util";
 
-// Todo: implement resume-able downloads
-
 export default function Import() {
 	const { isOpen, onOpen, onClose } = useDisclose();
 
