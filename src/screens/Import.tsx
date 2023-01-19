@@ -17,7 +17,6 @@ import {
   processFileName,
 } from "../utils/file.util";
 import ImportUtil from "../utils/import.util";
-import { isAndroid } from "../utils/misc.util";
 
 export default function Import() {
   const { isOpen, onOpen, onClose } = useDisclose();
@@ -127,7 +126,7 @@ export default function Import() {
 
   return (
     <CustomSafeAreaView>
-      <Box flex={1} _ios={{ pt: 4 }} {...ViewProps}>
+      <Box flex={1} {...ViewProps}>
         <ImportHeader
           state={mixedState}
           setState={setMixedState}

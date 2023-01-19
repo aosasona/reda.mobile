@@ -1,5 +1,5 @@
 import { AntDesign } from "@expo/vector-icons";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
 import { Box, Fab, Icon, ScrollView, SectionList, View } from "native-base";
 import { useCallback, useState } from "react";
@@ -12,7 +12,7 @@ import EmptySection from "../components/reusables/EmptySection";
 import screens from "../constants/screens";
 import { RedaService } from "../services/local";
 import { CombinedFileResultType } from "../types/database";
-import { CategoryPageType } from "../types/general";
+import { CategoryPageType, ScreenProps } from "../types/general";
 
 interface FlatDataState {
   title: string;
@@ -20,8 +20,7 @@ interface FlatDataState {
   data: CombinedFileResultType[];
 }
 
-export default function Home() {
-  const navigation = useNavigation();
+export default function Home({ navigation }: ScreenProps) {
   const [loading, setLoading] = useState(true);
   const [initialLoad, setInitialLoad] = useState(true);
   const [count, setCount] = useState(0);
@@ -73,13 +72,33 @@ export default function Home() {
 
   if (count == 0) {
     return (
-      <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={fetchAllFiles} />
-        }
-      >
-        <EmptySection title="all" />
-      </ScrollView>
+      <View flex={1}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={loading} onRefresh={fetchAllFiles} />
+          }
+        >
+          <EmptySection title="all" />
+        </ScrollView>
+        <Fab
+          renderInPortal={false}
+          shadow={3}
+          bottom={6}
+          right={6}
+          _dark={{ bg: "light.100" }}
+          _light={{ bg: "dark.900" }}
+          icon={
+            <Icon
+              _dark={{ color: "dark.900" }}
+              _light={{ color: "light.200" }}
+              as={AntDesign}
+              name="plus"
+              size="2xl"
+            />
+          }
+          onPress={() => navigation.navigate(screens.IMPORT.screenName)}
+        />
+      </View>
     );
   }
 

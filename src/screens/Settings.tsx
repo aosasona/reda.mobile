@@ -46,7 +46,7 @@ export default function Settings({ navigation }: ScreenProps) {
 
   const openRedaServicePage = (url: string) => {
     const uri = REDA_URL + url;
-    WebUtil.openBrowserPage(navigation, uri).then();
+    WebUtil.openBrowserPage(uri).then();
   };
 
   const bg = useColorModeValue("light.200", "dark.900");

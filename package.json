@@ -46,6 +46,7 @@
     "expo-sqlite": "~11.0.0",
     "expo-status-bar": "~1.4.2",
     "expo-system-ui": "~2.0.1",
+    "expo-web-browser": "~12.0.0",
     "fbjs": "^3.0.4",
     "lottie-react-native": "5.1.4",
     "native-base": "^3.4.23",
