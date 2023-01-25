@@ -1,11 +1,11 @@
 import {MenuAction} from "@react-native-menu/menu";
 import {NavigationProp} from "@react-navigation/native";
 import {Platform} from "react-native";
-import {colors} from "../config/theme";
-import screens from "../constants/screens";
-import {RedaService} from "../services/local";
-import {CombinedFileResultType} from "../types/database";
-import {shareFile} from "./file.util";
+import {colors} from "../../config/theme";
+import screens from "../../constants/screens";
+import {RedaService} from "../../services/local";
+import {CombinedFileResultType} from "../../types/database";
+import {shareFile} from "../file/ops";
 
 export enum MenuEvents {
 	DELETE = "delete",

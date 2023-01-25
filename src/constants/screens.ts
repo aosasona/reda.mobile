@@ -13,11 +13,11 @@ const screens = {
 	},
 	IMPORT: {
 		screenName: "ImportScreen",
-		screenTitle: "Import",
+		screenTitle: "Home",
 	},
 	SEARCH: {
 		screenName: "SearchScreen",
-		screenTitle: "Search",
+		screenTitle: "Home",
 	},
 	PREVIEW: {
 		screenName: "PreviewScreen",
@@ -38,6 +38,10 @@ const screens = {
 	LOCKSCREEN: {
 		screenName: "LockScreen",
 		screenTitle: "Locked",
+	},
+	APPEARANCE_SETTINGS: {
+		screenName: "AppearanceSettingsScreen",
+		screenTitle: "Appearance",
 	},
 	SECURITY_SETTINGS: {
 		screenName: "SecuritySettingsScreen",

@@ -4,8 +4,8 @@ import {AspectRatio, Box, Heading, HStack, Image, Pressable, Text, VStack} from 
 import {useWindowDimensions} from "react-native";
 import screens from "../../constants/screens";
 import {useThumbnail} from "../../hooks/useThumbnail";
+import {getActions, handleMenuEvent} from "../../lib/menus/preview";
 import {CombinedFileResultType} from "../../types/database";
-import {getActions, handleMenuEvent} from "../../utils/preview.util";
 
 interface SearchCardProps {
 	data: CombinedFileResultType;

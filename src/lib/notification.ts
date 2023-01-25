@@ -1,13 +1,12 @@
-import * as Notifications from "expo-notifications";
+import {NavigationProp} from "@react-navigation/native";
 import * as Burnt from "burnt";
-import { Linking } from "react-native";
-import { isAndroid } from "./misc.util";
-import { Alert } from "react-native";
-import { NavigationProp } from "@react-navigation/native";
-import { Notification } from "expo-notifications";
-import { NotificationData } from "../types/notifications";
+import * as Notifications from "expo-notifications";
+import {Notification} from "expo-notifications";
+import {Alert, Linking} from "react-native";
+import {isAndroid} from "../constants/core";
+import {Keys} from "../constants/keys";
 import defaultStorage from "../storage/default";
-import { Keys } from "../constants/keys";
+import {NotificationData} from "../types/notifications";
 
 export const showToast = (
   title: string,
@@ -41,7 +40,9 @@ export const sendNotification = async (
       },
       trigger: null,
     });
-  } catch (err) { }
+  }
+  catch (err) {
+  }
 };
 
 export const openNotificationsSettings = async () => {
@@ -59,7 +60,8 @@ export const seekPermission = async (): Promise<boolean> => {
       }
     }
     return perm.granted;
-  } catch (err) {
+  }
+  catch (err) {
     Alert.alert("Error", "Unable to toggle notifications preference");
     return false;
   }
@@ -72,12 +74,14 @@ export const parseNotification = (
   try {
     const {
       request: {
-        content: { data },
+        content: {data},
       },
     } = notification;
 
     if (data?.route != null) {
-      navigation.navigate(data.route as string, { data: data?.data });
+      navigation.navigate(data.route as string, {data: data?.data});
     }
-  } catch (err) { }
+  }
+  catch (err) {
+  }
 };

@@ -1,8 +1,8 @@
 import * as LocalAuthentication from "expo-local-authentication";
 import {Keys} from "../../constants/keys";
 import CustomException from "../../exceptions/CustomException";
+import {useBiometrics} from "../../lib/security/biometrics";
 import defaultStorage from "../../storage/default";
-import {useBiometrics} from "../../utils/security.util";
 import {AppActionType, AppDispatchAction} from "./AppReducer";
 
 export default class AppUtil {

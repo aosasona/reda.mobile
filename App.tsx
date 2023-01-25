@@ -40,10 +40,10 @@ import {Appearance, View} from "react-native";
 import {extendedTheme} from "./src/config/theme";
 import {AppContextProvider} from "./src/context/app/AppContext";
 import {SettingsContextProvider} from "./src/context/settings/SettingsContext";
+import {colorModeManager} from "./src/lib/color";
+import {runMigration} from "./src/lib/database/core";
 import {migrateLegacyDB, syncLocalData} from "./src/services/local/startup";
 import MainStack from "./src/stacks/MainStack";
-import {colorModeManager} from "./src/utils/color.util";
-import {runMigration} from "./src/utils/database.util";
 
 (async () => await SplashScreen.preventAutoHideAsync())();
 

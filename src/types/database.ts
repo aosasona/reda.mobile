@@ -59,3 +59,8 @@ export interface QueryFilter {
 	sort_by: "name" | "created_at" | "updated_at";
 	sort_order: "ASC" | "DESC";
 }
+
+export interface MigrationDefinition {
+	name: string;
+	query: string;
+}

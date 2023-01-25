@@ -1,22 +1,19 @@
 import * as FileSystem from "expo-file-system";
-import { Alert } from "react-native";
+import {Alert} from "react-native";
+import {DEFAULT_REDA_DIRECTORY} from "../constants/file";
 import screens from "../constants/screens";
 import CustomException from "../exceptions/CustomException";
-import { OpenLibraryService } from "../services/cloud";
-import { RedaService } from "../services/local";
-import { FileModel, MetadataModel, SQLBoolean } from "../types/database";
-import {
-	CompleteInAppFlowArgs,
-	FileExtensions,
-	MimeTypes,
-	StateSetter,
-} from "../types/import";
-import { saveFile } from "./database.util";
-import { DEFAULT_REDA_DIRECTORY, extractFileNameFromUri } from "./file.util";
-import { generateRandomString, validateURL } from "./misc.util";
-import { sendNotification, showToast } from "./notification.util";
+import {OpenLibraryService} from "../services/cloud";
+import {RedaService} from "../services/local";
+import {FileModel, MetadataModel, SQLBoolean} from "../types/database";
+import {CompleteInAppFlowArgs, FileExtensions, MimeTypes, StateSetter} from "../types/import";
+import {save} from "./database/file";
+import {extractFileNameFromUri} from "./file/process";
+import {generateRandomString} from "./misc";
+import {sendNotification} from "./notification";
+import {validateURL} from "./validate";
 
-export default class ImportUtil {
+export default class Import {
 	private readonly setState: StateSetter;
 
 	private readonly supportedMimeTypes = ["application/pdf"];
@@ -29,39 +26,41 @@ export default class ImportUtil {
 		try {
 			this.setState((prevState) => ({
 				...prevState,
-				loading: { ...prevState.loading, meta: true },
+				loading: {...prevState.loading, meta: true},
 			}));
 			const onlineMetadata = (
-				await OpenLibraryService.search({ title: fileName, limit: 50 })
+			  await OpenLibraryService.search({title: fileName, limit: 50})
 			)["docs"];
 			this.setAllMeta(onlineMetadata);
-		} catch (err) {
-		} finally {
+		}
+		catch (err) {
+		}
+		finally {
 			this.setState((prevState) => ({
 				...prevState,
-				loading: { ...prevState.loading, meta: false, local: false },
+				loading: {...prevState.loading, meta: false, local: false},
 			}));
 		}
 	};
 
 	public setAllMeta = (value: any[]) =>
-		this.setState((prevState) => ({
-			...prevState,
-			meta: {
-				...prevState.meta,
-				all: value,
-			},
-		}));
+	  this.setState((prevState) => ({
+		  ...prevState,
+		  meta: {
+			  ...prevState.meta,
+			  all: value,
+		  },
+	  }));
 
 	public setCurrentMeta = (value: any, index: number) =>
-		this.setState((prevState) => ({
-			...prevState,
-			meta: {
-				...prevState.meta,
-				current: value,
-				currentIndex: index,
-			},
-		}));
+	  this.setState((prevState) => ({
+		  ...prevState,
+		  meta: {
+			  ...prevState.meta,
+			  current: value,
+			  currentIndex: index,
+		  },
+	  }));
 
 	public resetState = () => {
 		this.setState({
@@ -87,9 +86,9 @@ export default class ImportUtil {
 	public inferFileName = (filename: string, mimeType: string) => {
 		const castMimeType = mimeType?.toLowerCase();
 		if (
-			this.supportedMimeTypes.includes(castMimeType) &&
-			!filename.endsWith(FileExtensions.PDF) &&
-			!filename.endsWith(FileExtensions.EPUB)
+		  this.supportedMimeTypes.includes(castMimeType) &&
+		  !filename.endsWith(FileExtensions.PDF) &&
+		  !filename.endsWith(FileExtensions.EPUB)
 		) {
 			if (castMimeType == (MimeTypes.PDF as string)) {
 				filename = filename + ".pdf";
@@ -103,13 +102,13 @@ export default class ImportUtil {
 	};
 
 	public saveRemoteImport = async (url: string) => {
-		const { msg } = validateURL(url);
+		const {msg} = validateURL(url);
 		if (msg) throw new CustomException(msg);
 		let rawFileName = extractFileNameFromUri(url);
 		const decodedFileName = decodeURIComponent(rawFileName) || rawFileName;
 		const generatedName = "rri_" + generateRandomString(8) + ".pdf";
 		const filePath = DEFAULT_REDA_DIRECTORY + generatedName;
-		const { exists } = await FileSystem.getInfoAsync(filePath);
+		const {exists} = await FileSystem.getInfoAsync(filePath);
 		if (exists) throw new CustomException("Oops, file already exists!");
 		const result = await FileSystem.downloadAsync(url, filePath);
 		const data = await FileSystem.getInfoAsync(result?.uri);
@@ -154,30 +153,30 @@ export default class ImportUtil {
 				author: data?.author_name[0] || "Unknown author",
 				raw: JSON.stringify(data),
 				table_of_contents: JSON.stringify(
-					metadata?.data?.table_of_contents || []
+				  metadata?.data?.table_of_contents || [],
 				),
 				subjects:
-					data?.subject_facet?.join(", ") ||
-					metadata?.data?.subjects?.join(", ") ||
-					"",
+				  data?.subject_facet?.join(", ") ||
+				  metadata?.data?.subjects?.join(", ") ||
+				  "",
 				first_publish_year:
-					data?.first_publish_year ||
-					metadata?.data?.first_publish_year ||
-					data?.publish_year?.[0] ||
-					0,
+				  data?.first_publish_year ||
+				  metadata?.data?.first_publish_year ||
+				  data?.publish_year?.[0] ||
+				  0,
 				book_key: data?.edition_key?.[0] || "",
 				chapters: metadata?.data?.table_of_contents?.length || 1,
 				current_page: 1,
 				total_pages:
-					metadata?.data?.number_of_pages || data?.number_of_pages_median || 1,
+				  metadata?.data?.number_of_pages || data?.number_of_pages_median || 1,
 			};
-			const res = await saveFile(file_data, meta);
+			const res = await save(file_data, meta);
 			if (res) {
 				const savedFile = await RedaService.getOne(res.id);
 				await sendNotification(
-					"📚 Import complete",
-					`${savedFile?.name} has been added to your library`,
-					{ route: screens.PREVIEW.screenName, data: savedFile }
+				  "📚 Import complete",
+				  `${savedFile?.name} has been added to your library`,
+				  {route: screens.PREVIEW.screenName, data: savedFile},
 				);
 			} else {
 				await sendNotification("Error ☹️", "Failed to import item", {
@@ -186,9 +185,11 @@ export default class ImportUtil {
 				});
 			}
 			handleModalDismiss();
-		} catch (e) {
+		}
+		catch (e) {
 			Alert.alert("Error", "An error occurred!");
-		} finally {
+		}
+		finally {
 			setSaving(false);
 		}
 	};

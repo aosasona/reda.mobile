@@ -3,8 +3,8 @@ import {NavigationProp} from "@react-navigation/native";
 import {HStack, Icon, IconButton, Menu} from "native-base";
 import {useWindowDimensions} from "react-native";
 import screens from "../../../constants/screens";
+import {shareFile} from "../../../lib/file/ops";
 import {CombinedFileResultType} from "../../../types/database";
-import {shareFile} from "../../../utils/file.util";
 import PressableMenuItem from "./PressableMenuItem";
 
 interface PreviewNavigationHeaderProps {

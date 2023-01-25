@@ -1,9 +1,11 @@
 import {NavigationProp} from "@react-navigation/native";
 import {SQLResultSet} from "expo-sqlite";
 import {Alert} from "react-native";
+import {DEFAULT_REDA_DIRECTORY} from "../../constants/file";
+import {executeQuery} from "../../lib/database/core";
+import {del, update} from "../../lib/database/ops";
+import {deleteFile} from "../../lib/file/ops";
 import {CombinedFileResultType, QueryFilter, SQLBoolean} from "../../types/database";
-import {del, executeQuery, update} from "../../utils/database.util";
-import {DEFAULT_REDA_DIRECTORY, deleteFile} from "../../utils/file.util";
 
 export interface HomePageData {
 	recentlyAdded: CombinedFileResultType;
@@ -99,7 +101,7 @@ export class RedaService {
                                 INNER JOIN metadata m ON f.id = m.file_id
                        WHERE f.is_starred = 1
                        ORDER BY ${sort_by != "name" ? "m" : "f"
-		}.${sort_by} ${sort_order}
+                                }.${sort_by} ${sort_order}
                        LIMIT ?;`;
 		const result = (await this.query(query, [limit])) as SQLResultSet | null;
 		return this.extractResults(result);
@@ -119,7 +121,7 @@ export class RedaService {
                                 INNER JOIN metadata m ON f.id = m.file_id
                        WHERE has_started = 1
                        ORDER BY ${sort_by != "name" ? "m" : "f"
-		}.${sort_by} ${sort_order}
+                                }.${sort_by} ${sort_order}
                        LIMIT ?;`;
 
 		const result = (await this.query(query, [limit])) as SQLResultSet | null;

@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {getThumbnail} from "../utils/misc.util";
+import {loadThumbnail} from "../lib/file/ops";
 
 export const useThumbnail = (
   image: string | null = null,
@@ -14,7 +14,7 @@ export const useThumbnail = (
 	if (!hasFired) {
 		(async () => {
 			const {thumb: generatedThumb, fallback: generatedFallback} =
-			  await getThumbnail(image, path);
+			  await loadThumbnail(image, path);
 			if (generatedThumb && isNaN(parseInt(generatedThumb))) {
 				setThumb({uri: generatedThumb});
 			}
