@@ -23,12 +23,14 @@ export default {
 		usesAppleSignIn: true,
 		supportsTablet: false,
 		bundleIdentifier: IS_IN_DEVELOPMENT
-		  ? "com.wytehq.reda.dev"
-		  : "com.wytehq.reda",
+			? "com.wytehq.reda.dev"
+			: "com.wytehq.reda",
 	},
 	android: {
 		adaptiveIcon: {
-			foregroundImage: "./assets/adaptive-icon.png",
+			foregroundImage:
+				"./assets/" +
+				(IS_IN_DEVELOPMENT ? "icon-dev.png" : "adaptive-icon.png"),
 			backgroundColor: "#000000",
 		},
 		package: IS_IN_DEVELOPMENT ? "com.wytehq.reda.dev" : "com.wytehq.reda",

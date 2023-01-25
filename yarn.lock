@@ -1082,6 +1082,16 @@
   dependencies:
     "@types/hammerjs" "^2.0.36"
 
+"@epubjs-react-native/core@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@epubjs-react-native/core/-/core-1.1.0.tgz#ec520ff6dd67139004c0fe18e956dcf24fdccb2c"
+  integrity sha512-3SvWmEUTmUIJVd4p91YX8TZLUxJqsdXMuRcE3Q1Ddrd58dWzMdJj+0C9+cR20jI03nBMV5QD/VL62wulgti/dw==
+
+"@epubjs-react-native/expo-file-system@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@epubjs-react-native/expo-file-system/-/expo-file-system-1.0.0.tgz#0cec10a488917e63bd84dbc0f1e2b01269c11df9"
+  integrity sha512-E7xUzgd4DkZZG7WJXCztiW3zmnOJf0S8YFowKJmGOddBQUUOWaDgES4VzktekpEgTQhsKpp+32D67EPPZOB8bw==
+
 "@expo-google-fonts/azeret-mono@^0.2.2":
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/@expo-google-fonts/azeret-mono/-/azeret-mono-0.2.2.tgz#d82c33cdc0060993ff0bef303654558517c84921"
@@ -3172,7 +3182,7 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
 
-base-64@0.1.0:
+base-64@0.1.0, base-64@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/base-64/-/base-64-0.1.0.tgz#780a99c84e7d600260361511c4877613bf24f6bb"
   integrity sha512-Y5gU45svrR5tI2Vt/X9GPd3L0HNIKzGu202EjxrXMpuc2V2CiKgemAbUUsqYmZJvPtCXoUKjNZwBJzsNScUbXA==
@@ -7003,6 +7013,14 @@ react-native-codegen@^0.70.6:
     jscodeshift "^0.13.1"
     nullthrows "^1.1.1"
 
+react-native-fs@^2.20.0:
+  version "2.20.0"
+  resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.20.0.tgz#05a9362b473bfc0910772c0acbb73a78dbc810f6"
+  integrity sha512-VkTBzs7fIDUiy/XajOSNk0XazFE9l+QlMAce7lGuebZcag5CnjszB+u4BdqzwaQOdcYb5wsJIsqq4kxInIRpJQ==
+  dependencies:
+    base-64 "^0.1.0"
+    utf8 "^3.0.0"
+
 react-native-gesture-handler@^2.8.0:
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.8.0.tgz#ef9857871c10663c95a51546225b6e00cd4740cf"
@@ -7023,6 +7041,11 @@ react-native-mmkv@^2.5.1:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/react-native-mmkv/-/react-native-mmkv-2.5.1.tgz#29fc462077fab16a5e1b79570fbf8acaac9d87b4"
   integrity sha512-5eQu25z3H6zf6w0NkJoTuFEFrbOu6luZxZ6+rK1W+XwY/rjPSFZFQPVtMaz3im90RbILFXXM/KrFGZrpaJJRoQ==
+
+react-native-pdf-light@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/react-native-pdf-light/-/react-native-pdf-light-2.3.0.tgz#21ad44baac273d4a992187facc4924468097ad49"
+  integrity sha512-wzdeH5DFg6JYwB81cbZYgmaWG86PfGv6YRFIpMCGlRgSAslzb0vCP9jw/WlMlTCGddFA7PZBJNsKvsHTBB4o4Q==
 
 react-native-pdf-thumbnail@^1.2.0:
   version "1.2.0"
@@ -8288,6 +8311,11 @@ use@^3.1.0:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/use/-/use-3.1.1.tgz#d50c8cac79a19fbc20f2911f56eb973f4e10070f"
   integrity sha512-cwESVXlO3url9YWlFW/TA9cshCEhtu7IKJ/p5soJ/gGpj7vbvFrAY/eIioQ6Dw23KjZhYgiIo8HOs1nQ2vr/oQ==
+
+utf8@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/utf8/-/utf8-3.0.0.tgz#f052eed1364d696e769ef058b183df88c87f69d1"
+  integrity sha512-E8VjFIQ/TyQgp+TZfS6l8yp/xWppSAHzidGiRrqe4bK4XP9pTRyKFgGJpO3SN7zdX4DeomTrwaseCHovfpFcqQ==
 
 util-deprecate@^1.0.1, util-deprecate@~1.0.1:
   version "1.0.2"
