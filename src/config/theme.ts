@@ -1,6 +1,6 @@
 import {extendTheme} from "native-base";
+import {isAndroid} from "../constants/core";
 import {FontFamilies, FontFamiliesEnum, FontWeights} from "../constants/fonts";
-import {isAndroid} from "../utils/misc.util";
 
 export const colors = {
 	primary: "#006ee6",

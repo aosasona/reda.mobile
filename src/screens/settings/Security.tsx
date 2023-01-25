@@ -4,7 +4,7 @@ import SettingsSection from "../../components/page/settings/SettingsSection";
 import StaticSettings from "../../components/page/settings/StaticSettings";
 import AppUtil from "../../context/app/app";
 import {AppContext} from "../../context/app/AppContext";
-import {supportsBiometrics} from "../../utils/security.util";
+import {supportsBiometrics} from "../../lib/security/biometrics";
 
 export default function Security() {
 	const {state: appState, dispatch} = useContext(AppContext);

@@ -106,7 +106,7 @@ export const ListHeaderComponent = ({functions, state}: MetaModalProps) => {
 				textAlign="left"
 				px={1}
 			  >
-				  Online Search
+				  Online Home
 			  </Heading>
 			  <Text maxW={width * 0.24} fontSize={12} opacity={0.5}>
 				  Showing {meta?.all?.length || 0} result{meta!.all!.length > 1 && "s"}
@@ -115,7 +115,7 @@ export const ListHeaderComponent = ({functions, state}: MetaModalProps) => {
 		  <Input
 			w="full"
 			type="text"
-			placeholder="Search..."
+			placeholder="Home..."
 			onChangeText={handleSearchChange}
 			value={search}
 			mt={1}

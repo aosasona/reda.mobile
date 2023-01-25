@@ -1,6 +1,6 @@
 import {Platform} from "expo-modules-core";
 import {ColorMode} from "native-base";
-import {getPrimaryColor, getSecondaryColor} from "../utils/color.util";
+import {getPrimaryColor, getSecondaryColor} from "../lib/color";
 import {colors} from "./theme";
 
 const isAndroid = Platform.OS === "android";
