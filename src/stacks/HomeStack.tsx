@@ -12,7 +12,6 @@ import EditDetails from "../screens/docs/EditDetails";
 import Preview from "../screens/docs/Preview";
 import Read from "../screens/docs/Read";
 import Home from "../screens/Home";
-import { default as Import } from "../screens/Import";
 import Search from "../screens/Search";
 
 const Stack = createNativeStackNavigator();
