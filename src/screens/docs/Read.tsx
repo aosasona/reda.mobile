@@ -60,22 +60,6 @@ export default function Read({ route, navigation }: ScreenProps) {
 				onLoad={onLoadComplete}
 				onError={onError}
 			/>
-			<Pressable
-				position="absolute"
-				top={2}
-				right={2}
-				_dark={{ bg: "dark.700" }}
-				_light={{ bg: "muted.100" }}
-				shadow={2}
-				rounded={6}
-				px={2}
-				py={1}
-				_pressed={{ opacity: 0.5 }}
-			>
-				<Text opacity={0.5}>
-					{pageData.current} of {pageData.total}
-				</Text>
-			</Pressable>
 		</View>
 	);
 }
