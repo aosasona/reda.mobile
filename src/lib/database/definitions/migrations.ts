@@ -54,4 +54,9 @@ export const migrations: MigrationDefinition[] = [
               updated_at        DATETIME                         	NOT NULL DEFAULT CURRENT_TIMESTAMP
             )`,
 	},
+	{
+		name: "add_folder_id_index",
+		query: `CREATE INDEX IF NOT EXISTS folder_id_idx 
+						ON files (folder_id);`,
+	},
 ];

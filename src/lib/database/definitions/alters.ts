@@ -1,19 +1,22 @@
-import { MigrationDefinition } from "../../../types/database";
+import { AlterTableData, ColumnType, Table } from "../../../types/database";
 
-export const alters: MigrationDefinition[] = [
+export const addAlters: AlterTableData[] = [
   {
-    name: "add_type_column",
-    query: `ALTER TABLE files 
-						ADD COLUMN file_type TEXT DEFAULT 'pdf';`,
+    table: Table.FILES,
+    column: {
+      name: "file_type",
+      type: ColumnType.TEXT,
+      not_null: false,
+      default: "pdf",
+    },
   },
   {
-    name: "add_folder_column",
-    query: `ALTER TABLE files 
-						ADD COLUMN folder_id INTEGER;`,
-  },
-  {
-    name: "add_folder_id_index",
-    query: `CREATE INDEX IF NOT EXISTS folder_id_idx 
-						ON files (folder_id);`,
+    table: Table.FILES,
+    column: {
+      name: "folder_id",
+      type: ColumnType.INTEGER,
+      not_null: false,
+      default: null,
+    },
   },
 ];
