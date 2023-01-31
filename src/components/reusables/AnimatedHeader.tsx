@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 import { ScrollThresholdData } from "../../hooks/useScroll";
 
 interface AnimatedHeaderProps {
@@ -13,7 +13,7 @@ export default function AnimatedHeader(props: AnimatedHeaderProps) {
   const navigation = useNavigation();
   const dependencies = dependsOn || [];
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: page.hasReachedThreshold,
       header: Component,

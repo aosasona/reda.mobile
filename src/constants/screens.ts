@@ -13,11 +13,11 @@ const screens = {
 	},
 	IMPORT: {
 		screenName: "ImportScreen",
-		screenTitle: "Home",
+		screenTitle: "Import",
 	},
 	SEARCH: {
 		screenName: "SearchScreen",
-		screenTitle: "Home",
+		screenTitle: "Search",
 	},
 	PREVIEW: {
 		screenName: "PreviewScreen",

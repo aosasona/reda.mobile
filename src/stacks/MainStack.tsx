@@ -17,6 +17,7 @@ import { AppContext } from "../context/app/AppContext";
 import LockScreen from "../screens/LockScreen";
 import { syncLocalData } from "../services/local/startup";
 import HomeStack from "./HomeStack";
+import ImportStack from "./ImportStack";
 import SearchStack from "./SearchStack";
 import SettingsStack from "./SettingsStack";
 
@@ -96,13 +97,13 @@ export default function MainStack({
 							}}
 						/>
 						<Tab.Screen
-							name={tabs.SEARCH}
-							component={SearchStack}
+							name={tabs.IMPORT}
+							component={ImportStack}
 							options={{
 								tabBarIcon: ({ focused }) => (
 									<Icon
 										as={Feather}
-										name="search"
+										name="plus"
 										size={6}
 										color={iconOptions(colorMode, focused)}
 									/>
