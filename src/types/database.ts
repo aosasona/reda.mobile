@@ -4,6 +4,11 @@ export enum Table {
 	FOLDERS = "folders",
 }
 
+export enum FileType {
+	PDF = "pdf",
+	EPUB = "epub",
+}
+
 export enum ColumnType {
 	TEXT = "TEXT",
 	INTEGER = "INTEGER",
@@ -30,6 +35,8 @@ export interface FileModel {
 	name: string;
 	path: string;
 	size: number;
+	file_type?: FileType;
+	folder_id?: number;
 	has_started: SQLBoolean;
 	has_finished: SQLBoolean;
 	is_starred: SQLBoolean;
@@ -59,6 +66,7 @@ export interface CombinedFileResultType {
 	file_id: MetadataModel["file_id"];
 	name: FileModel["name"];
 	image: MetadataModel["image"];
+	file_type: FileModel["file_type"];
 	path: FileModel["path"];
 	size: FileModel["size"];
 	description: MetadataModel["description"];

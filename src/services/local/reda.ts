@@ -1,11 +1,15 @@
-import {NavigationProp} from "@react-navigation/native";
-import {SQLResultSet} from "expo-sqlite";
-import {Alert} from "react-native";
-import {DEFAULT_REDA_DIRECTORY} from "../../constants/file";
-import {executeQuery} from "../../lib/database/core";
-import {del, update} from "../../lib/database/ops";
-import {deleteFile} from "../../lib/file/ops";
-import {CombinedFileResultType, QueryFilter, SQLBoolean} from "../../types/database";
+import { NavigationProp } from "@react-navigation/native";
+import { SQLResultSet } from "expo-sqlite";
+import { Alert } from "react-native";
+import { DEFAULT_REDA_DIRECTORY } from "../../constants/file";
+import { executeQuery } from "../../lib/database/core";
+import { del, update } from "../../lib/database/ops";
+import { deleteFile } from "../../lib/file/ops";
+import {
+	CombinedFileResultType,
+	QueryFilter,
+	SQLBoolean,
+} from "../../types/database";
 
 export interface HomePageData {
 	recentlyAdded: CombinedFileResultType;
@@ -16,7 +20,7 @@ export interface HomePageData {
 export class RedaService {
 	private static readonly query = executeQuery;
 	private static readonly appDir = DEFAULT_REDA_DIRECTORY;
-	private static readonly fetchQueryFields = `f.id, f.name, "${this.appDir}" || f.path as path, f.size, f.has_started, f.has_finished, f.is_downloaded, f.is_starred, m.image, m.description, m.author, m.table_of_contents, m.subjects, m.first_publish_year, m.chapters, m.current_page, m.total_pages, m.created_at, m.updated_at`;
+	private static readonly fetchQueryFields = `f.id, f.name, "${this.appDir}" || f.path as path, f.file_type, f.size, f.has_started, f.has_finished, f.is_downloaded, f.is_starred, m.image, m.description, m.author, m.table_of_contents, m.subjects, m.first_publish_year, m.chapters, m.current_page, m.total_pages, m.created_at, m.updated_at`;
 
 	static generateCurrentTimestamp(): string {
 		const date = new Date();
@@ -24,17 +28,17 @@ export class RedaService {
 		const month = date.getMonth() + 1;
 		const day = date.getDate();
 		const hours =
-		  date.getHours() >= 10 ? date.getHours() : `0${date.getHours()}`;
+			date.getHours() >= 10 ? date.getHours() : `0${date.getHours()}`;
 		const minutes =
-		  date.getMinutes() >= 10 ? date.getMinutes() : `0${date.getMinutes()}`;
+			date.getMinutes() >= 10 ? date.getMinutes() : `0${date.getMinutes()}`;
 		const seconds =
-		  date.getSeconds() >= 10 ? date.getSeconds() : `0${date.getSeconds()}`;
+			date.getSeconds() >= 10 ? date.getSeconds() : `0${date.getSeconds()}`;
 
 		return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 	}
 
 	static async rename(id: number, name: string): Promise<void> {
-		await update({table: "files", identifier: "id"}, id, {name});
+		await update({ table: "files", identifier: "id" }, id, { name });
 	}
 
 	static async count(): Promise<number> {
@@ -55,7 +59,7 @@ export class RedaService {
 			RedaService.getContinueReading(),
 		]);
 
-		return {recentlyAdded, starred, continueReading};
+		return { recentlyAdded, starred, continueReading };
 	}
 
 	static async getOne(id: number): Promise<CombinedFileResultType | null> {
@@ -69,13 +73,13 @@ export class RedaService {
 	}
 
 	static async getAll(
-	  filter: QueryFilter = {
-		  limit: 25,
-		  sort_by: "created_at",
-		  sort_order: "DESC",
-	  },
+		filter: QueryFilter = {
+			limit: 25,
+			sort_by: "created_at",
+			sort_order: "DESC",
+		}
 	): Promise<CombinedFileResultType[]> {
-		const {limit, sort_by, sort_order} = filter;
+		const { limit, sort_by, sort_order } = filter;
 
 		const query = `SELECT ${this.fetchQueryFields}
                        FROM files f
@@ -88,40 +92,40 @@ export class RedaService {
 	}
 
 	static async getStarred(
-	  filter: QueryFilter = {
-		  limit: 25,
-		  sort_by: "updated_at",
-		  sort_order: "DESC",
-	  },
+		filter: QueryFilter = {
+			limit: 25,
+			sort_by: "updated_at",
+			sort_order: "DESC",
+		}
 	): Promise<CombinedFileResultType[] | null> {
-		const {limit, sort_by, sort_order} = filter;
+		const { limit, sort_by, sort_order } = filter;
 
 		const query = `SELECT ${this.fetchQueryFields}
                        FROM files f
                                 INNER JOIN metadata m ON f.id = m.file_id
                        WHERE f.is_starred = 1
                        ORDER BY ${sort_by != "name" ? "m" : "f"
-                                }.${sort_by} ${sort_order}
+			}.${sort_by} ${sort_order}
                        LIMIT ?;`;
 		const result = (await this.query(query, [limit])) as SQLResultSet | null;
 		return this.extractResults(result);
 	}
 
 	static async getContinueReading(
-	  filter: QueryFilter = {
-		  limit: 25,
-		  sort_by: "updated_at",
-		  sort_order: "DESC",
-	  },
+		filter: QueryFilter = {
+			limit: 25,
+			sort_by: "updated_at",
+			sort_order: "DESC",
+		}
 	): Promise<CombinedFileResultType[]> {
-		const {limit, sort_by, sort_order} = filter;
+		const { limit, sort_by, sort_order } = filter;
 
 		const query = `SELECT ${this.fetchQueryFields}
                        FROM files f
                                 INNER JOIN metadata m ON f.id = m.file_id
                        WHERE has_started = 1
                        ORDER BY ${sort_by != "name" ? "m" : "f"
-                                }.${sort_by} ${sort_order}
+			}.${sort_by} ${sort_order}
                        LIMIT ?;`;
 
 		const result = (await this.query(query, [limit])) as SQLResultSet | null;
@@ -129,14 +133,14 @@ export class RedaService {
 	}
 
 	static async search(
-	  keyword: string,
-	  filter: QueryFilter = {
-		  limit: 100,
-		  sort_by: "created_at",
-		  sort_order: "ASC",
-	  },
+		keyword: string,
+		filter: QueryFilter = {
+			limit: 100,
+			sort_by: "created_at",
+			sort_order: "ASC",
+		}
 	): Promise<CombinedFileResultType[]> {
-		const {limit, sort_by, sort_order} = filter;
+		const { limit, sort_by, sort_order } = filter;
 
 		const query = `SELECT ${this.fetchQueryFields}
                        FROM files f
@@ -154,9 +158,9 @@ export class RedaService {
 		const res = result?.rows._array || ([] as any[]);
 		res.map((item: any) => {
 			item.table_of_contents =
-			  item?.table_of_contents == "[]"
-				? []
-				: JSON.parse(item.table_of_contents);
+				item?.table_of_contents == "[]"
+					? []
+					: JSON.parse(item.table_of_contents);
 		});
 		return res;
 	}
@@ -166,14 +170,13 @@ export class RedaService {
 			const file = await RedaService.getOne(id);
 			if (!file) return;
 			if (file.total_pages == totalPageNumber) return;
-			await update({table: "metadata", identifier: "file_id"}, id, {
+			await update({ table: "metadata", identifier: "file_id" }, id, {
 				total_pages: totalPageNumber,
 			});
-		}
-		catch (err) {
+		} catch (err) {
 			Alert.alert(
-			  "Error",
-			  "Something went wrong! Close the app and try again.",
+				"Error",
+				"Something went wrong! Close the app and try again."
 			);
 		}
 	}
@@ -183,25 +186,24 @@ export class RedaService {
 			const file = await RedaService.getOne(id);
 			if (!file) return;
 			if (
-			  file.current_page > file.total_pages ||
-			  file.current_page > currentPageNumber ||
-			  file?.has_finished == 1
+				file.current_page > file.total_pages ||
+				file.current_page > currentPageNumber ||
+				file?.has_finished == 1
 			)
 				return;
 			if (!file.has_started && currentPageNumber > 1) {
-				await update({table: "files", identifier: "id"}, id, {
+				await update({ table: "files", identifier: "id" }, id, {
 					has_started: SQLBoolean.TRUE,
 				});
 			}
-			await update({table: "metadata", identifier: "file_id"}, id, {
+			await update({ table: "metadata", identifier: "file_id" }, id, {
 				current_page: currentPageNumber,
 				updated_at: RedaService.generateCurrentTimestamp(),
 			});
-		}
-		catch (err: unknown) {
+		} catch (err: unknown) {
 			Alert.alert(
-			  "Error",
-			  "Something went wrong. Close the app and try again.",
+				"Error",
+				"Something went wrong. Close the app and try again."
 			);
 		}
 	}
@@ -210,24 +212,24 @@ export class RedaService {
 		const file = await RedaService.getOne(id);
 		if (!file) return;
 		Alert.alert(
-		  "Confirm",
-		  `Are you sure you want to delete ${file?.name || ""}?`,
-		  [
-			  {text: "Cancel", style: "cancel"},
-			  {
-				  text: "Confirm",
-				  style: "destructive",
-				  onPress: () => {
-					  Promise.all([
-							del({table: "metadata", identifier: "file_id", id: file.id}),
-							del({table: "files", identifier: "id", id: file.id}),
+			"Confirm",
+			`Are you sure you want to delete ${file?.name || ""}?`,
+			[
+				{ text: "Cancel", style: "cancel" },
+				{
+					text: "Confirm",
+					style: "destructive",
+					onPress: () => {
+						Promise.all([
+							del({ table: "metadata", identifier: "file_id", id: file.id }),
+							del({ table: "files", identifier: "id", id: file.id }),
 							deleteFile(file.path),
 						])
-						.then(() => navigation.goBack())
-						.catch((e) => Alert.alert("Error", "Failed to delete!"));
-				  },
-			  },
-		  ],
+							.then(() => navigation.goBack())
+							.catch((e) => Alert.alert("Error", "Failed to delete!"));
+					},
+				},
+			]
 		);
 	}
 
@@ -237,7 +239,7 @@ export class RedaService {
                        WHERE id = ?;`;
 		await Promise.all([
 			this.query(query, [id]),
-			update({table: "metadata", identifier: "file_id"}, id, {
+			update({ table: "metadata", identifier: "file_id" }, id, {
 				updated_at: RedaService.generateCurrentTimestamp(),
 			}),
 		]);
@@ -249,10 +251,10 @@ export class RedaService {
 		const new_current_page = file?.has_started ? 1 : file?.total_pages;
 		const new_has_started = !Boolean(file?.has_started);
 		await Promise.all([
-			update({table: "metadata", identifier: "file_id"}, id, {
+			update({ table: "metadata", identifier: "file_id" }, id, {
 				current_page: new_current_page,
 			}),
-			update({table: "files", identifier: "id"}, id, {
+			update({ table: "files", identifier: "id" }, id, {
 				has_started: new_has_started,
 			}),
 		]);

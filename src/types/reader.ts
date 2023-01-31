@@ -1,5 +1,10 @@
+import { ColorMode } from "native-base";
+import { CombinedFileResultType } from "./database";
+
 export interface SharedReaderProps {
-  source: { url: string };
+  data: CombinedFileResultType;
+  source: { uri: string };
+  colorMode: ColorMode;
   page: number;
   onPageChange: (page: number) => void;
   onLoad: (total_pages: number) => void;
