@@ -19,4 +19,13 @@ export const addAlters: AlterTableData[] = [
       default: null,
     },
   },
+  {
+    table: Table.FILES,
+    column: {
+      name: "current_cfi",
+      type: ColumnType.TEXT,
+      not_null: false,
+      default: null,
+    },
+  },
 ];

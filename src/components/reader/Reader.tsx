@@ -3,6 +3,7 @@ import { FileType } from "../../types/database";
 import { SharedReaderProps } from "../../types/reader";
 import PDFReader from "./PDF";
 import EPUBReader from "./EPUB";
+import { ReaderProvider } from "@epubjs-react-native/core";
 
 interface ReaderProps extends SharedReaderProps { }
 
@@ -12,7 +13,11 @@ export default function Reader(props: ReaderProps) {
   }
 
   if (props.data.file_type == FileType.EPUB) {
-    return <EPUBReader {...props} />;
+    return (
+      <ReaderProvider>
+        <EPUBReader {...props} />
+      </ReaderProvider>
+    );
   }
 
   return (

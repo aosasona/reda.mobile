@@ -20,7 +20,7 @@ export interface HomePageData {
 export class RedaService {
 	private static readonly query = executeQuery;
 	private static readonly appDir = DEFAULT_REDA_DIRECTORY;
-	private static readonly fetchQueryFields = `f.id, f.name, "${this.appDir}" || f.path as path, f.file_type, f.size, f.has_started, f.has_finished, f.is_downloaded, f.is_starred, m.image, m.description, m.author, m.table_of_contents, m.subjects, m.first_publish_year, m.chapters, m.current_page, m.total_pages, m.created_at, m.updated_at`;
+	private static readonly fetchQueryFields = `f.id, f.name, "${this.appDir}" || f.path as path, f.current_cfi, f.file_type, f.size, f.has_started, f.has_finished, f.is_downloaded, f.is_starred, m.image, m.description, m.author, m.table_of_contents, m.subjects, m.first_publish_year, m.chapters, m.current_page, m.total_pages, m.created_at, m.updated_at`;
 
 	static generateCurrentTimestamp(): string {
 		const date = new Date();

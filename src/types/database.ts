@@ -37,6 +37,7 @@ export interface FileModel {
 	size: number;
 	file_type?: FileType;
 	folder_id?: number;
+	current_cfi?: string;
 	has_started: SQLBoolean;
 	has_finished: SQLBoolean;
 	is_starred: SQLBoolean;
@@ -66,6 +67,7 @@ export interface CombinedFileResultType {
 	file_id: MetadataModel["file_id"];
 	name: FileModel["name"];
 	image: MetadataModel["image"];
+	current_cfi: FileModel["current_cfi"];
 	file_type: FileModel["file_type"];
 	path: FileModel["path"];
 	size: FileModel["size"];

@@ -165,24 +165,6 @@ export default function Home({ navigation }: ScreenProps) {
         showsVerticalScrollIndicator={false}
         stickySectionHeadersEnabled={false}
       />
-      <Fab
-        renderInPortal={false}
-        shadow={3}
-        bottom={6}
-        right={6}
-        _dark={{ bg: "light.100" }}
-        _light={{ bg: "dark.900" }}
-        icon={
-          <Icon
-            _dark={{ color: "dark.900" }}
-            _light={{ color: "light.200" }}
-            as={AntDesign}
-            name="plus"
-            size="2xl"
-          />
-        }
-        onPress={() => navigation.navigate(screens.IMPORT.screenName)}
-      />
     </View>
   );
 }
