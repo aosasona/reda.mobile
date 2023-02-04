@@ -1,4 +1,4 @@
-import {MigrationDefinition} from "../../../types/database";
+import { MigrationDefinition } from "../../../types/database";
 
 export const migrations: MigrationDefinition[] = [
 	{
@@ -39,6 +39,19 @@ export const migrations: MigrationDefinition[] = [
                 created_at         DATETIME                          NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 updated_at         DATETIME                          NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (file_id) REFERENCES files (id)
+            )`,
+	},
+	{
+		name: "create_folder_table",
+		query: `CREATE TABLE IF NOT EXISTS folders
+						(
+							folder_id 				INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+							name 							TEXT 															NOT NULL DEFAULT 'Untitled folder',
+							cover 						TEXT,
+							is_locked 				BOOLEAN 													DEFAULT 0,
+              last_synced       DATETIME,	
+              created_at        DATETIME                         	NOT NULL DEFAULT CURRENT_TIMESTAMP,
+              updated_at        DATETIME                         	NOT NULL DEFAULT CURRENT_TIMESTAMP
             )`,
 	},
 ];
