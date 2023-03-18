@@ -1,7 +1,7 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import { Box, Divider, Flex, Heading, Icon, Text, View } from "native-base";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert, useWindowDimensions } from "react-native";
 import SearchCard from "../components/cards/SearchCard";
 import CustomSafeAreaView from "../components/custom/CustomSafeAreaView";
@@ -13,7 +13,7 @@ import { RedaService } from "../services/local";
 import { CombinedFileResultType } from "../types/database";
 import { ScreenProps } from "../types/general";
 
-export default function Search({ route, navigation }: ScreenProps) {
+export default function Search({ navigation }: ScreenProps) {
 	const { width } = useWindowDimensions();
 
 	const [search, setSearch] = useState<string>("");

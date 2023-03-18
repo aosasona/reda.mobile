@@ -9,7 +9,7 @@ export const save = async (
   try {
     const savedFile = (await insert("files", file)) as SQLResultSet;
     const { insertId } = savedFile;
-    const savedMeta = (await insert("metadata", {
+    (await insert("metadata", {
       ...meta,
       file_id: insertId,
     })) as SQLResultSet;

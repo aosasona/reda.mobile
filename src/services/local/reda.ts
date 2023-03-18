@@ -7,6 +7,8 @@ import { del, update } from "../../lib/database/ops";
 import { deleteFile } from "../../lib/file/ops";
 import {
 	CombinedFileResultType,
+	FileModel,
+	MetadataModel,
 	QueryFilter,
 	SQLBoolean,
 } from "../../types/database";
@@ -38,7 +40,7 @@ export class RedaService {
 	}
 
 	static async rename(id: number, name: string): Promise<void> {
-		await update({ table: "files", identifier: "id" }, id, { name });
+		await update<FileModel>({ table: "files", identifier: "id" }, id, { name });
 	}
 
 	static async count(): Promise<number> {
@@ -170,9 +172,13 @@ export class RedaService {
 			const file = await RedaService.getOne(id);
 			if (!file) return;
 			if (file.total_pages == totalPageNumber) return;
-			await update({ table: "metadata", identifier: "file_id" }, id, {
-				total_pages: totalPageNumber,
-			});
+			await update<MetadataModel>(
+				{ table: "metadata", identifier: "file_id" },
+				id,
+				{
+					total_pages: totalPageNumber,
+				}
+			);
 		} catch (err) {
 			Alert.alert(
 				"Error",
@@ -192,14 +198,18 @@ export class RedaService {
 			)
 				return;
 			if (!file.has_started && currentPageNumber > 1) {
-				await update({ table: "files", identifier: "id" }, id, {
+				await update<FileModel>({ table: "files", identifier: "id" }, id, {
 					has_started: SQLBoolean.TRUE,
 				});
 			}
-			await update({ table: "metadata", identifier: "file_id" }, id, {
-				current_page: currentPageNumber,
-				updated_at: RedaService.generateCurrentTimestamp(),
-			});
+			await update<MetadataModel>(
+				{ table: "metadata", identifier: "file_id" },
+				id,
+				{
+					current_page: currentPageNumber,
+					updated_at: RedaService.generateCurrentTimestamp(),
+				}
+			);
 		} catch (err: unknown) {
 			Alert.alert(
 				"Error",
@@ -239,7 +249,7 @@ export class RedaService {
                        WHERE id = ?;`;
 		await Promise.all([
 			this.query(query, [id]),
-			update({ table: "metadata", identifier: "file_id" }, id, {
+			update<MetadataModel>({ table: "metadata", identifier: "file_id" }, id, {
 				updated_at: RedaService.generateCurrentTimestamp(),
 			}),
 		]);
@@ -251,11 +261,11 @@ export class RedaService {
 		const new_current_page = file?.has_started ? 1 : file?.total_pages;
 		const new_has_started = !Boolean(file?.has_started);
 		await Promise.all([
-			update({ table: "metadata", identifier: "file_id" }, id, {
+			update<MetadataModel>({ table: "metadata", identifier: "file_id" }, id, {
 				current_page: new_current_page,
 			}),
-			update({ table: "files", identifier: "id" }, id, {
-				has_started: new_has_started,
+			update<FileModel>({ table: "files", identifier: "id" }, id, {
+				has_started: new_has_started as unknown as SQLBoolean,
 			}),
 		]);
 	}

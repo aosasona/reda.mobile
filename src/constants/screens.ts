@@ -35,6 +35,10 @@ const screens = {
 		screenName: "CategoryScreen",
 		screenTitle: "Category",
 	},
+	FOLDERS: {
+		screenName: "FoldersScreen",
+		screenTitle: "Folders",
+	},
 	LOCKSCREEN: {
 		screenName: "LockScreen",
 		screenTitle: "Locked",

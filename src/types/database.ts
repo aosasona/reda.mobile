@@ -32,6 +32,7 @@ export interface AlterTableData {
 }
 
 export interface FileModel {
+	id?: `${number}`;
 	name: string;
 	path: string;
 	size: number;
@@ -46,6 +47,7 @@ export interface FileModel {
 }
 
 export interface MetadataModel {
+	id?: `${number}`;
 	file_id?: number;
 	image: string;
 	description: string;
