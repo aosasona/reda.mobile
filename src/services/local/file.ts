@@ -2,8 +2,8 @@ import { NavigationProp } from "@react-navigation/native";
 import { SQLResultSet } from "expo-sqlite";
 import { Alert } from "react-native";
 import { DEFAULT_REDA_DIRECTORY } from "../../constants/file";
+import { DatabaseOps } from "../../lib/database";
 import { executeQuery } from "../../lib/database/core";
-import { del, update } from "../../lib/database/ops";
 import { deleteFileFromFS } from "../../lib/file/ops";
 import { CombinedFileResultType, FileModel, MetadataModel, QueryFilter } from "../../types/database";
 
@@ -68,8 +68,8 @@ export async function deleteFile(id: number, navigation: NavigationProp<any>) {
         style: "destructive",
         onPress: () => {
           Promise.all([
-            del<MetadataModel>({ table: "metadata", identifier: "file_id", id: file.id }),
-            del<FileModel>({ table: "files", identifier: "id", id: file.id }),
+            DatabaseOps.delete<MetadataModel>({ table: "metadata", identifier: "file_id", id: file.id }),
+            DatabaseOps.delete<FileModel>({ table: "files", identifier: "id", id: file.id }),
             deleteFileFromFS(file.path),
           ])
             .then(() => navigation.goBack())
@@ -87,7 +87,7 @@ export async function search(keyword: string, filter: QueryFilter = { limit: 100
   const query = `SELECT ${FETCH_QUERY_FIELDS} FROM files f INNER JOIN metadata m ON f.id = m.file_id WHERE f.name LIKE ? OR m.description LIKE ? ORDER BY f.${sort_by} ${sort_order} LIMIT ?;`;
 
   const result = (await executeQuery(query, [`%${keyword}%`, `%${keyword}%`, limit,])) as SQLResultSet | null;
-  const res = result?.rows._array || ([] as any[]);
+  let res = result?.rows._array || ([] as any[]);
   res.map((item: any) => {
     item.table_of_contents = item?.table_of_contents == "[]" ? [] : JSON.parse(item.table_of_contents);
   });
@@ -97,12 +97,12 @@ export async function search(keyword: string, filter: QueryFilter = { limit: 100
 
 
 export async function rename(id: number, name: string): Promise<void> {
-  await update<FileModel>({ table: "files", identifier: "id" }, id, { name });
+  await DatabaseOps.update<FileModel>({ table: "files", identifier: "id" }, id, { name });
 }
 
 
 export async function changeAuthor(id: number, author: string): Promise<void> {
-  await update<MetadataModel>({ table: "metadata", identifier: "id" }, id, { author });
+  await DatabaseOps.update<MetadataModel>({ table: "metadata", identifier: "id" }, id, { author });
 }
 
 

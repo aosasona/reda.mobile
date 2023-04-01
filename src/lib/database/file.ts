@@ -4,9 +4,9 @@ import { insert, update } from "./ops";
 
 export async function save(file: FileModel, meta: MetadataModel): Promise<{ id: number }> {
   try {
-    const savedFile = (await insert("files", file)) as SQLResultSet;
+    const savedFile = (await insert<FileModel>("files", file)) as SQLResultSet;
     const { insertId } = savedFile;
-    (await insert("metadata", { ...meta, file_id: insertId, })) as SQLResultSet;
+    (await insert<MetadataModel>("metadata", { ...meta, file_id: insertId, })) as SQLResultSet;
     return { id: insertId || 0 };
   } catch (e) { throw e; }
 };

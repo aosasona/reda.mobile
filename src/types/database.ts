@@ -23,7 +23,27 @@ export enum SQLBoolean {
 
 export type Models = FileModel | MetadataModel | FolderModel
 
-export type TableName<T extends Models> = T extends FileModel ? "files" : T extends MetadataModel ? "metadata" : T extends FolderModel ? "folders" : never
+export type TableName<T extends Models> = T extends FileModel ? "files" :
+	T extends MetadataModel ? "metadata" :
+	T extends FolderModel ? "folders" :
+	never
+
+export type WhereFields<T extends Models> = {
+	[K in keyof T]?: T[K];
+}
+
+export type OrderClause<T extends Models> = {
+	[K in keyof T]?: "DESC" | "ASC"
+};
+
+export type SelectOpts<T extends Models> = {
+	select?: (keyof T)[] | "all";
+	where?: {
+		fields?: WhereFields<T> | {};
+		condition?: "AND" | "OR";
+	};
+	orderBy?: OrderClause<T>;
+}
 
 export interface AlterTableData {
 	table: Table;

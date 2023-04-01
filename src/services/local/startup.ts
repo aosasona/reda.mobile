@@ -1,9 +1,9 @@
 import * as FileSystem from "expo-file-system";
 import { SQLResultSet } from "expo-sqlite";
 import { DEFAULT_REDA_DIRECTORY } from "../../constants/file";
+import { DatabaseOps } from "../../lib/database";
 import { executeQuery } from "../../lib/database/core";
 import { save } from "../../lib/database/file";
-import { del } from "../../lib/database/ops";
 import { filterSupportedFiles } from "../../lib/file/ops";
 import { extractFileName } from "../../lib/file/process";
 import { showToast } from "../../lib/notification";
@@ -22,8 +22,8 @@ export const removeMissingFileRecords = async () => {
 			const { exists } = await FileSystem.getInfoAsync(relativePath);
 			if (!exists) {
 				await Promise.all([
-					del<FileModel>({ table: "files", identifier: "id", id: item.id }),
-					del<MetadataModel>({ table: "metadata", identifier: "file_id", id: item.id }),
+					DatabaseOps.delete<FileModel>({ table: "files", identifier: "id", id: item.id }),
+					DatabaseOps.delete<MetadataModel>({ table: "metadata", identifier: "file_id", id: item.id }),
 				]);
 			}
 		}
