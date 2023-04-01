@@ -1,7 +1,9 @@
 import { SQLError, SQLResultSet } from "expo-sqlite";
+import { Models, TableName } from "../../types/database";
 import { executeQuery } from "./core";
 
-export async function insert<T extends {}>(table: string, data: T): Promise<SQLResultSet | SQLError> {
+
+export async function insert<T extends Models>(table: TableName<T>, data: T): Promise<SQLResultSet | SQLError> {
 	const keys = Object.keys(data) as (keyof typeof data)[];
 	const values = Object.values(data);
 
@@ -9,7 +11,9 @@ export async function insert<T extends {}>(table: string, data: T): Promise<SQLR
 
 	return await executeQuery(query, values);
 }
-export async function update<T>(target: { table: string; identifier: keyof T }, id: number, data: Partial<T>) {
+
+
+export async function update<T extends Models>(target: { table: TableName<T>; identifier: keyof T }, id: number, data: Partial<T>) {
 	const { table, identifier } = target;
 	const keys = Object.keys(data);
 	const values = Object.values(data);
@@ -20,7 +24,9 @@ export async function update<T>(target: { table: string; identifier: keyof T }, 
 
 	return await executeQuery(query, replacement);
 }
-export async function del(data: { table: string; identifier: string; id: number; }) {
-	const query = `DELETE FROM ${data.table} WHERE ${data.identifier} = ?`;
+
+
+export async function del<T extends Models>(data: { table: TableName<T>; identifier: keyof T; id: number; }) {
+	const query = `DELETE FROM ${data.table} WHERE ${data.identifier as string} = ?`;
 	return await executeQuery(query, [data.id]);
 }

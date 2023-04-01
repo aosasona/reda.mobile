@@ -68,8 +68,8 @@ export async function deleteFile(id: number, navigation: NavigationProp<any>) {
         style: "destructive",
         onPress: () => {
           Promise.all([
-            del({ table: "metadata", identifier: "file_id", id: file.id }),
-            del({ table: "files", identifier: "id", id: file.id }),
+            del<MetadataModel>({ table: "metadata", identifier: "file_id", id: file.id }),
+            del<FileModel>({ table: "files", identifier: "id", id: file.id }),
             deleteFileFromFS(file.path),
           ])
             .then(() => navigation.goBack())

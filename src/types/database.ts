@@ -21,6 +21,10 @@ export enum SQLBoolean {
 	FALSE = 0,
 }
 
+export type Models = FileModel | MetadataModel | FolderModel
+
+export type TableName<T extends Models> = T extends FileModel ? "files" : T extends MetadataModel ? "metadata" : T extends FolderModel ? "folders" : never
+
 export interface AlterTableData {
 	table: Table;
 	column: {
@@ -60,6 +64,16 @@ export interface MetadataModel {
 	chapters?: number;
 	current_page?: number;
 	total_pages?: number;
+	created_at?: string;
+	updated_at?: string;
+}
+
+export interface FolderModel {
+	folder_id?: number;
+	name: string;
+	cover?: string;
+	is_locked?: boolean;
+	last_synced?: string;
 	created_at?: string;
 	updated_at?: string;
 }

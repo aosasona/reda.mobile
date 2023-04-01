@@ -22,8 +22,8 @@ export const removeMissingFileRecords = async () => {
 			const { exists } = await FileSystem.getInfoAsync(relativePath);
 			if (!exists) {
 				await Promise.all([
-					del({ table: "files", identifier: "id", id: item.id }),
-					del({ table: "metadata", identifier: "file_id", id: item.id }),
+					del<FileModel>({ table: "files", identifier: "id", id: item.id }),
+					del<MetadataModel>({ table: "metadata", identifier: "file_id", id: item.id }),
 				]);
 			}
 		}
