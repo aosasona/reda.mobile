@@ -8,25 +8,16 @@ import { migrations } from "./definitions/migrations";
  This contains the core database functionality, which is used by the application for critical things like migrations
  */
 
-export const executeQuery = async (
-  query: string,
-  params: any[] = []
-): Promise<SQLResultSet | SQLError> => {
+export async function executeQuery(query: string, params: any[] = []): Promise<SQLResultSet | SQLError> {
   return new Promise((resolve, reject) => {
     db.transaction(
-      (tx) => {
-        tx.executeSql(query, params, (_, res) => {
-          resolve(res);
-        });
-      },
+      (tx) => { tx.executeSql(query, params, (_, res) => { resolve(res); }); },
       (error) => reject(error)
     );
   });
 };
 
-export const runMigration = async (
-  migrateLegacyDB: (currentName: string) => Promise<void>
-) => {
+export async function runMigration(migrateLegacyDB: (currentName: string) => Promise<void>) {
   await migrateLegacyDB(DATABASE_NAME);
 
   const enableForeignkeys = `PRAGMA foreign_keys = ON;`;
@@ -64,17 +55,14 @@ export const runMigration = async (
       // Alters - ADD
       addAlters.forEach((stmt) => {
         const stmtID = `${stmt.table}.${stmt.column.name}`;
-        tx.executeSql(
-          `SELECT name FROM migrations WHERE name = ?`,
-          [stmtID],
-          async (tx: any, res: any) => {
-            if (res.rows.length === 0) {
-              await addColumnToTable(stmt);
-              tx.executeSql(`INSERT INTO migrations (name) VALUES (?)`, [
-                stmtID,
-              ]);
-            }
+        tx.executeSql(`SELECT name FROM migrations WHERE name = ?`, [stmtID], async (tx: any, res: any) => {
+          if (res.rows.length === 0) {
+            await addColumnToTable(stmt);
+            tx.executeSql(`INSERT INTO migrations (name) VALUES (?)`, [
+              stmtID,
+            ]);
           }
+        }
         );
       });
     },
@@ -82,15 +70,11 @@ export const runMigration = async (
   );
 };
 
-export const addColumnToTable = async (data: AlterTableData) => {
+export async function addColumnToTable(data: AlterTableData) {
   try {
     const columns = await executeQuery(`PRAGMA table_info(${data.table})`);
-    const columnAlreadyExists = (columns as SQLResultSet).rows._array.some(
-      (col) => col.name == data.column.name
-    );
-    if (columnAlreadyExists) {
-      return;
-    }
+    const columnAlreadyExists = (columns as SQLResultSet).rows._array.some((col) => col.name == data.column.name);
+    if (columnAlreadyExists) { return; }
 
     let stmt = `ALTER TABLE ${data.table} ADD COLUMN ${data.column.name} ${data.column.type}`;
     if (data.column.not_null) {
@@ -105,9 +89,7 @@ export const addColumnToTable = async (data: AlterTableData) => {
   }
 };
 
-export const clearDatabase = async () => {
-  await executeQuery(`DELETE
-                        FROM files;`);
-  await executeQuery(`DELETE
-                        FROM metadata;`);
+export async function clearDatabase() {
+  await executeQuery(`DELETE FROM files;`);
+  await executeQuery(`DELETE FROM metadata;`);
 };

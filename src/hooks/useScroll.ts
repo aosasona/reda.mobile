@@ -30,11 +30,7 @@ export interface ScrollThresholdData {
   hasReachedThreshold: boolean;
 }
 
-export default function useScrollThreshold(
-  threshold: number,
-  axis: EventAxis = "y",
-  invert: boolean = false
-) {
+export default function useScrollThreshold(threshold: number, axis: EventAxis = "y", invert: boolean = false) {
   const [currentStatus, setCurrentStatus] = useState<ScrollStatus>({
     contentInset: { top: 0, bottom: 0, left: 0, right: 0 },
     contentOffset: { x: 0, y: 0 },
@@ -46,10 +42,7 @@ export default function useScrollThreshold(
 
   useEffect(() => {
     const currentAxisOffset = currentStatus?.contentOffset?.[axis] || 0;
-    if (
-      currentAxisOffset >= threshold ||
-      (invert && currentAxisOffset <= threshold)
-    ) {
+    if (currentAxisOffset >= threshold || (invert && currentAxisOffset <= threshold)) {
       setHasReachedThreshold(true);
     } else {
       setHasReachedThreshold(false);
@@ -61,10 +54,7 @@ export default function useScrollThreshold(
     setCurrentStatus(status.nativeEvent);
   }
 
-  const page: ScrollThresholdData = {
-    offset: { ...currentStatus },
-    hasReachedThreshold,
-  };
+  const page: ScrollThresholdData = { offset: { ...currentStatus }, hasReachedThreshold };
 
   return [page, onEvent] as const;
 }

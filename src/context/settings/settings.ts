@@ -1,10 +1,10 @@
-import {Alert} from "react-native";
-import {Keys} from "../../constants/keys";
-import {clearDatabase} from "../../lib/database/core";
-import {deleteAll} from "../../lib/file/ops";
-import {seekPermission} from "../../lib/notification";
+import { Alert } from "react-native";
+import { Keys } from "../../constants/keys";
+import { clearDatabase } from "../../lib/database/core";
+import { deleteAll } from "../../lib/file/ops";
+import { seekPermission } from "../../lib/notification";
 import defaultStorage from "../../storage/default";
-import {SettingsActionType, SettingsDispatchAction} from "./SettingsReducer";
+import { SettingsActionType, SettingsDispatchAction } from "./SettingsReducer";
 
 export default class Settings {
 	private readonly dispatch: (event: SettingsDispatchAction) => any;
@@ -13,33 +13,21 @@ export default class Settings {
 		this.dispatch = dispatch;
 	}
 
-	public load = async () => {
-		const useSinglePageLayout = defaultStorage.getBoolean(
-		  Keys.SINGLE_PAGE_LAYOUT,
-		);
-		const allowNotifications = defaultStorage.getBoolean(
-		  Keys.ALLOW_NOTIFICATIONS,
-		);
+	async load() {
+		const useSinglePageLayout = defaultStorage.getBoolean(Keys.SINGLE_PAGE_LAYOUT);
+		const allowNotifications = defaultStorage.getBoolean(Keys.ALLOW_NOTIFICATIONS);
 		this.dispatch({
 			type: SettingsActionType.LOAD_SETTINGS,
-			payload: {
-				useSinglePageLayout,
-				allowNotifications,
-			},
+			payload: { useSinglePageLayout, allowNotifications },
 		});
 	};
 
-	public toggleSinglePageLayout = (value: boolean) => {
-		this.dispatch({
-			type: SettingsActionType.SET_SINGLE_PAGE_LAYOUT_OPTION,
-			payload: value,
-		});
+	toggleSinglePageLayout(value: boolean) {
+		this.dispatch({ type: SettingsActionType.SET_SINGLE_PAGE_LAYOUT_OPTION, payload: value });
 	};
 
-	public toggleAllowNotifications = async (value: boolean) => {
-		if (value) {
-			await seekPermission();
-		}
+	async toggleAllowNotifications(value: boolean) {
+		if (value) { await seekPermission(); }
 		defaultStorage.set(Keys.ALLOW_NOTIFICATIONS, value);
 		this.dispatch({
 			type: SettingsActionType.TOGGLE_ALLOW_NOTIFICATIONS,
@@ -47,51 +35,45 @@ export default class Settings {
 		});
 	};
 
-	public resetSettings = () => {
-		Alert.alert(
-		  "Reset Settings",
-		  "Are you sure you want to reset all settings to default?",
-		  [
-			  {
-				  text: "Cancel",
-				  style: "cancel",
-			  },
-			  {
-				  text: "Reset",
-				  onPress: () =>
-					this.dispatch({type: SettingsActionType.RESET_SETTINGS}),
-				  style: "destructive",
-			  },
-		  ],
+	resetSettings() {
+		Alert.alert("Reset Settings", "Are you sure you want to reset all settings to default?",
+			[
+				{
+					text: "Cancel",
+					style: "cancel",
+				},
+				{
+					text: "Reset",
+					onPress: () => this.dispatch({ type: SettingsActionType.RESET_SETTINGS }),
+					style: "destructive",
+				},
+			],
 		);
 	};
 
-	public clearAllData = () => {
+	clearAllData() {
 		Alert.alert(
-		  "Clear Data",
-		  "This will delete all files and app data, are you sure?",
-		  [
-			  {
-				  text: "Cancel",
-				  style: "cancel",
-			  },
-			  {
-				  text: "Continue",
-				  onPress: async () => {
-					  try {
-						  await Promise.all([deleteAll(), clearDatabase()]);
-						  Alert.alert(
-							"Success",
-							"Data cleared! You may need to restart app to see changes.",
-						  );
-					  }
-					  catch (e) {
-						  Alert.alert("Error", "An error occurred");
-					  }
-				  },
-				  style: "destructive",
-			  },
-		  ],
+			"Clear Data",
+			"This will delete all files and app data, are you sure?",
+			[
+				{
+					text: "Cancel",
+					style: "cancel",
+				},
+				{
+					text: "Continue",
+					onPress: async () => {
+						try {
+							await Promise.all([deleteAll(), clearDatabase()]);
+							Alert.alert("Success", "Data cleared! You may need to restart app to see changes.",);
+						}
+						catch (e) {
+							Alert.alert("Error", "An error occurred");
+						}
+					},
+					style: "destructive",
+				},
+			],
 		);
 	};
 }

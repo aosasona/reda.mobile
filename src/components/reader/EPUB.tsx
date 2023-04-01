@@ -1,20 +1,16 @@
 import { Reader, Theme, useReader } from "@epubjs-react-native/core";
-import { SafeAreaView, useWindowDimensions } from "react-native";
+import { useWindowDimensions } from "react-native";
 import { SharedReaderProps } from "../../types/reader";
 import { useFileSystem } from "@epubjs-react-native/expo-file-system";
 import * as RNFS from "react-native-fs";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { colors } from "../../config/theme";
 import { Spinner, useColorMode, View } from "native-base";
 import { ViewProps } from "../../config/props";
 import { updateCfi } from "../../lib/database/file";
 import { showToast } from "../../lib/notification";
 
-export default function Epub({
-  data,
-  onLoad,
-  onPageChange,
-}: SharedReaderProps) {
+export default function Epub({ data, onLoad, onPageChange, }: SharedReaderProps) {
   const { colorMode } = useColorMode();
   const { width, height } = useWindowDimensions();
   const [loading, setLoading] = useState(true);

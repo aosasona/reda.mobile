@@ -1,30 +1,25 @@
-import {DocumentResult} from "expo-document-picker";
-import {SQLResultSet} from "expo-sqlite";
-import {DEFAULT_REDA_DIRECTORY} from "../../constants/file";
+import { DocumentResult } from "expo-document-picker";
+import { SQLResultSet } from "expo-sqlite";
+import { DEFAULT_REDA_DIRECTORY } from "../../constants/file";
 import CustomException from "../../exceptions/CustomException";
-import {File} from "../../types/file";
-import {executeQuery} from "../database/core";
-import {copyToFolder, deleteFile} from "./ops";
-import {extractFileNameFromUri} from "./process";
+import { File } from "../../types/file";
+import { executeQuery } from "../database/core";
+import { copyToFolder, deleteFileFromFS } from "./ops";
+import { extractFileNameFromUri } from "./process";
 
-export const handleFileCleanup = async (url: string | undefined) => {
+export async function handleFileCleanup(url: string | undefined): Promise<void> {
 	if (!url) return;
-	const res = (await executeQuery(
-	  `SELECT COUNT(*) as count
-       FROM files
-       WHERE path = ?`,
-	  [url],
-	)) as SQLResultSet;
+	const res = (await executeQuery(`SELECT COUNT(*) as count FROM files WHERE path = ?`, [url],)) as SQLResultSet;
 
 	const count = res?.rows?._array[0]?.count || 0;
 
 	if (count > 0) return;
 
-	await deleteFile(DEFAULT_REDA_DIRECTORY + url);
+	await deleteFileFromFS(DEFAULT_REDA_DIRECTORY + url);
 };
-export const handleFilePick = async (
-  data: DocumentResult,
-): Promise<File | null> => {
+
+
+export async function handleFilePick(data: DocumentResult): Promise<File | null> {
 	if (data.type !== "success") return null;
 	const uri = data?.uri;
 	if (!uri) throw new CustomException("No file selected");

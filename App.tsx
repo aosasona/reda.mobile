@@ -9,7 +9,7 @@ import {
 	AzeretMono_800ExtraBold,
 	AzeretMono_900Black,
 } from "@expo-google-fonts/azeret-mono";
-import {Inter_100Thin, Inter_200ExtraLight, Inter_300Light, Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold, Inter_800ExtraBold, Inter_900Black} from "@expo-google-fonts/inter";
+import { Inter_100Thin, Inter_200ExtraLight, Inter_300Light, Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold, Inter_800ExtraBold, Inter_900Black } from "@expo-google-fonts/inter";
 import {
 	Outfit_100Thin,
 	Outfit_200ExtraLight,
@@ -34,15 +34,15 @@ import {
 	Poppins_900Black,
 } from "@expo-google-fonts/poppins";
 import * as SplashScreen from "expo-splash-screen";
-import {NativeBaseProvider} from "native-base";
-import React, {useEffect, useState} from "react";
-import {Appearance, View} from "react-native";
-import {extendedTheme} from "./src/config/theme";
-import {AppContextProvider} from "./src/context/app/AppContext";
-import {SettingsContextProvider} from "./src/context/settings/SettingsContext";
-import {colorModeManager} from "./src/lib/color";
-import {runMigration} from "./src/lib/database/core";
-import {migrateLegacyDB, syncLocalData} from "./src/services/local/startup";
+import { NativeBaseProvider } from "native-base";
+import React, { useEffect, useState } from "react";
+import { Appearance, View } from "react-native";
+import { extendedTheme } from "./src/config/theme";
+import { AppContextProvider } from "./src/context/app/AppContext";
+import { SettingsContextProvider } from "./src/context/settings/SettingsContext";
+import { colorModeManager } from "./src/lib/color";
+import { runMigration } from "./src/lib/database/core";
+import { migrateLegacyDB, syncLocalData } from "./src/services/local/startup";
 import MainStack from "./src/stacks/MainStack";
 
 (async () => await SplashScreen.preventAutoHideAsync())();
@@ -104,9 +104,7 @@ export default function App() {
 	}, [fontsLoaded, navReady, appReady]);
 
 	if (typeof window !== undefined) {
-		Appearance.addChangeListener(({colorScheme}) => {
-			colorModeManager.set(colorScheme);
-		});
+		Appearance.addChangeListener(({ colorScheme }) => { colorModeManager.set(colorScheme); });
 		(async () => {
 			await runMigration(migrateLegacyDB);
 			await syncLocalData();
@@ -121,20 +119,14 @@ export default function App() {
 	}
 
 	return (
-	  <View style={{flex: 1}} onLayout={() => setAppReady(true)}>
-		  <AppContextProvider>
-			  <SettingsContextProvider>
-				  <NativeBaseProvider
-					theme={extendedTheme}
-					colorModeManager={colorModeManager}
-				  >
-					  <MainStack
-						migrationComplete={migrationComplete}
-						onNavReady={() => setNavReady(true)}
-					  />
-				  </NativeBaseProvider>
-			  </SettingsContextProvider>
-		  </AppContextProvider>
-	  </View>
+		<View style={{ flex: 1 }} onLayout={() => setAppReady(true)}>
+			<AppContextProvider>
+				<SettingsContextProvider>
+					<NativeBaseProvider theme={extendedTheme} colorModeManager={colorModeManager} >
+						<MainStack migrationComplete={migrationComplete} onNavReady={() => setNavReady(true)} />
+					</NativeBaseProvider>
+				</SettingsContextProvider>
+			</AppContextProvider>
+		</View>
 	);
 }

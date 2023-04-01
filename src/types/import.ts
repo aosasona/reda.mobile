@@ -1,5 +1,5 @@
-import {Dispatch, SetStateAction} from "react";
-import {File} from "./file";
+import { Dispatch, SetStateAction } from "react";
+import { File } from "./file";
 
 export enum MetaModalSteps {
 	ONE,

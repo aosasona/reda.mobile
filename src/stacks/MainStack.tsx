@@ -34,27 +34,20 @@ Notifications.setNotificationHandler({
   }),
 });
 
-export default function MainStack({
-  migrationComplete,
-  onNavReady,
-}: MainStackProps) {
+export default function MainStack({ migrationComplete, onNavReady }: MainStackProps) {
   const { colorMode } = useColorMode();
   const { state } = useContext(AppContext);
 
   // Watch for app state and notifications and automatically sync data when in focus
   useEffect(() => {
-    const appStateSubscription = AppState.addEventListener(
-      "change",
-      (appState) => {
-        if (appState == "active" && migrationComplete && !isAndroid) {
-          syncLocalData().then().catch();
-        }
+    const appStateSubscription = AppState.addEventListener("change", (appState) => {
+      if (appState == "active" && migrationComplete && !isAndroid) {
+        syncLocalData().then().catch();
       }
+    }
     );
 
-    return () => {
-      appStateSubscription.remove();
-    };
+    return () => { appStateSubscription.remove(); };
   }, []);
 
   const Tab = createBottomTabNavigator();

@@ -18,26 +18,17 @@ export const AppReducer = (
 ): AppStateType => {
 	switch (action.type) {
 		case AppActionType.LOAD_INITIAL_CONTEXT:
-			return {
-				...state,
-				...action.payload,
-			};
+			return { ...state, ...action.payload, };
+
 		case AppActionType.TOGGLE_IS_SYNCING:
-			return {
-				...state,
-				isSyncing: !state.isSyncing,
-			};
+			return { ...state, isSyncing: !state.isSyncing, };
+
 		case AppActionType.TOGGLE_IS_SIGNED_IN:
-			return {
-				...state,
-				isSignedIn: !state.isSignedIn,
-			};
+			return { ...state, isSignedIn: !state.isSignedIn, };
+
 		case AppActionType.TOGGLE_USE_BIOMETRICS:
-			return {
-				...state,
-				isSignedIn: true,
-				useBiometrics: action.payload,
-			};
+			return { ...state, isSignedIn: true, useBiometrics: action.payload, };
+
 		default:
 			return state;
 	}

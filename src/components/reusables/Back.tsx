@@ -1,6 +1,6 @@
 import { Entypo } from "@expo/vector-icons";
 import { NavigationProp } from "@react-navigation/native";
-import { Button, Icon, useColorModeValue } from "native-base";
+import { Button, Icon } from "native-base";
 
 interface BackProps {
 	page?: string;

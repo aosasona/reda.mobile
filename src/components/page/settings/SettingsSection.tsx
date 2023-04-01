@@ -7,7 +7,7 @@ interface Props {
 	hideTitle?: boolean;
 }
 
-export default function SettingsSection({ title, children, hideTitle }: Props) {
+export default function SettingsSection({ children }: Props) {
 	return (
 		<Box py={3} px={1}>
 			<VStack>{children}</VStack>

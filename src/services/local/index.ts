@@ -1,3 +1,4 @@
-import {RedaService} from "./reda";
+import * as LocalFileService from "./file"
+import * as LocalFileActions from "./actions"
 
-export {RedaService};
+export { LocalFileService, LocalFileActions };

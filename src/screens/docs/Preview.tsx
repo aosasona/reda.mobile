@@ -18,18 +18,16 @@ import { ButtonProps, DetailsProps, DividerProps } from "../../config/props";
 import { colors } from "../../config/theme";
 import screens from "../../constants/screens";
 import useScrollThreshold from "../../hooks/useScroll";
-import { useThumbnail } from "../../hooks/useThumbnail";
+import useThumbnail from "../../hooks/useThumbnail";
 import { byteToMB } from "../../lib/misc";
-import { RedaService } from "../../services/local";
+import { LocalFileActions, LocalFileService } from "../../services/local";
 import { CombinedFileResultType, SQLBoolean } from "../../types/database";
 import { ScreenProps } from "../../types/general";
 
 export default function Preview({ route, navigation }: ScreenProps) {
 	const { data: initialData } = route.params;
 
-	if (!initialData) {
-		navigation.goBack();
-	}
+	if (!initialData) { navigation.goBack(); }
 
 	const [refreshing, setRefreshing] = useState(false);
 	const [data, setData] = useState<CombinedFileResultType>(initialData);
@@ -52,7 +50,7 @@ export default function Preview({ route, navigation }: ScreenProps) {
 	const onRefresh = async (triggerRefresh: boolean = true) => {
 		try {
 			if (triggerRefresh) setRefreshing(true);
-			const currentData = await RedaService.getOne(data?.id);
+			const currentData = await LocalFileService.getOne(data?.id);
 			setData(currentData as CombinedFileResultType);
 		} catch (e) {
 			Alert.alert("Error", "An error occurred!");
@@ -64,23 +62,20 @@ export default function Preview({ route, navigation }: ScreenProps) {
 
 	const handleToggleStar = async () => {
 		try {
-			await RedaService.toggleStar(data?.id);
-			setData({
-				...data,
-				is_starred: !data?.is_starred as unknown as SQLBoolean,
-			});
+			await LocalFileActions.toggleStar(data?.id);
+			setData(data => ({ ...data, is_starred: !data?.is_starred as unknown as SQLBoolean }));
 		} catch (e) {
-			Alert.alert("Error", "Unable to perform action!");
+			Alert.alert("Error", "An error occurred!");
 		}
 	};
 
 	const handleDelete = async () => {
-		await RedaService.deleteFile(data.id, navigation);
+		await LocalFileService.deleteFile(data.id, navigation);
 	};
 
 	const handleToggleReadStatus = async () => {
 		try {
-			await RedaService.toggleReadStatus(data?.id);
+			await LocalFileActions.toggleReadStatus(data?.id);
 			await onRefresh(false);
 		} catch (e: any) {
 			Alert.alert("Error", "Something went wrong!");
@@ -102,11 +97,8 @@ export default function Preview({ route, navigation }: ScreenProps) {
 			),
 			headerBackTitle: "Home",
 			headerShadowVisible: false,
-			headerStyle: {
-				backgroundColor: page.hasReachedThreshold
-					? colors.dark[900]
-					: "#00000000",
-			},
+			headerTransparent: true,
+			headerBlurEffect: page.hasReachedThreshold ? "regular" : "",
 		});
 	}, [navigation, data, page.hasReachedThreshold]);
 
@@ -116,19 +108,15 @@ export default function Preview({ route, navigation }: ScreenProps) {
 		<ScrollView
 			px={0}
 			showsVerticalScrollIndicator={false}
-			scrollEventThrottle={10}
+			scrollEventThrottle={60}
 			onScroll={onScroll}
-			refreshControl={
-				<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-			}
+			refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
 		>
 			<StatusBar style="light" />
 			<PreviewHeader source={thumb} defaultSource={fallback} data={data} />
 			<Box px={4} py={4}>
 				<Box mb={4}>
-					<Heading fontSize={24} mb={2}>
-						Description
-					</Heading>
+					<Heading fontSize={24} mb={2}>Description</Heading>
 					<Pressable onPress={() => setDescriptionLines(250)}>
 						<Text opacity={0.8} fontSize={16} noOfLines={descriptionLines}>
 							{data?.description}
@@ -136,21 +124,13 @@ export default function Preview({ route, navigation }: ScreenProps) {
 					</Pressable>
 				</Box>
 				<Button onPress={openReadPage} {...ButtonProps}>
-					{data?.has_started
-						? "Continue reading"
-						: data?.has_finished
-							? "Read Again"
-							: "Start Reading"}
+					{data?.has_started ? "Continue reading" : data?.has_finished ? "Read Again" : "Start Reading"}
 				</Button>
 				<Box mt={5}>
-					<Heading fontSize={24} mb={2}>
-						Details
-					</Heading>
+					<Heading fontSize={24} mb={2}>Details</Heading>
 					<HStack {...DetailsProps}>
 						<Text fontSize={16}>File Size</Text>
-						<Text opacity={0.5} fontSize={16}>
-							{filesizeInMB}
-						</Text>
+						<Text opacity={0.5} fontSize={16}>{filesizeInMB}</Text>
 					</HStack>
 					<Divider {...DividerProps} />
 					<HStack {...DetailsProps}>

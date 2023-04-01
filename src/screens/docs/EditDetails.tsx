@@ -1,14 +1,14 @@
-import {Button, KeyboardAvoidingView, ScrollView} from "native-base";
-import {useState} from "react";
+import { Button, KeyboardAvoidingView, ScrollView } from "native-base";
+import { useState } from "react";
 import CustomInput from "../../components/custom/CustomInput";
-import {ButtonProps} from "../../config/props";
-import {showToast} from "../../lib/notification";
-import {RedaService} from "../../services/local";
-import {CombinedFileResultType} from "../../types/database";
-import {ScreenProps} from "../../types/general";
+import { ButtonProps } from "../../config/props";
+import { showToast } from "../../lib/notification";
+import { LocalFileService } from "../../services/local";
+import { CombinedFileResultType } from "../../types/database";
+import { ScreenProps } from "../../types/general";
 
-export default function EditDetails({route, navigation}: ScreenProps) {
-	const {data: initialData} = route.params;
+export default function EditDetails({ route, navigation }: ScreenProps) {
+	const { data: initialData } = route.params;
 
 	if (!initialData) {
 		navigation.goBack();
@@ -34,28 +34,18 @@ export default function EditDetails({route, navigation}: ScreenProps) {
 
 	const renameDocument = async () => {
 		if (filename == data?.name) return;
-		await RedaService.rename(data.id, filename);
-		setData((prev) => ({...prev, name: filename}));
+		await LocalFileService.rename(data.id, filename);
+		setData((prev) => ({ ...prev, name: filename }));
 	};
 
 	return (
-	  <ScrollView pt={6}>
-		  <KeyboardAvoidingView>
-			  <CustomInput
-				name="Name"
-				type="text"
-				value={filename}
-				onChange={setFilename}
-			  />
-			  <Button
-				onPress={async () => await handleSave()}
-				{...ButtonProps}
-				mt={5}
-				isLoading={saving}
-			  >
-				  Save
-			  </Button>
-		  </KeyboardAvoidingView>
-	  </ScrollView>
+		<ScrollView pt={6}>
+			<KeyboardAvoidingView>
+				<CustomInput name="Name" type="text" value={filename} onChange={setFilename} />
+				<Button onPress={async () => await handleSave()} {...ButtonProps} mt={5} isLoading={saving} >
+					Save
+				</Button>
+			</KeyboardAvoidingView>
+		</ScrollView>
 	);
 }

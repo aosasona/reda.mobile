@@ -1,5 +1,5 @@
 import * as LocalAuthentication from "expo-local-authentication";
-import {Keys} from "../../constants/keys";
+import { Keys } from "../../constants/keys";
 import defaultStorage from "../../storage/default";
 
 export const supportsBiometrics = async (): Promise<boolean> => {
@@ -18,7 +18,7 @@ export const useBiometrics = (): boolean => {
 		const hasKey = defaultStorage.contains(Keys.USE_BIOMETRICS);
 		if (!hasKey) return false;
 		const useBioValue = defaultStorage.getBoolean(Keys.USE_BIOMETRICS);
-		return useBioValue as boolean;
+		return useBioValue || false;
 	}
 	catch (e) {
 		return false;

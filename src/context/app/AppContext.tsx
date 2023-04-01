@@ -25,16 +25,11 @@ const AppContextProvider = ({ children }: any) => {
 	const [state, dispatch] = useReducer(AppReducer, initialState);
 
 	useEffect(() => {
-		new App(dispatch).load().then();
+		(async () => await (new App(dispatch)).load())();
 	}, []);
 
 	return (
-		<AppContext.Provider
-			value={{
-				state,
-				dispatch,
-			}}
-		>
+		<AppContext.Provider value={{ state, dispatch }} >
 			{children}
 		</AppContext.Provider>
 	);

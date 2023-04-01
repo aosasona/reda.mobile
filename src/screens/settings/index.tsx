@@ -34,13 +34,13 @@ export default function Settings({ navigation }: ScreenProps) {
 
 	const handleSettingsReset = () => settings.resetSettings();
 
-	const handleSync = async () => {
+	async function handleSync() {
 		appDispatch({ type: AppActionType.TOGGLE_IS_SYNCING });
 		await syncLocalData();
 		appDispatch({ type: AppActionType.TOGGLE_IS_SYNCING });
 	};
 
-	const openRedaServicePage = (url: string) => {
+	function openRedaServicePage(url: string) {
 		const uri = REDA_URL + url;
 		Web.openBrowserPage(uri).then();
 	};
@@ -56,54 +56,25 @@ export default function Settings({ navigation }: ScreenProps) {
 
 				<VStack mt={1} space={8} divider={<CustomDivider />}>
 					<SettingsSection title="Configure Reda">
-						<PressableSettings
-							onPress={() =>
-								navigation.navigate(screens.APPEARANCE_SETTINGS.screenName)
-							}
-						>
+						<PressableSettings onPress={() => navigation.navigate(screens.APPEARANCE_SETTINGS.screenName)}>
 							<IconText as={Entypo} name="palette" text="Appearance" />
 							<Icon as={Feather} name="chevron-right" size={4} />
 						</PressableSettings>
 
-						<PressableSettings
-							onPress={() =>
-								navigation.navigate(screens.SECURITY_SETTINGS.screenName)
-							}
-						>
+						<PressableSettings onPress={() => navigation.navigate(screens.SECURITY_SETTINGS.screenName)}>
 							<IconText name="lock" text="Security" />
 							<Icon as={Feather} name="chevron-right" size={4} />
 						</PressableSettings>
 
-						<PressableSettings
-							onPress={() =>
-								navigation.navigate(screens.NOTIFICATIONS_SETTINGS.screenName)
-							}
-						>
-							<IconText
-								as={Ionicons}
-								name="ios-notifications-outline"
-								text="Notifications"
-							/>
+						<PressableSettings onPress={() => navigation.navigate(screens.NOTIFICATIONS_SETTINGS.screenName)}>
+							<IconText as={Ionicons} name="ios-notifications-outline" text="Notifications" />
 							<Icon as={Feather} name="chevron-right" size={4} />
 						</PressableSettings>
 					</SettingsSection>
 
 					<SettingsSection title="About Reda">
-						<PressableSettings onPress={() => openRedaServicePage("/releases")}>
-							<IconText
-								as={MaterialIcons}
-								name="new-releases"
-								text="Release notes"
-							/>
-							<Icon as={Feather} name="arrow-up-right" size={4} />
-						</PressableSettings>
-
 						<PressableSettings onPress={() => openRedaServicePage("/privacy")}>
-							<IconText
-								as={MaterialIcons}
-								name="privacy-tip"
-								text="Privacy policy"
-							/>
+							<IconText as={MaterialIcons} name="privacy-tip" text="Privacy policy" />
 							<Icon as={Feather} name="arrow-up-right" size={4} />
 						</PressableSettings>
 
@@ -112,32 +83,25 @@ export default function Settings({ navigation }: ScreenProps) {
 							<Icon as={Feather} name="arrow-up-right" size={4} />
 						</PressableSettings>
 
-						<PressableSettings
-							onPress={() =>
-								Web.openBrowserPage("https://twitter.com/useredaapp").then()
-							}
-						>
+						<PressableSettings onPress={() => Web.openBrowserPage("https://github.com/aosasona/reda-mobile").then()}>
+							<IconText as={Ionicons} name="logo-github" text="GitHub" />
+							<Icon as={Feather} name="arrow-up-right" size={4} />
+						</PressableSettings>
+
+						<PressableSettings onPress={() => Web.openBrowserPage("https://twitter.com/useredaapp").then()}>
 							<IconText as={Ionicons} name="help-outline" text="Help" />
 							<Icon as={Feather} name="arrow-up-right" size={4} />
 						</PressableSettings>
 					</SettingsSection>
 
 					<SettingsSection title="App Controls">
-						<PressableSettings
-							onPress={handleSync}
-							disabled={appState.isSyncing}
-						>
+						<PressableSettings onPress={handleSync} disabled={appState.isSyncing} >
 							<IconText as={Ionicons} name="ios-sync" text="Sync data" />
 							{appState.isSyncing && <ActivityIndicator size="small" />}
 						</PressableSettings>
 
 						<PressableSettings onPress={handleSettingsReset}>
-							<IconText
-								as={MaterialIcons}
-								name="settings-backup-restore"
-								color="red.500"
-								text="Reset settings"
-							/>
+							<IconText as={MaterialIcons} name="settings-backup-restore" color="red.500" text="Reset settings" />
 						</PressableSettings>
 
 						<PressableSettings onPress={settings.clearAllData}>
@@ -146,13 +110,7 @@ export default function Settings({ navigation }: ScreenProps) {
 					</SettingsSection>
 				</VStack>
 
-				<Text
-					textAlign="center"
-					fontSize={13}
-					color="gray.400"
-					fontWeight={400}
-					my={10}
-				>
+				<Text textAlign="center" fontSize={13} color="gray.400" fontWeight={400} my={10} >
 					Reda {constants?.manifest?.version}
 				</Text>
 			</ScrollView>

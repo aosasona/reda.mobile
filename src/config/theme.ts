@@ -1,6 +1,6 @@
-import {extendTheme} from "native-base";
-import {isAndroid} from "../constants/core";
-import {FontFamilies, FontFamiliesEnum, FontWeights} from "../constants/fonts";
+import { extendTheme } from "native-base";
+import { isAndroid } from "../constants/core";
+import { FontFamilies, FontFamiliesEnum, FontWeights } from "../constants/fonts";
 
 export const colors = {
 	primary: "#006ee6",
@@ -29,13 +29,13 @@ export const colors = {
 
 const fontsConfig = FontFamilies.map((fontFamily) => ({
 	[fontFamily]: Object.keys(FontWeights)
-	  .map((weight) => ({
-		  [weight]: {
-			  normal: `${fontFamily}_${weight}${FontWeights[weight]}`,
-		  },
-	  }))
-	  .reduce((acc, curr) => ({...acc, ...curr}), {}),
-})).reduce((acc, curr) => ({...acc, ...curr}), {});
+		.map((weight) => ({
+			[weight]: {
+				normal: `${fontFamily}_${weight}${FontWeights[weight]}`,
+			},
+		}))
+		.reduce((acc, curr) => ({ ...acc, ...curr }), {}),
+})).reduce((acc, curr) => ({ ...acc, ...curr }), {});
 
 export const fonts = {
 	heading: FontFamiliesEnum.OUTFIT,
@@ -45,23 +45,23 @@ export const fonts = {
 
 export const componentsConfig = {
 	ScrollView: {
-		baseStyle: (props: any) => ({
-			_dark: {bg: colors.dark["900"]},
-			_light: {bg: colors.light["200"]},
+		baseStyle: (_: any) => ({
+			_dark: { bg: colors.dark["900"] },
+			_light: { bg: colors.light["200"] },
 			px: 4,
 		}),
 	},
 	SectionList: {
-		baseStyle: (props: any) => ({
-			_dark: {bg: colors.dark["900"]},
-			_light: {bg: colors.light["200"]},
+		baseStyle: (_: any) => ({
+			_dark: { bg: colors.dark["900"] },
+			_light: { bg: colors.light["200"] },
 			px: 4,
 		}),
 	},
 	FlatList: {
-		baseStyle: (props: any) => ({
-			_dark: {bg: colors.dark["900"]},
-			_light: {bg: colors.light["200"]},
+		baseStyle: (_: any) => ({
+			_dark: { bg: colors.dark["900"] },
+			_light: { bg: colors.light["200"] },
 			px: 4,
 		}),
 	},

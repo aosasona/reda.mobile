@@ -1,9 +1,9 @@
 import * as WebBrowser from "expo-web-browser";
-import {colors} from "../config/theme";
-import {showToast} from "./notification";
+import { colors } from "../config/theme";
+import { showToast } from "./notification";
 
 export default class Web {
-	public static openBrowserPage = async (uri: string) => {
+	static async openBrowserPage(uri: string) {
 		try {
 			await WebBrowser.openBrowserAsync(uri, {
 				controlsColor: colors.light["200"],

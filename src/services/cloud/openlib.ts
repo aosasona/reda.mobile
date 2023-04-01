@@ -1,4 +1,4 @@
-import {default as axios} from "axios";
+import { default as axios } from "axios";
 
 const stringify = require('qs-stringify')
 
@@ -17,7 +17,7 @@ export class OpenLibraryService {
 	static async search(params: SearchParams) {
 		const query = stringify(params)
 		const url = this.SEARCH_URL + "?" + query
-		const {data} = await axios.get(url)
+		const { data } = await axios.get(url)
 		return data
 	}
 
@@ -27,7 +27,7 @@ export class OpenLibraryService {
 
 	static async getBookDataByKey(key: string) {
 		const url = `${this.BASE_URL}books/${key}.json`
-		const {data} = await axios.get(url)
+		const { data } = await axios.get(url)
 		return data
 	}
 }

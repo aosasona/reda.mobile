@@ -8,13 +8,9 @@ import { Keys } from "../constants/keys";
 import defaultStorage from "../storage/default";
 import { NotificationData } from "../types/notifications";
 
-export const showToast = (
-  title: string,
-  message: string,
-  toastType: "done" | "error" = "done"
-) => {
+export function showToast(title: string, message: string, toastType: "done" | "error" = "done") {
   Burnt.toast({
-    title: isAndroid ? message : "",
+    title: isAndroid ? message : title,
     message,
     preset: toastType,
     haptic: toastType === "done" ? "success" : "error",
@@ -22,15 +18,9 @@ export const showToast = (
   });
 };
 
-export const sendNotification = async (
-  title: string,
-  message: string,
-  data?: NotificationData
-) => {
+export async function sendNotification(title: string, message: string, data?: NotificationData) {
   try {
-    const allowNotifications = defaultStorage.getBoolean(
-      Keys.ALLOW_NOTIFICATIONS
-    );
+    const allowNotifications = defaultStorage.getBoolean(Keys.ALLOW_NOTIFICATIONS);
     if (!allowNotifications) return;
     await Notifications.scheduleNotificationAsync({
       content: {
@@ -43,11 +33,11 @@ export const sendNotification = async (
   } catch (err) { }
 };
 
-export const openNotificationsSettings = async () => {
+export async function openNotificationsSettings() {
   await Linking.openSettings();
 };
 
-export const seekPermission = async (): Promise<boolean> => {
+export async function seekPermission(): Promise<boolean> {
   try {
     const status = await Notifications.getPermissionsAsync();
     if (status.granted) return true;
@@ -64,16 +54,9 @@ export const seekPermission = async (): Promise<boolean> => {
   }
 };
 
-export const parseNotification = (
-  navigation: NavigationProp<any>,
-  notification: Notification
-) => {
+export function parseNotification(navigation: NavigationProp<any>, notification: Notification) {
   try {
-    const {
-      request: {
-        content: { data },
-      },
-    } = notification;
+    const { request: { content: { data } } } = notification;
 
     if (data?.route != null) {
       navigation.navigate(data.route as string, { data: data?.data });

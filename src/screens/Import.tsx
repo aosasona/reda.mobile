@@ -41,14 +41,8 @@ export default function ImportScreen() {
 	const loadAllMeta = importUtil.loadAllMeta;
 
 	const handleMetaSelection = (value: any, index: number) => {
-		if (
-			mixedState.meta?.currentIndex !== null &&
-			mixedState.meta?.currentIndex === index
-		) {
-			setMixedState({
-				...mixedState,
-				meta: { ...mixedState.meta, currentIndex: null, current: null },
-			});
+		if (mixedState.meta?.currentIndex !== null && mixedState.meta?.currentIndex === index) {
+			setMixedState({ ...mixedState, meta: { ...mixedState.meta, currentIndex: null, current: null } });
 			return;
 		}
 		importUtil.setCurrentMeta(value, index);
@@ -63,71 +57,51 @@ export default function ImportScreen() {
 	const handleRemoteImport = async () => {
 		try {
 			if (!mixedState.URL) return;
-			setMixedState((prev) => ({
-				...prev,
-				loading: { ...prev.loading, remote: true },
-			}));
+			setMixedState((prev) => ({ ...prev, loading: { ...prev.loading, remote: true } }));
 			Keyboard.dismiss();
 			await importUtil.saveRemoteImport(mixedState.URL);
-			setMixedState((prev) => ({
-				...prev,
-				URL: "",
-			}));
+			setMixedState((prev) => ({ ...prev, URL: "" }));
 		} catch (e) {
-			const msg =
-				e instanceof CustomException ? e.message : "An error occurred";
+			const msg = e instanceof CustomException ? e.message : "An error occurred";
 			Alert.alert("Error", msg);
 		} finally {
-			setMixedState((prev) => ({
-				...prev,
-				loading: { ...prev.loading, remote: false },
-			}));
+			setMixedState((prev) => ({ ...prev, loading: { ...prev.loading, remote: false } }));
 		}
 	};
 
 	const handleLocalImport = async () => {
 		try {
-			setMixedState((prevState) => ({
-				...prevState,
-				loading: { ...prevState.loading, local: true },
-			}));
+			setMixedState((prevState) => ({ ...prevState, loading: { ...prevState.loading, local: true } }));
+
 			const result = await DocumentPicker.getDocumentAsync({
 				type: ["application/pdf", "application/epub+zip"],
 				copyToCacheDirectory: true,
 			});
+
 			if (result.type === "success") {
 				const processedFile = await handleFilePick(result);
 				handlePossibleNull(processedFile, "File could not be processed");
 				const fileName = extractFileName(processedFile?.name as string);
 				const slimFileName = processFileName(fileName, 5);
-				setMixedState((prevState) => ({
-					...prevState,
-					search: slimFileName,
-					file: processedFile,
-				}));
+
+				setMixedState((prevState) => ({ ...prevState, search: slimFileName, file: processedFile }));
+
 				await loadAllMeta(slimFileName);
 				!isOpen && onOpen();
 			}
 		} catch (e) {
-			const msg =
-				e instanceof CustomException ? e.message : "An error occurred";
+			console.log(e)
+			const msg = e instanceof CustomException ? e.message : "An error occurred";
 			Alert.alert("Error", msg);
 		} finally {
-			setMixedState((prevState) => ({
-				...prevState,
-				loading: { ...prevState.loading, meta: false, local: false },
-			}));
+			setMixedState((prevState) => ({ ...prevState, loading: { ...prevState.loading, meta: false, local: false } }));
 		}
 	};
 
 	return (
 		<CustomSafeAreaView>
 			<Box flex={1} {...ViewProps}>
-				<ImportHeader
-					state={mixedState}
-					setState={setMixedState}
-					callbacks={{ handleLocalImport, handleRemoteImport }}
-				/>
+				<ImportHeader state={mixedState} setState={setMixedState} callbacks={{ handleLocalImport, handleRemoteImport }} />
 				<MetaModal
 					state={{
 						isOpen,

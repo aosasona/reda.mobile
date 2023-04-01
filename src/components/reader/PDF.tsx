@@ -5,14 +5,7 @@ import { useContext } from "react";
 import { SettingsContext } from "../../context/settings/SettingsContext";
 import { colors } from "../../config/theme";
 
-export default function PDFReader({
-  data,
-  source,
-  colorMode,
-  onLoad,
-  onError,
-  onPageChange,
-}: SharedReaderProps) {
+export default function PDFReader({ data, source, colorMode, onLoad, onError, onPageChange }: SharedReaderProps) {
   const { state: settingsState } = useContext(SettingsContext);
   const { width, height } = useWindowDimensions();
 

@@ -1,6 +1,6 @@
-import {ColorMode, StorageManager} from "native-base";
-import {colors} from "../config/theme";
-import {Keys} from "../constants/keys";
+import { ColorMode, StorageManager } from "native-base";
+import { colors } from "../config/theme";
+import { Keys } from "../constants/keys";
 import defaultStorage from "../storage/default";
 
 export function getPrimaryColor(mode: ColorMode) {

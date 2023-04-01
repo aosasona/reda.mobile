@@ -3,7 +3,6 @@ import { useColorMode } from "native-base";
 import { navigationConfig } from "../config/screens";
 import screens from "../constants/screens";
 import FoldersScreen from "../screens/folders/Folders";
-import ImportScreen from "../screens/Import";
 
 const Stack = createNativeStackNavigator();
 

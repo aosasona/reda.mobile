@@ -3,7 +3,7 @@ const IS_IN_DEVELOPMENT = process.env.APP_ENVIRONMENT === "development";
 export default {
 	name: IS_IN_DEVELOPMENT ? "Reda Dev" : "Reda App",
 	slug: "reda",
-	version: "0.1.90",
+	version: "1.0.0",
 	orientation: "portrait",
 	icon: "./assets/" + (IS_IN_DEVELOPMENT ? "icon-dev.png" : "icon.png"),
 	userInterfaceStyle: "automatic",
@@ -13,24 +13,18 @@ export default {
 		resizeMode: "contain",
 		backgroundColor: "#000000",
 	},
-	updates: {
-		fallbackToCacheTimeout: 0,
-	},
+	updates: { fallbackToCacheTimeout: 0, },
 	assetBundlePatterns: ["**/*"],
 	ios: {
-		associatedDomains: ["applinks:reda.app", "applinks:www.reda.app"],
+		associatedDomains: ["applinks:usereda.app", "applinks:www.usereda.app"],
 		usesIcloudStorage: true,
 		usesAppleSignIn: true,
 		supportsTablet: false,
-		bundleIdentifier: IS_IN_DEVELOPMENT
-			? "com.wytehq.reda.dev"
-			: "com.wytehq.reda",
+		bundleIdentifier: IS_IN_DEVELOPMENT ? "com.wytehq.reda.dev" : "com.wytehq.reda",
 	},
 	android: {
 		adaptiveIcon: {
-			foregroundImage:
-				"./assets/" +
-				(IS_IN_DEVELOPMENT ? "icon-dev.png" : "adaptive-icon.png"),
+			foregroundImage: "./assets/" + (IS_IN_DEVELOPMENT ? "icon-dev.png" : "adaptive-icon.png"),
 			backgroundColor: "#000000",
 		},
 		package: IS_IN_DEVELOPMENT ? "com.wytehq.reda.dev" : "com.wytehq.reda",

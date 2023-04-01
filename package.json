@@ -79,12 +79,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aosasona/Reda.git"
+    "url": "git+https://github.com/aosasona/reda-mobile.git"
   },
-  "author": "Ayodeji",
+  "author": "Ayodeji O.",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/aosasona/Reda/issues"
+    "url": "https://github.com/aosasona/reda-mobile/issues"
   },
-  "homepage": "https://github.com/aosasona/Reda#readme"
+  "homepage": "https://github.com/aosasona/reda-mobile#readme"
 }

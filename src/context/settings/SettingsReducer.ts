@@ -22,10 +22,7 @@ export const SettingsReducer = (
 	switch (action.type) {
 		case SettingsActionType.RESET_SETTINGS:
 			defaultStorage.clearAll();
-			return {
-				useSinglePageLayout: false,
-				allowNotifications: false,
-			};
+			return { useSinglePageLayout: false, allowNotifications: false };
 
 		case SettingsActionType.LOAD_SETTINGS:
 			return {
@@ -36,16 +33,10 @@ export const SettingsReducer = (
 
 		case SettingsActionType.SET_SINGLE_PAGE_LAYOUT_OPTION:
 			defaultStorage.set(Keys.SINGLE_PAGE_LAYOUT, action?.payload);
-			return {
-				...state,
-				useSinglePageLayout: action?.payload,
-			};
+			return { ...state, useSinglePageLayout: action?.payload };
 
 		case SettingsActionType.TOGGLE_ALLOW_NOTIFICATIONS:
-			return {
-				...state,
-				allowNotifications: !state.allowNotifications,
-			};
+			return { ...state, allowNotifications: !state.allowNotifications };
 
 		default:
 			return state;

@@ -4,7 +4,7 @@ import { DEFAULT_REDA_DIRECTORY } from "../constants/file";
 import screens from "../constants/screens";
 import CustomException from "../exceptions/CustomException";
 import { OpenLibraryService } from "../services/cloud";
-import { RedaService } from "../services/local";
+import { LocalFileService } from "../services/local";
 import {
 	FileModel,
 	FileType,
@@ -32,72 +32,41 @@ export default class Import {
 		this.setState = setState;
 	}
 
-	public loadAllMeta = async (fileName: string) => {
+	async loadAllMeta(fileName: string) {
 		try {
-			this.setState((prevState) => ({
-				...prevState,
-				loading: { ...prevState.loading, meta: true },
-			}));
-			const onlineMetadata = (
-				await OpenLibraryService.search({ title: fileName, limit: 50 })
-			)["docs"];
+			this.setState((prevState) => ({ ...prevState, loading: { ...prevState.loading, meta: true } }));
+			const onlineMetadata = (await OpenLibraryService.search({ title: fileName, limit: 50 }))["docs"];
 			this.setAllMeta(onlineMetadata);
 		} catch (err) {
 		} finally {
-			this.setState((prevState) => ({
-				...prevState,
-				loading: { ...prevState.loading, meta: false, local: false },
-			}));
+			this.setState((prevState) => ({ ...prevState, loading: { ...prevState.loading, meta: false, local: false } }));
 		}
 	};
 
-	public setAllMeta = (value: any[]) =>
-		this.setState((prevState) => ({
-			...prevState,
-			meta: {
-				...prevState.meta,
-				all: value,
-			},
-		}));
+	setAllMeta(value: any[]) {
+		this.setState((prevState) => ({ ...prevState, meta: { ...prevState.meta, all: value, } }));
+	}
 
-	public setCurrentMeta = (value: any, index: number) =>
-		this.setState((prevState) => ({
-			...prevState,
-			meta: {
-				...prevState.meta,
-				current: value,
-				currentIndex: index,
-			},
-		}));
+	setCurrentMeta(value: any, index: number) {
+		this.setState((prevState) => ({ ...prevState, meta: { ...prevState.meta, current: value, currentIndex: index, } }));
+	}
 
-	public resetState = () => {
+	resetState() {
 		this.setState({
 			file: null,
 			URL: "",
 			search: "",
 			step: 0,
 			downloadingList: [],
-			meta: {
-				all: [],
-				current: null,
-				currentIndex: 0,
-			},
-			loading: {
-				local: false,
-				remote: false,
-				meta: false,
-			},
+			meta: { all: [], current: null, currentIndex: 0 },
+			loading: { local: false, remote: false, meta: false },
 		});
 	};
 
 	// This function tries to make sure the file has the right extension
-	public inferFileName = (filename: string, mimeType: string) => {
+	inferFileName(filename: string, mimeType: string) {
 		const castMimeType = mimeType?.toLowerCase();
-		if (
-			this.supportedMimeTypes.includes(castMimeType) &&
-			!filename.endsWith(FileExtensions.PDF) &&
-			!filename.endsWith(FileExtensions.EPUB)
-		) {
+		if (this.supportedMimeTypes.includes(castMimeType) && !filename.endsWith(FileExtensions.PDF) && !filename.endsWith(FileExtensions.EPUB)) {
 			if (castMimeType == (MimeTypes.PDF as string)) {
 				filename = filename + ".pdf";
 			}
@@ -109,17 +78,18 @@ export default class Import {
 		return filename;
 	};
 
-	public saveRemoteImport = async (url: string) => {
+	async saveRemoteImport(url: string) {
 		const { msg } = validateURL(url);
 		if (msg) throw new CustomException(msg);
 		let rawFileName = extractFileNameFromUri(url);
 		const decodedFileName = decodeURIComponent(rawFileName) || rawFileName;
 		const filetype = rawFileName?.split(".")?.pop() || "pdf";
+
 		if (![FileType.PDF, FileType.EPUB].includes(filetype as FileType)) {
 			throw new CustomException(`Invalid file type (${filetype})!`);
 		}
-		const generatedName =
-			generateRandomString(6) + "_" + generateRandomString(8) + "." + filetype;
+
+		const generatedName = generateRandomString(6) + "_" + generateRandomString(16) + "." + filetype;
 		const filePath = DEFAULT_REDA_DIRECTORY + generatedName;
 		const { exists } = await FileSystem.getInfoAsync(filePath);
 		if (exists) throw new CustomException("Oops, file already exists!");
@@ -136,22 +106,16 @@ export default class Import {
 			},
 			metadata: null,
 			img: null,
-			setSaving: (val) => { },
-			handleModalDismiss: () => { },
+			setSaving: (_) => null,
+			handleModalDismiss: () => null,
 		});
 	};
 
-	public completeInAppImport = async ({
-		file,
-		data,
-		img,
-		metadata,
-		setSaving,
-		handleModalDismiss,
-	}: CompleteInAppFlowArgs) => {
+	async completeInAppImport({ file, data, img, metadata, setSaving, handleModalDismiss }: CompleteInAppFlowArgs) {
 		try {
 			setSaving(true);
 			const fileType = file?.name?.split(".")?.pop();
+
 			const file_data: FileModel = {
 				name: data?.title || file?.name?.split(".")[0],
 				path: file?.uri,
@@ -162,42 +126,26 @@ export default class Import {
 				is_downloaded: SQLBoolean.FALSE,
 				is_starred: SQLBoolean.FALSE,
 			};
+
 			const meta: MetadataModel = {
 				image: img || "",
 				description: data?.subtitle || data?.description || "No description.",
 				author: data?.author_name[0] || "Unknown author",
 				raw: JSON.stringify(data),
-				table_of_contents: JSON.stringify(
-					metadata?.data?.table_of_contents || []
-				),
-				subjects:
-					data?.subject_facet?.join(", ") ||
-					metadata?.data?.subjects?.join(", ") ||
-					"",
-				first_publish_year:
-					data?.first_publish_year ||
-					metadata?.data?.first_publish_year ||
-					data?.publish_year?.[0] ||
-					0,
+				table_of_contents: JSON.stringify(metadata?.data?.table_of_contents || []),
+				subjects: data?.subject_facet?.join(", ") || metadata?.data?.subjects?.join(", ") || "",
+				first_publish_year: data?.first_publish_year || metadata?.data?.first_publish_year || data?.publish_year?.[0] || 0,
 				book_key: data?.edition_key?.[0] || "",
 				chapters: metadata?.data?.table_of_contents?.length || 1,
 				current_page: 1,
-				total_pages:
-					metadata?.data?.number_of_pages || data?.number_of_pages_median || 1,
+				total_pages: metadata?.data?.number_of_pages || data?.number_of_pages_median || 1,
 			};
 			const res = await save(file_data, meta);
 			if (res) {
-				const savedFile = await RedaService.getOne(res.id);
-				await sendNotification(
-					"📚 Import complete",
-					`${savedFile?.name} has been added to your library`,
-					{ route: screens.PREVIEW.screenName, data: savedFile }
-				);
+				const savedFile = await LocalFileService.getOne(res.id);
+				await sendNotification("📚 Import complete", `${savedFile?.name} has been added to your library`, { route: screens.PREVIEW.screenName, data: savedFile });
 			} else {
-				await sendNotification("Error ☹️", "Failed to import item", {
-					route: screens.IMPORT.screenName,
-					data: null,
-				});
+				await sendNotification("Error ☹️", "Failed to import item", { route: screens.IMPORT.screenName, data: null });
 			}
 			handleModalDismiss();
 		} catch (e) {

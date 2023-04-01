@@ -1,23 +1,23 @@
-import {Platform} from "expo-modules-core";
-import {ColorMode} from "native-base";
-import {getPrimaryColor, getSecondaryColor} from "../lib/color";
-import {colors} from "./theme";
+import { Platform } from "expo-modules-core";
+import { ColorMode } from "native-base";
+import { getPrimaryColor, getSecondaryColor } from "../lib/color";
+import { colors } from "./theme";
 
 const isAndroid = Platform.OS === "android";
 
 export const iconOptions = (colorMode: ColorMode, focused: boolean) => {
 	return focused
-	  ? getSecondaryColor(colorMode)
-	  : colorMode == "dark"
-		? colors.dark["600"]
-		: colors.light["400"];
+		? getSecondaryColor(colorMode)
+		: colorMode == "dark"
+			? colors.dark["600"]
+			: colors.light["400"];
 };
 
 export const screenOptions = (colorMode: ColorMode) => ({
 	tabBarHideOnKeyboard: true,
 	tabBarActiveTintColor: getSecondaryColor(colorMode),
 	tabBarInactiveTintColor:
-	  colorMode == "dark" ? colors.dark["600"] : colors.light["400"],
+		colorMode == "dark" ? colors.dark["600"] : colors.light["400"],
 	headerShown: false,
 	headerTintColor: getSecondaryColor(colorMode),
 	headerTitleStyle: {

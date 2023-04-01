@@ -23,16 +23,11 @@ const SettingsContextProvider = ({ children }: any) => {
 	const [reducerState, dispatch] = useReducer(SettingsReducer, initialState);
 
 	useEffect(() => {
-		new Settings(dispatch).load().then();
+		(async () => await (new Settings(dispatch)).load())();
 	}, []);
 
 	return (
-		<SettingsContext.Provider
-			value={{
-				state: reducerState,
-				dispatch,
-			}}
-		>
+		<SettingsContext.Provider value={{ state: reducerState, dispatch }}>
 			{children}
 		</SettingsContext.Provider>
 	);

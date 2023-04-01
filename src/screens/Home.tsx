@@ -10,7 +10,7 @@ import LoadingHeader from "../components/loading/LoadingHeader";
 import HomeSectionTitle from "../components/page/home/HomeSectionTitle";
 import EmptySection from "../components/reusables/EmptySection";
 import screens from "../constants/screens";
-import { RedaService } from "../services/local";
+import { LocalFileActions, LocalFileService } from "../services/local";
 import { CombinedFileResultType } from "../types/database";
 import { CategoryPageType, ScreenProps } from "../types/general";
 
@@ -45,23 +45,14 @@ export default function Home({ navigation }: ScreenProps) {
   const fetchAllFiles = async (triggerLoad: boolean = true) => {
     try {
       if (triggerLoad) setLoading(true);
-      const filesCount = await RedaService.count();
+      const filesCount = await LocalFileService.count();
       setCount(filesCount);
       const { recentlyAdded, starred, continueReading } =
-        await RedaService.loadHomePageData();
+        await LocalFileActions.getHomepageData();
       setData((prevState) => [
-        {
-          ...prevState[0],
-          data: continueReading || [],
-        },
-        {
-          ...prevState[1],
-          data: recentlyAdded || [],
-        },
-        {
-          ...prevState[2],
-          data: starred || [],
-        },
+        { ...prevState[0], data: continueReading || [] },
+        { ...prevState[1], data: recentlyAdded || [] },
+        { ...prevState[2], data: starred || [] },
       ]);
     } catch (e) {
       Alert.alert("Error", "An error occurred!");
@@ -73,11 +64,7 @@ export default function Home({ navigation }: ScreenProps) {
   if (count == 0) {
     return (
       <View flex={1}>
-        <ScrollView
-          refreshControl={
-            <RefreshControl refreshing={loading} onRefresh={fetchAllFiles} />
-          }
-        >
+        <ScrollView refreshControl={<RefreshControl refreshing={loading} onRefresh={fetchAllFiles} />} >
           <EmptySection title="all" />
         </ScrollView>
         <Fab
@@ -119,49 +106,31 @@ export default function Home({ navigation }: ScreenProps) {
         ListHeaderComponent={initialLoad && loading ? <LoadingHeader /> : null}
         ListFooterComponent={<Box bg="transparent" my={10} />}
         keyExtractor={(item, index) => item.key + index}
-        renderSectionHeader={({ section }) =>
-          section?.data?.[0]?.list?.length > 0 &&
-            section.category !== CategoryPageType.CONTINUE_READING ? (
-            <HomeSectionTitle
-              title={section.title}
-              category={section.category}
-            />
-          ) : null
+        renderSectionHeader={({ section }) => section?.data?.[0]?.list?.length > 0 && section.category !== CategoryPageType.CONTINUE_READING ? (
+          <HomeSectionTitle title={section.title} category={section.category} />
+        ) : null
         }
-        renderItem={({ item, section, index }) =>
-          item.list.length > 0 ? (
-            <FlashList
-              data={item.list}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item, index }) =>
-                section.category === CategoryPageType.CONTINUE_READING ? (
-                  <LargeHorizontalFileCard
-                    key={`${index}-${item.id}-${item.created_at}`}
-                    data={item}
-                    index={index}
-                    navigation={navigation}
-                  />
-                ) : (
-                  <HorizontalFileCard
-                    key={`${index}-${item.id}-${item.created_at}`}
-                    data={item}
-                    index={index}
-                    navigation={navigation}
-                  />
-                )
-              }
-              ListEmptyComponent={<EmptySection title={item.key} />}
-              decelerationRate="fast"
-              pagingEnabled={true}
-              estimatedItemSize={300}
-            />
-          ) : null
+        renderItem={({ item, section }) => item.list.length > 0 ? (
+          <FlashList
+            data={item.list}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item, index }) =>
+              section.category === CategoryPageType.CONTINUE_READING ? (
+                <LargeHorizontalFileCard key={`${index}-${item.id}-${item.created_at}`} data={item} index={index} navigation={navigation} />
+              ) : (
+                <HorizontalFileCard key={`${index}-${item.id}-${item.created_at}`} data={item} index={index} navigation={navigation} />
+              )
+            }
+            ListEmptyComponent={<EmptySection title={item.key} />}
+            decelerationRate="fast"
+            pagingEnabled={true}
+            estimatedItemSize={300}
+          />
+        ) : null
         }
-        refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={fetchAllFiles} />
-        }
+        refreshControl={<RefreshControl refreshing={loading} onRefresh={fetchAllFiles} />}
         showsVerticalScrollIndicator={false}
         stickySectionHeadersEnabled={false}
       />

@@ -1,13 +1,13 @@
 import * as FileSystem from "expo-file-system";
-import {SQLResultSet} from "expo-sqlite";
-import {DEFAULT_REDA_DIRECTORY} from "../../constants/file";
-import {executeQuery} from "../../lib/database/core";
-import {save} from "../../lib/database/file";
-import {del} from "../../lib/database/ops";
-import {filterSupportedFiles} from "../../lib/file/ops";
-import {extractFileName} from "../../lib/file/process";
-import {showToast} from "../../lib/notification";
-import {FileModel, MetadataModel, SQLBoolean} from "../../types/database";
+import { SQLResultSet } from "expo-sqlite";
+import { DEFAULT_REDA_DIRECTORY } from "../../constants/file";
+import { executeQuery } from "../../lib/database/core";
+import { save } from "../../lib/database/file";
+import { del } from "../../lib/database/ops";
+import { filterSupportedFiles } from "../../lib/file/ops";
+import { extractFileName } from "../../lib/file/process";
+import { showToast } from "../../lib/notification";
+import { FileModel, MetadataModel, SQLBoolean } from "../../types/database";
 
 // This will check all files in the database vs all files in the storage and delete the records where the files don't exist
 export const removeMissingFileRecords = async () => {
@@ -19,11 +19,11 @@ export const removeMissingFileRecords = async () => {
 
 		for (const item of data) {
 			const relativePath = `${DEFAULT_REDA_DIRECTORY}${item.path}`;
-			const {exists} = await FileSystem.getInfoAsync(relativePath);
+			const { exists } = await FileSystem.getInfoAsync(relativePath);
 			if (!exists) {
 				await Promise.all([
-					del({table: "files", identifier: "id", id: item.id}),
-					del({table: "metadata", identifier: "file_id", id: item.id}),
+					del({ table: "files", identifier: "id", id: item.id }),
+					del({ table: "metadata", identifier: "file_id", id: item.id }),
 				]);
 			}
 		}
@@ -37,7 +37,7 @@ export const removeMissingFileRecords = async () => {
 export const addNewFilesToDB = async () => {
 	try {
 		const allFiles = await FileSystem.readDirectoryAsync(
-		  DEFAULT_REDA_DIRECTORY,
+			DEFAULT_REDA_DIRECTORY,
 		);
 		const files = filterSupportedFiles(allFiles);
 
@@ -52,8 +52,8 @@ export const addNewFilesToDB = async () => {
 		for (const file of files) {
 			if (savedFiles.includes(encodeURIComponent(file))) continue;
 			const fullPath = `${DEFAULT_REDA_DIRECTORY}${encodeURIComponent(file)}`;
-			const {exists, size, isDirectory} = await FileSystem.getInfoAsync(
-			  fullPath,
+			const { exists, size, isDirectory } = await FileSystem.getInfoAsync(
+				fullPath,
 			);
 			if (!exists || isDirectory) return;
 
@@ -89,8 +89,8 @@ export const addNewFilesToDB = async () => {
 
 		if (syncedCount > 0) {
 			showToast(
-			  "Sync complete",
-			  `Synced ${syncedCount} file${syncedCount > 1 ? "s" : ""}`,
+				"Sync complete",
+				`Synced ${syncedCount} file${syncedCount > 1 ? "s" : ""}`,
 			);
 		}
 	}
@@ -109,15 +109,9 @@ export const migrateLegacyDB = async (currentName: string) => {
 		const legacyPath = `${DEFAULT_REDA_DIRECTORY}/SQLite/reda.db`;
 		const currentPath = `${DEFAULT_REDA_DIRECTORY}/SQLite/${currentName}`;
 
-		const {exists} = await FileSystem.getInfoAsync(
-		  DEFAULT_REDA_DIRECTORY + "/SQLite/reda.db",
-		);
+		const { exists } = await FileSystem.getInfoAsync(DEFAULT_REDA_DIRECTORY + "/SQLite/reda.db",);
 		if (!exists) return;
-		await FileSystem.moveAsync({
-			from: legacyPath,
-			to: currentPath,
-		});
+		await FileSystem.moveAsync({ from: legacyPath, to: currentPath, });
 	}
-	catch (err) {
-	}
+	catch (err) { }
 };

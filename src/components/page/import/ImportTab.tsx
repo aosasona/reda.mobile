@@ -1,4 +1,4 @@
-import {Button, HStack, Text, useColorMode} from "native-base";
+import { Button, HStack, Text, useColorMode } from "native-base";
 
 interface ImportTabProps {
 	tabs: string[];
@@ -6,9 +6,9 @@ interface ImportTabProps {
 	onTabChange: (tab: number) => void;
 }
 
-export default function ImportTab({tabs, currentTab, onTabChange}: ImportTabProps) {
+export default function ImportTab({ tabs, currentTab, onTabChange }: ImportTabProps) {
 
-	const {colorMode} = useColorMode();
+	const { colorMode } = useColorMode();
 	const tabButtonColor = (tab: number) => {
 		if (tab !== currentTab) {
 			return "transparent";
@@ -19,12 +19,12 @@ export default function ImportTab({tabs, currentTab, onTabChange}: ImportTabProp
 
 	return (
 
-	  <HStack alignItems="center" space={2}>
-		  {tabs.map((tab, index) => (
-			<Button key={index} w="49%" bg={tabButtonColor(index)} _pressed={{bg: "transparent"}} onPress={() => onTabChange(index)}>
-				<Text fontSize={12}>{tab}</Text>
-			</Button>
-		  ))}
-	  </HStack>
+		<HStack alignItems="center" space={2}>
+			{tabs.map((tab, index) => (
+				<Button key={index} w="49%" bg={tabButtonColor(index)} _pressed={{ bg: "transparent" }} onPress={() => onTabChange(index)}>
+					<Text fontSize={12}>{tab}</Text>
+				</Button>
+			))}
+		</HStack>
 	)
 }
