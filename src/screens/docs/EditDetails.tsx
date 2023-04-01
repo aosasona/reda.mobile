@@ -17,11 +17,13 @@ export default function EditDetails({ route, navigation }: ScreenProps) {
 	const [saving, setSaving] = useState(false);
 	const [data, setData] = useState<CombinedFileResultType>(initialData);
 	const [filename, setFilename] = useState(data.name);
+	const [author, setAuthor] = useState(data.author);
 
 	const handleSave = async () => {
 		try {
 			setSaving(true);
 			await renameDocument();
+			await changeAuthor();
 			showToast("Success", "Changes saved!");
 		}
 		catch (e) {
@@ -38,11 +40,18 @@ export default function EditDetails({ route, navigation }: ScreenProps) {
 		setData((prev) => ({ ...prev, name: filename }));
 	};
 
+	const changeAuthor = async () => {
+		if (author == data?.author) return;
+		await LocalFileService.changeAuthor(data.id, author);
+		setData((prev) => ({ ...prev, author }));
+	};
+
 	return (
 		<ScrollView pt={6}>
 			<KeyboardAvoidingView>
-				<CustomInput name="Name" type="text" value={filename} onChange={setFilename} />
-				<Button onPress={async () => await handleSave()} {...ButtonProps} mt={5} isLoading={saving} >
+				<CustomInput name="Name" type="text" value={filename} onChange={setFilename} mb={3} />
+				<CustomInput name="Author" type="text" value={author} onChange={setAuthor} />
+				<Button onPress={handleSave} {...ButtonProps} mt={10} isLoading={saving}>
 					Save
 				</Button>
 			</KeyboardAvoidingView>

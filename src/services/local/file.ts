@@ -5,7 +5,7 @@ import { DEFAULT_REDA_DIRECTORY } from "../../constants/file";
 import { executeQuery } from "../../lib/database/core";
 import { del, update } from "../../lib/database/ops";
 import { deleteFileFromFS } from "../../lib/file/ops";
-import { CombinedFileResultType, FileModel, QueryFilter } from "../../types/database";
+import { CombinedFileResultType, FileModel, MetadataModel, QueryFilter } from "../../types/database";
 
 
 const FETCH_QUERY_FIELDS = `f.id, f.name, "${DEFAULT_REDA_DIRECTORY}" || f.path as path, f.current_cfi, f.file_type, f.size, f.has_started, f.has_finished, f.is_downloaded, f.is_starred, m.image, m.description, m.author, m.table_of_contents, m.subjects, m.first_publish_year, m.chapters, m.current_page, m.total_pages, m.created_at, m.updated_at`;
@@ -98,6 +98,11 @@ export async function search(keyword: string, filter: QueryFilter = { limit: 100
 
 export async function rename(id: number, name: string): Promise<void> {
   await update<FileModel>({ table: "files", identifier: "id" }, id, { name });
+}
+
+
+export async function changeAuthor(id: number, author: string): Promise<void> {
+  await update<MetadataModel>({ table: "metadata", identifier: "id" }, id, { author });
 }
 
 

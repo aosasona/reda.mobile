@@ -10,15 +10,12 @@ interface CustomInputProps {
 	keyboardType?: KeyboardTypeOptions;
 	value: string;
 	onChange: (value: any) => void;
+	mb?: number;
+	my?: number;
+	mt?: number;
 }
 
-export default function CustomInput({
-	name,
-	value,
-	type,
-	keyboardType,
-	onChange,
-}: CustomInputProps) {
+export default function CustomInput({ name, value, type, keyboardType, onChange, my, mt, mb }: CustomInputProps) {
 	const [isFocused, setIsFocused] = useState(false);
 	const textColor = useColorModeValue("light.400", "light.800");
 
@@ -29,6 +26,9 @@ export default function CustomInput({
 			_dark={{ bg: "dark.700" }}
 			_light={{ bg: "muted.200" }}
 			m={0}
+			my={my}
+			mt={mt}
+			mb={mb}
 			px={3}
 			py={2}
 			rounded={10}

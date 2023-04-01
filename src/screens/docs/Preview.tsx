@@ -15,7 +15,6 @@ import { Alert, RefreshControl, useWindowDimensions } from "react-native";
 import PreviewHeader from "../../components/page/preview/PreviewHeader";
 import { PreviewHeaderRight } from "../../components/page/preview/PreviewHeaderRight";
 import { ButtonProps, DetailsProps, DividerProps } from "../../config/props";
-import { colors } from "../../config/theme";
 import screens from "../../constants/screens";
 import useScrollThreshold from "../../hooks/useScroll";
 import useThumbnail from "../../hooks/useThumbnail";
@@ -124,7 +123,7 @@ export default function Preview({ route, navigation }: ScreenProps) {
 					</Pressable>
 				</Box>
 				<Button onPress={openReadPage} {...ButtonProps}>
-					{data?.has_started ? "Continue reading" : data?.has_finished ? "Read Again" : "Start Reading"}
+					{(data?.has_finished) ? "Read Again" : data?.has_started ? "Start reading" : "Continue reading"}
 				</Button>
 				<Box mt={5}>
 					<Heading fontSize={24} mb={2}>Details</Heading>

@@ -18,5 +18,5 @@ export function extractFileNameFromUri(uri: string): string {
 
 export function processFileName(filename: string, max: number = 3) {
   const slimFileNameArray = (filename || "")?.split(/[\s-_]/);
-  return slimFileNameArray?.slice(0, slimFileNameArray?.length >= max ? max : slimFileNameArray.length,)?.join(" ");
+  return slimFileNameArray?.slice(0, slimFileNameArray?.length >= max ? max : slimFileNameArray.length)?.join(" ");
 };

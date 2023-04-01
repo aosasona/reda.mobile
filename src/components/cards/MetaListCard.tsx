@@ -22,6 +22,8 @@ export default function MetaListCard({ state, functions }: MetaCardProps) {
 
 	const { thumb, fallback } = useThumbnail(img);
 
+
+
 	return (
 		<Pressable _pressed={{ opacity: 0.6 }} onPress={() => onPress(data, index)} my={2}>
 			<HStack space={2} alignItems="stretch">

@@ -80,7 +80,7 @@ export default function ImportScreen() {
 
 			if (result.type === "success") {
 				const processedFile = await handleFilePick(result);
-				handlePossibleNull(processedFile, "File could not be processed");
+				handlePossibleNull(processedFile, "Unable to process file!");
 				const fileName = extractFileName(processedFile?.name as string);
 				const slimFileName = processFileName(fileName, 5);
 

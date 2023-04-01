@@ -25,14 +25,13 @@ import { validateURL } from "./validate";
 
 export default class Import {
 	private readonly setState: StateSetter;
-
 	private readonly supportedMimeTypes = ["application/pdf"];
 
 	constructor(setState: StateSetter) {
 		this.setState = setState;
 	}
 
-	async loadAllMeta(fileName: string) {
+	loadAllMeta = async (fileName: string) => {
 		try {
 			this.setState((prevState) => ({ ...prevState, loading: { ...prevState.loading, meta: true } }));
 			const onlineMetadata = (await OpenLibraryService.search({ title: fileName, limit: 50 }))["docs"];
@@ -48,10 +47,10 @@ export default class Import {
 	}
 
 	setCurrentMeta(value: any, index: number) {
-		this.setState((prevState) => ({ ...prevState, meta: { ...prevState.meta, current: value, currentIndex: index, } }));
+		this.setState((prevState) => ({ ...prevState, meta: { ...prevState.meta, current: value, currentIndex: index } }));
 	}
 
-	resetState() {
+	resetState = () => {
 		this.setState({
 			file: null,
 			URL: "",
@@ -82,11 +81,11 @@ export default class Import {
 		const { msg } = validateURL(url);
 		if (msg) throw new CustomException(msg);
 		let rawFileName = extractFileNameFromUri(url);
-		const decodedFileName = decodeURIComponent(rawFileName) || rawFileName;
-		const filetype = rawFileName?.split(".")?.pop() || "pdf";
+		let filetype = rawFileName?.split(".")?.pop() || "pdf";
 
 		if (![FileType.PDF, FileType.EPUB].includes(filetype as FileType)) {
-			throw new CustomException(`Invalid file type (${filetype})!`);
+			filetype = FileType.PDF
+			// throw new CustomException(`Invalid file type (${filetype})!`);
 		}
 
 		const generatedName = generateRandomString(6) + "_" + generateRandomString(16) + "." + filetype;
@@ -99,7 +98,7 @@ export default class Import {
 		await this.completeInAppImport({
 			data: null,
 			file: {
-				name: decodedFileName,
+				name: generatedName,
 				uri: generatedName,
 				size: data.size || 0,
 				mimeType: result?.mimeType || "application/pdf",
