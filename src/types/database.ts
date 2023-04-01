@@ -29,11 +29,11 @@ export type TableName<T extends Models> = T extends FileModel ? "files" :
 	never
 
 export type WhereFields<T extends Models> = {
-	[K in keyof T]?: T[K];
+	[K in keyof T]: T[K];
 }
 
 export type OrderClause<T extends Models> = {
-	[K in keyof T]?: "DESC" | "ASC"
+	[K in keyof T]: "DESC" | "ASC";
 };
 
 export type SelectOpts<T extends Models> = {
