@@ -109,7 +109,7 @@ export default function Preview({ route, navigation }: ScreenProps) {
 			showsVerticalScrollIndicator={false}
 			scrollEventThrottle={60}
 			onScroll={onScroll}
-			refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+			refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} progressViewOffset={30} />}
 		>
 			<StatusBar style="light" />
 			<PreviewHeader source={thumb} defaultSource={fallback} data={data} />

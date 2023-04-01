@@ -9,7 +9,7 @@ import {
 	useColorModeValue,
 	VStack,
 } from "native-base";
-import { useContext } from "react";
+import { useContext, useLayoutEffect } from "react";
 import { ActivityIndicator } from "react-native";
 import CustomDivider from "../../components/custom/CustomDivider";
 import CustomSafeAreaView from "../../components/custom/CustomSafeAreaView";
@@ -22,6 +22,7 @@ import { AppContext } from "../../context/app/AppContext";
 import { AppActionType } from "../../context/app/AppReducer";
 import { default as SettingsUtil } from "../../context/settings/settings";
 import { SettingsContext } from "../../context/settings/SettingsContext";
+import useScrollThreshold from "../../hooks/useScroll";
 import Web from "../../lib/web";
 import { syncLocalData } from "../../services/local/startup";
 import { ScreenProps } from "../../types/general";
@@ -30,8 +31,16 @@ export default function Settings({ navigation }: ScreenProps) {
 	const { dispatch } = useContext(SettingsContext);
 	const { state: appState, dispatch: appDispatch } = useContext(AppContext);
 
-	const settings = new SettingsUtil(dispatch);
 
+	const [page, onScroll] = useScrollThreshold(20);
+
+	useLayoutEffect(() => {
+		navigation.setOptions({
+			headerTitle: page.hasReachedThreshold ? "Settings" : ""
+		})
+	}, [page])
+
+	const settings = new SettingsUtil(dispatch);
 	const handleSettingsReset = () => settings.resetSettings();
 
 	async function handleSync() {
@@ -48,9 +57,9 @@ export default function Settings({ navigation }: ScreenProps) {
 	const bg = useColorModeValue("light.200", "dark.900");
 
 	return (
-		<CustomSafeAreaView>
-			<ScrollView px={0} showsVerticalScrollIndicator={false}>
-				<Box bg={bg} px={3} mt={4}>
+		<CustomSafeAreaView forceInset={{ top: "never" }}>
+			<ScrollView px={0} onScroll={onScroll} scrollEventThrottle={60} showsVerticalScrollIndicator={false}>
+				<Box bg={bg} px={3}>
 					<Heading fontSize={40}>Settings</Heading>
 				</Box>
 

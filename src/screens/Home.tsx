@@ -115,7 +115,7 @@ export default function Home({ navigation }: ScreenProps) {
             data={item.list}
             horizontal
             showsHorizontalScrollIndicator={false}
-            keyExtractor={(item, index) => index.toString()}
+            keyExtractor={(item, index) => `${item.name}-${index.toString()}`}
             renderItem={({ item, index }) =>
               section.category === CategoryPageType.CONTINUE_READING ? (
                 <LargeHorizontalFileCard key={`${index}-${item.id}-${item.created_at}`} data={item} index={index} navigation={navigation} />
@@ -123,7 +123,7 @@ export default function Home({ navigation }: ScreenProps) {
                 <HorizontalFileCard key={`${index}-${item.id}-${item.created_at}`} data={item} index={index} navigation={navigation} />
               )
             }
-            ListEmptyComponent={<EmptySection title={item.key} />}
+            ListEmptyComponent={<EmptySection />}
             decelerationRate="fast"
             pagingEnabled={true}
             estimatedItemSize={300}

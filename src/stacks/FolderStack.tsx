@@ -10,14 +10,7 @@ export default function FolderStack() {
 	const { colorMode } = useColorMode();
 	return (
 		<Stack.Navigator {...navigationConfig(colorMode)}>
-			<Stack.Screen
-				name={screens.FOLDERS.screenName}
-				component={FoldersScreen}
-				options={{
-					headerTitle: screens.FOLDERS.screenTitle,
-					headerShown: false,
-				}}
-			/>
+			<Stack.Screen name={screens.FOLDERS.screenName} component={FoldersScreen} options={{ headerTitle: "", headerShown: true, }} />
 		</Stack.Navigator>
 	);
 }

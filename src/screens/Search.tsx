@@ -69,7 +69,7 @@ function SearchHeader({ search, setSearch, }: { search: string; setSearch: any; 
 	return (
 		<Box w="full" _dark={{ bg: "dark.900" }} _light={{ bg: "light.200" }} py={3} mb={2}>
 			<Heading fontSize={40} mb={3}>Search</Heading>
-			<SearchInput search={search} setSearch={setSearch} />
+			<SearchInput search={search} setSearch={setSearch} placeholder="title, author, description..." />
 		</Box>
 	);
 }

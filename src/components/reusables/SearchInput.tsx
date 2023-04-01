@@ -5,15 +5,16 @@ import { InputProps } from "../../config/props";
 interface SearchInputProps {
 	search: string;
 	setSearch: any;
+	placeholder?: string;
 }
 
-export default function SearchInput({ search, setSearch }: SearchInputProps) {
+export default function SearchInput({ search, setSearch, placeholder = "search..." }: SearchInputProps) {
 	return (
 		<Input
 			w="full"
 			type="text"
 			keyboardType="web-search"
-			placeholder="Home"
+			placeholder={placeholder}
 			onChangeText={setSearch}
 			value={search}
 			autoCapitalize="none"
