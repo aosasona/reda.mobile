@@ -10,7 +10,7 @@ import { NotificationData } from "../types/notifications";
 
 export function showToast(title: string, message: string, toastType: "done" | "error" = "done") {
   Burnt.toast({
-    title: isAndroid ? message : title,
+    title: isAndroid ? message : "",
     message,
     preset: toastType,
     haptic: toastType === "done" ? "success" : "error",

@@ -1,3 +1,5 @@
+import { SQLError, SQLResultSet } from "expo-sqlite";
+
 export enum Table {
 	FILES = "files",
 	METADATA = "metadata",
@@ -42,7 +44,17 @@ export type SelectOpts<T extends Models> = {
 		fields?: WhereFields<T> | {};
 		condition?: "AND" | "OR";
 	};
+	limit?: number;
 	orderBy?: OrderFields<T> | {};
+}
+
+export type SelectResult<U> = {
+	data?: U;
+	count: number;
+	error?: string;
+	ok: boolean;
+	_raw: SQLResultSet | SQLError
+	_sql: string;
 }
 
 export interface AlterTableData {

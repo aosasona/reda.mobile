@@ -1,6 +1,8 @@
 import { extendTheme } from "native-base";
 import { isAndroid } from "../constants/core";
 import { FontFamilies, FontFamiliesEnum, FontWeights } from "../constants/fonts";
+import { Keys } from "../constants/keys";
+import defaultStorage from "../storage/default";
 
 export const colors = {
 	primary: "#006ee6",
@@ -37,33 +39,34 @@ const fontsConfig = FontFamilies.map((fontFamily) => ({
 		.reduce((acc, curr) => ({ ...acc, ...curr }), {}),
 })).reduce((acc, curr) => ({ ...acc, ...curr }), {});
 
+const currentFont = defaultStorage.getString(Keys.FONT_FAMILY) || FontFamiliesEnum.INTER
 export const fonts = {
-	heading: FontFamiliesEnum.OUTFIT,
-	body: FontFamiliesEnum.OUTFIT,
-	mono: FontFamiliesEnum.OUTFIT,
+	heading: currentFont,
+	body: currentFont,
+	mono: currentFont,
 };
 
 export const componentsConfig = {
 	ScrollView: {
-		baseStyle: (_: any) => ({
+		baseStyle: {
 			_dark: { bg: colors.dark["900"] },
 			_light: { bg: colors.light["200"] },
 			px: 4,
-		}),
+		},
 	},
 	SectionList: {
-		baseStyle: (_: any) => ({
+		baseStyle: {
 			_dark: { bg: colors.dark["900"] },
 			_light: { bg: colors.light["200"] },
 			px: 4,
-		}),
+		},
 	},
 	FlatList: {
-		baseStyle: (_: any) => ({
+		baseStyle: {
 			_dark: { bg: colors.dark["900"] },
 			_light: { bg: colors.light["200"] },
 			px: 4,
-		}),
+		},
 	},
 	Switch: {
 		defaultProps: {
@@ -71,6 +74,38 @@ export const componentsConfig = {
 			size: isAndroid ? "lg" : "md",
 		},
 	},
+	ModalContent: {
+		baseStyle: {
+			width: "85%"
+		}
+	},
+	ModalHeader: {
+		baseStyle: {
+			_dark: { bg: colors.dark["700"] },
+			_light: { bg: colors.light["200"] },
+			borderBottomWidth: 0
+		},
+	},
+	ModalFooter: {
+		baseStyle: {
+			_dark: { bg: colors.dark["700"] },
+			_light: { bg: colors.light["200"] },
+			borderTopWidth: 0
+		}
+	},
+	ModalBody: {
+		baseStyle: {
+			_dark: { bg: colors.dark["700"] },
+			_light: { bg: colors.light["200"] },
+		},
+		defaultProps: {
+			_scrollview: {
+				_dark: { bg: colors.dark["700"] },
+				_light: { bg: colors.light["200"] },
+				px: 0
+			}
+		}
+	}
 };
 
 export const extendedTheme = extendTheme({

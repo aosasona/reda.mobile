@@ -5,8 +5,14 @@ export function generateRandomString(length: number) {
 	return result;
 };
 
-export const byteToMB = (bytes: number) => {
-	return (bytes / 1024 / 1024)?.toFixed(2) + " MB";
+export function bytesToHumanFormat(bytes: number, target: "MB" | "GB" = "MB") {
+	let div = 1024 * 1024
+	if (target == "GB") {
+		div = div * 1024
+	}
+	const humanFormat = (bytes / div)?.toFixed(2) + target;
+
+	return humanFormat.indexOf(".00") >= 0 ? humanFormat.split(".")[0] + target : humanFormat
 };
 
 export function generateTimestamp(): string {

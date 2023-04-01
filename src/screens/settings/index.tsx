@@ -32,7 +32,7 @@ export default function Settings({ navigation }: ScreenProps) {
 	const { state: appState, dispatch: appDispatch } = useContext(AppContext);
 
 
-	const [page, onScroll] = useScrollThreshold(20);
+	const [page, onScroll] = useScrollThreshold(15);
 
 	useLayoutEffect(() => {
 		navigation.setOptions({
@@ -58,7 +58,7 @@ export default function Settings({ navigation }: ScreenProps) {
 
 	return (
 		<CustomSafeAreaView forceInset={{ top: "never" }}>
-			<ScrollView px={0} onScroll={onScroll} scrollEventThrottle={60} showsVerticalScrollIndicator={false}>
+			<ScrollView px={0} onScroll={onScroll} scrollEventThrottle={30} showsVerticalScrollIndicator={false}>
 				<Box bg={bg} px={3}>
 					<Heading fontSize={40}>Settings</Heading>
 				</Box>

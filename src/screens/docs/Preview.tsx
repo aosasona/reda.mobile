@@ -18,7 +18,7 @@ import { ButtonProps, DetailsProps, DividerProps } from "../../config/props";
 import screens from "../../constants/screens";
 import useScrollThreshold from "../../hooks/useScroll";
 import useThumbnail from "../../hooks/useThumbnail";
-import { byteToMB } from "../../lib/misc";
+import { bytesToHumanFormat } from "../../lib/misc";
 import { LocalFileActions, LocalFileService } from "../../services/local";
 import { CombinedFileResultType, SQLBoolean } from "../../types/database";
 import { ScreenProps } from "../../types/general";
@@ -101,7 +101,7 @@ export default function Preview({ route, navigation }: ScreenProps) {
 		});
 	}, [navigation, data, page.hasReachedThreshold]);
 
-	const filesizeInMB = byteToMB(data?.size);
+	const filesizeInMB = bytesToHumanFormat(data?.size, "MB");
 
 	return (
 		<ScrollView

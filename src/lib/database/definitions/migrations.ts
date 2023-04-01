@@ -46,7 +46,7 @@ export const migrations: MigrationDefinition[] = [
 		query: `CREATE TABLE IF NOT EXISTS folders
 						(
 							folder_id 				INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-							name 							TEXT 															NOT NULL DEFAULT 'Untitled folder',
+							name 							TEXT 															NOT NULL,
 							cover 						TEXT,
 							is_locked 				BOOLEAN 													DEFAULT 0,
               last_synced       DATETIME,	
