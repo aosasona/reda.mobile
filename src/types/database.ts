@@ -32,7 +32,7 @@ export type WhereFields<T extends Models> = {
 	[K in keyof T]: T[K];
 }
 
-export type OrderClause<T extends Models> = {
+export type OrderFields<T extends Models> = {
 	[K in keyof T]: "DESC" | "ASC";
 };
 
@@ -42,7 +42,7 @@ export type SelectOpts<T extends Models> = {
 		fields?: WhereFields<T> | {};
 		condition?: "AND" | "OR";
 	};
-	orderBy?: OrderClause<T>;
+	orderBy?: OrderFields<T> | {};
 }
 
 export interface AlterTableData {

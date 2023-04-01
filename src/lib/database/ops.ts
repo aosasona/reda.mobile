@@ -3,7 +3,9 @@ import { Models, SelectOpts, TableName } from "../../types/database";
 import { executeQuery } from "./core";
 
 
-async function select<T extends Models>(table: TableName<T>, opts: SelectOpts<T> = { select: "all", where: { fields: {}, condition: "OR" }, orderBy: {} }): Promise<Partial<T> | null> {
+const defaultOpts = { select: "all", where: { fields: {}, condition: "OR" }, orderBy: {} } as any
+
+async function select<T extends Models>(table: TableName<T>, opts: SelectOpts<T> = defaultOpts): Promise<Partial<T>[] | null> {
 	let { select, where, orderBy } = opts
 	select = select || "all", orderBy = orderBy || {};
 
@@ -34,9 +36,14 @@ async function select<T extends Models>(table: TableName<T>, opts: SelectOpts<T>
 		query += ` ${orderClause}`
 	}
 
-	// TODO: Run query and extract result
+	const result = await executeQuery(query) as SQLResultSet;
+	const data = result?.rows._array
 
-	return null
+	return data as Partial<T>[] || []
+}
+
+async function selectOne<T extends Models>(table: TableName<T>, opts: SelectOpts<T> = defaultOpts): Promise<Partial<T> | null> {
+
 }
 
 

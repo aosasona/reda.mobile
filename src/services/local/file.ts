@@ -84,9 +84,9 @@ export async function deleteFile(id: number, navigation: NavigationProp<any>) {
 export async function search(keyword: string, filter: QueryFilter = { limit: 100, sort_by: "created_at", sort_order: "ASC", }): Promise<CombinedFileResultType[]> {
   const { limit, sort_by, sort_order } = filter;
 
-  const query = `SELECT ${FETCH_QUERY_FIELDS} FROM files f INNER JOIN metadata m ON f.id = m.file_id WHERE f.name LIKE ? OR m.description LIKE ? ORDER BY f.${sort_by} ${sort_order} LIMIT ?;`;
+  const query = `SELECT ${FETCH_QUERY_FIELDS} FROM files f INNER JOIN metadata m ON f.id = m.file_id WHERE f.name LIKE ? OR m.description LIKE ? OR m.subjects LIKE ? OR m.author LIKE ? ORDER BY f.${sort_by} ${sort_order} LIMIT ?;`;
 
-  const result = (await executeQuery(query, [`%${keyword}%`, `%${keyword}%`, limit,])) as SQLResultSet | null;
+  const result = (await executeQuery(query, [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`, `%${keyword}%`, limit,])) as SQLResultSet | null;
   let res = result?.rows._array || ([] as any[]);
   res.map((item: any) => {
     item.table_of_contents = item?.table_of_contents == "[]" ? [] : JSON.parse(item.table_of_contents);
