@@ -164,6 +164,7 @@ function NewFolderModal({ visible, onClose, triggerReload }: NewFolderModalProps
             <Button {...ButtonProps} isLoading={loading} _text={{ fontSize: "sm", fontWeight: "semibold" }} onPress={createFolder} px={5} py={3}>Save</Button>
           </Modal.Footer>
         </Modal.Content>
-      </Modal></KeyboardAvoidingView>
+      </Modal>
+    </KeyboardAvoidingView>
   )
 }

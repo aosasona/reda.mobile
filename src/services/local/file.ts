@@ -8,7 +8,7 @@ import { deleteFileFromFS } from "../../lib/file/ops";
 import { CombinedFileResultType, FileModel, MetadataModel, QueryFilter } from "../../types/database";
 
 
-const FETCH_QUERY_FIELDS = `f.id, f.name, "${DEFAULT_REDA_DIRECTORY}" || f.path as path, f.current_cfi, f.file_type, f.size, f.has_started, f.has_finished, f.is_downloaded, f.is_starred, m.image, m.description, m.author, m.table_of_contents, m.subjects, m.first_publish_year, m.chapters, m.current_page, m.total_pages, m.created_at, m.updated_at`;
+const FETCH_QUERY_FIELDS = `f.id, f.name, "${DEFAULT_REDA_DIRECTORY}" || f.path as path, f.folder_id, f.current_cfi, f.file_type, f.size, f.has_started, f.has_finished, f.is_downloaded, f.is_starred, m.image, m.description, m.author, m.table_of_contents, m.subjects, m.first_publish_year, m.chapters, m.current_page, m.total_pages, m.created_at, m.updated_at`;
 
 export function extractResults(data: SQLResultSet | null): CombinedFileResultType[] {
   return data?.rows._array || ([] as any[]);

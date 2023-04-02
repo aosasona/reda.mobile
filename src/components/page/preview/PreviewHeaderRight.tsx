@@ -1,4 +1,4 @@
-import { AntDesign, Entypo, Ionicons } from "@expo/vector-icons";
+import { AntDesign, Entypo, Feather, Ionicons } from "@expo/vector-icons";
 import { NavigationProp } from "@react-navigation/native";
 import { HStack, Icon, IconButton, Menu } from "native-base";
 import { useWindowDimensions } from "react-native";
@@ -14,12 +14,13 @@ interface PreviewNavigationHeaderProps {
 		handleToggleStar: () => Promise<void>;
 		handleToggleReadStatus: () => Promise<void>;
 		handleDelete: () => Promise<void>;
+		handleToggleFoldersSelector: () => void;
 	};
 }
 
 export function PreviewHeaderRight({ data, navigation, functions, }: PreviewNavigationHeaderProps) {
 	const { width } = useWindowDimensions();
-	const { handleDelete, handleToggleStar, handleToggleReadStatus } = functions;
+	const { handleDelete, handleToggleStar, handleToggleReadStatus, handleToggleFoldersSelector } = functions;
 
 	const menuWidth = width * 0.65;
 
@@ -53,6 +54,9 @@ export function PreviewHeaderRight({ data, navigation, functions, }: PreviewNavi
 				</PressableMenuItem>
 				<PressableMenuItem icon={{ as: Ionicons, name: data?.has_started ? "ios-eye-off-outline" : "ios-eye-outline" }} onPress={handleToggleReadStatus}>
 					Mark as {data?.has_started ? "unread" : "completed"}
+				</PressableMenuItem>
+				<PressableMenuItem icon={{ as: Feather, name: "folder" }} onPress={handleToggleFoldersSelector}>
+					{!!data?.folder_id ? "Move" : "Add"} to folder
 				</PressableMenuItem>
 				<PressableMenuItem icon={{ as: Ionicons, name: "ios-share-outline" }} onPress={() => shareFile(data?.path)}>
 					Share

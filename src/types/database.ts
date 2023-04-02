@@ -117,6 +117,7 @@ export interface CombinedFileResultType {
 	image: MetadataModel["image"];
 	current_cfi: FileModel["current_cfi"];
 	file_type: FileModel["file_type"];
+	folder_id: FileModel["folder_id"];
 	path: FileModel["path"];
 	size: FileModel["size"];
 	description: MetadataModel["description"];

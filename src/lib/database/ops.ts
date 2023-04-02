@@ -51,6 +51,7 @@ async function select<T extends Models>(table: TableName<T>, opts: SelectOpts<T>
 
 
 	// Error doesn't need to bleed out,should be returned as part of result
+	// TODO: base data return type on select value (low priority)
 	try {
 		const rawResult = await executeQuery(query, params)
 		const result = rawResult as SQLResultSet;
