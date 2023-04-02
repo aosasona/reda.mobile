@@ -76,9 +76,9 @@ export default function FoldersScreen({ navigation }: ScreenProps) {
         <VStack alignItems="center">
           <HStack space={1} alignItems="center">
             {item.is_locked ? <Icon as={Ionicons} name="lock-closed" size={3} /> : null}
-            <Text fontWeight={600}>{item.name}</Text>
+            <Text fontSize="md" fontWeight={600}>{item.name}</Text>
           </HStack>
-          <Text fontWeight={400} opacity={0.5}>{item.files_count} items{item.files_count > 0 ? ` (${size})` : null}</Text>
+          <Text fontSize="xs" fontWeight={400} opacity={0.5}>{item.files_count} items{item.files_count > 0 ? ` (${size})` : null}</Text>
         </VStack>
       </VStack>
     )

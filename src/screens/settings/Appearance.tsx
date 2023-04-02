@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { Box, Heading, HStack, Icon, Radio, ScrollView, Switch, Text, useColorMode, VStack } from "native-base";
+import { HStack, Icon, Radio, ScrollView, Switch, Text, useColorMode, VStack } from "native-base";
 import { useContext, useLayoutEffect, useState } from "react";
 import SettingsSection from "../../components/page/settings/SettingsSection";
 import StaticSettings from "../../components/page/settings/StaticSettings";
@@ -44,7 +44,7 @@ export default function Appearance() {
 
 			<SettingsSection title="Font" hideTitle={true}>
 				<VStack px={3} space={5}>
-					<Text opacity={0.5}>Change app font</Text>
+					<Text opacity={0.5}>Font</Text>
 
 					<Radio.Group name="font" value={currentFont} onChange={onFontChange}>
 						<VStack space={4}>

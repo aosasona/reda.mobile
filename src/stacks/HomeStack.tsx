@@ -66,17 +66,6 @@ export default function HomeStack() {
 				}}
 			/>
 			<Stack.Screen
-				name={screens.READ_DOCUMENT.screenName}
-				component={Read}
-				options={({ route }) => ({
-					title:
-						(route?.params as any)?.data?.title ||
-						screens.READ_DOCUMENT.screenTitle,
-					headerShown: true,
-					headerShadowVisible: false,
-				})}
-			/>
-			<Stack.Screen
 				name={screens.CATEGORY.screenName}
 				component={Category}
 				options={{
