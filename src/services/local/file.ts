@@ -57,7 +57,7 @@ export async function getContinueReading(filter: QueryFilter = { limit: 25, sort
 }
 
 
-export async function deleteFile(id: number, navigation: NavigationProp<any>) {
+export async function deleteFile(id: number, navigation: NavigationProp<any>, goBack: boolean = true) {
   const file = await getOne(id);
   if (!file) return;
   Alert.alert("Confirm", `Are you sure you want to delete ${file?.name || ""}?`,
@@ -72,7 +72,7 @@ export async function deleteFile(id: number, navigation: NavigationProp<any>) {
             DatabaseOps.delete<FileModel>({ table: "files", identifier: "id", id: file.id }),
             deleteFileFromFS(file.path),
           ])
-            .then(() => navigation.goBack())
+            .then(() => goBack ? navigation.goBack() : null)
             .catch((_) => Alert.alert("Error", "Failed to delete!"));
         },
       },

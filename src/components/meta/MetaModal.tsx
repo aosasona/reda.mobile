@@ -14,8 +14,7 @@ export default function MetaModal({ functions, state }: MetaModalProps) {
 	}
 
 	return (
-		<Actionsheet
-			isOpen={isOpen} onClose={handleModalDismiss} _backdrop={{ opacity: 0.8 }} mb={0} pb={0}>
+		<Actionsheet w="full" isOpen={isOpen} onClose={handleModalDismiss} _backdrop={{ opacity: 0.8 }} mb={0} pb={0}>
 			{step === MetaModalSteps.ONE && (
 				<Actionsheet.Content position="relative" px={4} pb={0} mb={0} {...ActionSheetProps}>
 					<PresenceTransition

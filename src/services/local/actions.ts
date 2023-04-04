@@ -38,7 +38,7 @@ export async function toggleReadStatus(id: number): Promise<void> {
   const file = await getOne(id);
   if (!file) return;
   const new_current_page = file?.has_started ? 1 : file?.total_pages;
-  const new_has_started = !Boolean(file?.has_started);
+  const new_has_started = !(file?.has_started ?? 0);
   await Promise.all([
     DatabaseOps.update<MetadataModel>({ table: "metadata", identifier: "file_id" }, id, { current_page: new_current_page }),
     DatabaseOps.update<FileModel>({ table: "files", identifier: "id" }, id, { has_started: new_has_started as unknown as SQLBoolean }),

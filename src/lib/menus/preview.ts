@@ -45,6 +45,6 @@ export const handleMenuEvent = async (
 		case MenuEvents.SHARE:
 			return await shareFile(data.path);
 		case MenuEvents.DELETE:
-			return await deleteFile(data?.id, navigation);
+			return await deleteFile(data?.id, navigation, false); // goback was a lazy workaround
 	}
 };

@@ -23,7 +23,7 @@ export default function MetaPage({ state, functions }: MetaPageProps) {
 
 	useEffect(() => {
 		if (data?.cover_i) {
-			setImg(OpenLibraryService.getImageByID(data.cover_i, "L"));
+			setImg(OpenLibraryService.getImageByID(data.cover_i, "M"));
 		}
 		(async () => await getBookData())();
 	}, [data]);
@@ -47,7 +47,7 @@ export default function MetaPage({ state, functions }: MetaPageProps) {
 		await handleComplete({ data, file, img, metadata: bookData, setSaving, handleModalDismiss })
 	}
 
-	const { thumb, fallback } = useThumbnail(img);
+	const { fallback } = useThumbnail(img);
 
 	return (
 		<Box pb={4} px={2}>
@@ -68,7 +68,7 @@ export default function MetaPage({ state, functions }: MetaPageProps) {
 								w="full"
 								h="auto"
 								resizeMode="cover"
-								source={thumb}
+								source={{ uri: img }}
 								alt={data?.title || ""}
 								defaultSource={fallback}
 								rounded={8}

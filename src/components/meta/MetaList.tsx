@@ -64,7 +64,12 @@ export const ListHeaderComponent = ({ functions, state }: MetaModalProps) => {
 
 	const handleSearch = () => {
 		if (search.length > 0) {
-			loadAllMeta(search).then().catch(() => { Alert.alert("Error", "An error occurred!"); });
+			loadAllMeta(search)
+				.then()
+				.catch(() => { Alert.alert("Error", "An error occurred!"); })
+				.finally(() => {
+					setState(prev => ({ ...prev, loading: { ...prev.loading, meta: false } }))
+				})
 		}
 	};
 
@@ -72,7 +77,7 @@ export const ListHeaderComponent = ({ functions, state }: MetaModalProps) => {
 		<Box w="full" _dark={{ bg: "dark.700" }} _light={{ bg: "muted.100" }} pb={4} mb={2}>
 			<HStack justifyContent="space-between" alignItems="flex-end" my={2}>
 				<Heading maxW={width * 0.66} fontSize={36} fontWeight="extrabold" textAlign="left" px={1}>
-					Online Home
+					Online Search
 				</Heading>
 				<Text maxW={width * 0.24} fontSize={12} opacity={0.5}>
 					Showing {meta?.all?.length || 0} result{meta!.all!.length > 1 && "s"}
@@ -81,7 +86,7 @@ export const ListHeaderComponent = ({ functions, state }: MetaModalProps) => {
 			<Input
 				w="full"
 				type="text"
-				placeholder="Home..."
+				placeholder="Search online by name..."
 				onChangeText={handleSearchChange}
 				value={search}
 				mt={1}

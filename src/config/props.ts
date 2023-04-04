@@ -60,6 +60,7 @@ export const PressableProps = {
 };
 
 export const ActionSheetProps = {
+	width: "full",
 	_dark: { bg: "dark.700", color: "muted.100" },
 	_light: { bg: "muted.100", color: "dark.700" },
 };

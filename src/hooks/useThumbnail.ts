@@ -11,10 +11,10 @@ export default function useThumbnail(image: string | null = null, path: string |
   if (!hasFired) {
     (async () => {
       const { thumb: generatedThumb, fallback: generatedFallback } = await loadThumbnail(image, path);
-      if (generatedThumb && isNaN(parseInt(generatedThumb))) {
+      if (generatedThumb && isNaN(parseInt(generatedThumb)) && typeof generatedThumb != "number") {
         setThumb({ uri: generatedThumb });
       }
-      if (generatedFallback && isNaN(parseInt(generatedFallback))) {
+      if (generatedFallback && isNaN(parseInt(generatedFallback)) && typeof generatedFallback != "number") {
         setFallback({ uri: generatedFallback });
       }
       setHasFired(true);
