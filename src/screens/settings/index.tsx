@@ -119,6 +119,7 @@ export default function Settings({ navigation }: ScreenProps) {
 					</SettingsSection>
 				</VStack>
 
+
 				<Text textAlign="center" fontSize={13} color="gray.400" fontWeight={400} my={10} >
 					Reda {constants?.manifest?.version}
 				</Text>

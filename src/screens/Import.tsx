@@ -1,5 +1,5 @@
 import * as DocumentPicker from "expo-document-picker";
-import { Box, useDisclose } from "native-base";
+import { Box, useDisclose, View } from "native-base";
 import { useState } from "react";
 import { Alert, Keyboard } from "react-native";
 import CustomSafeAreaView from "../components/custom/CustomSafeAreaView";
@@ -100,7 +100,7 @@ export default function ImportScreen() {
 
 	return (
 		<CustomSafeAreaView>
-			<Box flex={1} {...ViewProps}>
+			<View flex={1} {...ViewProps}>
 				<ImportHeader state={mixedState} setState={setMixedState} callbacks={{ handleLocalImport, handleRemoteImport }} />
 				<MetaModal
 					state={{
@@ -119,7 +119,11 @@ export default function ImportScreen() {
 						handleComplete: importUtil.completeInAppImport,
 					}}
 				/>
-			</Box>
+
+				<Box w="92%" bg="muted.300" _dark={{ bg: "muted.900" }} _text={{ color: "muted.500", fontWeight: "medium", fontSize: "xs", _dark: { color: "muted.500" } }} mx="auto" mt="auto" mb={10} px={4} py={3} rounded="md">
+					Disclaimer: This app uses OpenLibrary API data for online search functionality and they exclusively own the rights to the data.
+				</Box>
+			</View>
 		</CustomSafeAreaView>
 	);
 }
