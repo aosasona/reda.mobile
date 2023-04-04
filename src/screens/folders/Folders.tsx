@@ -1,13 +1,14 @@
 import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
-import { Box, Button, Heading, HStack, Icon, IconButton, Input, KeyboardAvoidingView, Modal, Spinner, Text, View, VStack } from "native-base";
-import { useCallback, useLayoutEffect, useState } from "react";
+import { Box, Button, Heading, HStack, Icon, IconButton, Input, KeyboardAvoidingView, Modal, Pressable, Spinner, Text, View, VStack } from "native-base";
+import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { Alert, RefreshControl, useWindowDimensions } from "react-native";
 import CustomSafeAreaView from "../../components/custom/CustomSafeAreaView";
 import EmptySection from "../../components/reusables/EmptySection";
 import SearchInput from "../../components/reusables/SearchInput";
 import { ButtonProps, InputProps } from "../../config/props";
+import screens from "../../constants/screens";
 import CustomException from "../../exceptions/CustomException";
 import useScrollThreshold from "../../hooks/useScroll";
 import { bytesToHumanFormat } from "../../lib/misc";
@@ -34,6 +35,8 @@ export default function FoldersScreen({ navigation }: ScreenProps) {
   const { width } = useWindowDimensions()
   const [search, setSearch] = useState<string>("")
   const [folders, setFolders] = useState<Folder[]>([])
+  const [searchResult, setSearchResult] = useState<Folder[]>([])
+
 
   const [showNewFolderModal, setShowNewFolderModal] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(true)
@@ -53,6 +56,11 @@ export default function FoldersScreen({ navigation }: ScreenProps) {
     })
   }, [page])
 
+  useEffect(() => {
+    const res = folders.filter(folder => folder?.name?.toLowerCase()?.includes(search));
+    setSearchResult(res);
+  }, [search])
+
 
   async function load(isRefresh: boolean = false) {
     try {
@@ -69,18 +77,21 @@ export default function FoldersScreen({ navigation }: ScreenProps) {
   }
 
   function renderItem({ item }: { item: Folder }) {
-    const size = bytesToHumanFormat(item.total_size, "GB")
+    const size = bytesToHumanFormat(item.total_size, item.total_size < 999000000 ? "MB" : "GB")
+    const folderMeta = `${item.files_count} item${item.files_count == 0 || item.files_count > 1 ? "s" : ""}${item.files_count > 0 ? " (" + size + ")" : ""}`
     return (
-      <VStack key={`${item.folder_id}-${item.created_at}`} alignItems="center" space={2} mb={3}>
-        <Icon as={MaterialIcons} name="folder" size={width / 3.25} color="blue.400" />
-        <VStack alignItems="center">
-          <HStack space={1} alignItems="center">
-            {item.is_locked ? <Icon as={Ionicons} name="lock-closed" size={3} /> : null}
-            <Text fontSize="md" fontWeight={600}>{item.name}</Text>
-          </HStack>
-          <Text fontSize="xs" fontWeight={400} opacity={0.5}>{item.files_count} items{item.files_count > 0 ? ` (${size})` : null}</Text>
+      <Pressable _pressed={{ opacity: 0.6 }} onPress={() => navigation.navigate(screens.FOLDERCONTENT.screenName, { data: item })}>
+        <VStack key={`${item.folder_id}-${item.created_at}`} alignItems="center" space={0.5} mb={3}>
+          <Icon as={MaterialIcons} name="folder" size={width / 3.25} color="blue.400" />
+          <VStack alignItems="center" space={1}>
+            <HStack space={1} alignItems="center">
+              {item.is_locked ? <Icon as={Ionicons} name="lock-closed" size={3} /> : null}
+              <Text fontSize="md" fontWeight={600}>{item.name}</Text>
+            </HStack>
+            <Text fontSize="xs" fontWeight={400} opacity={0.5}>{folderMeta}</Text>
+          </VStack>
         </VStack>
-      </VStack>
+      </Pressable>
     )
   }
 
@@ -89,7 +100,7 @@ export default function FoldersScreen({ navigation }: ScreenProps) {
     <CustomSafeAreaView forceInset={{ top: "never" }}>
       <View width={width - 20} flex={1} mx="auto">
         <FlashList
-          data={folders}
+          data={search != "" ? searchResult : folders}
           keyExtractor={(item, index) => `${index}-${item.created_at}`} // need it to be very unique
           renderItem={renderItem}
           estimatedItemSize={120}
@@ -114,7 +125,7 @@ export function FolderScreenHeader({ search, loading, setSearch, showNewFolderMo
 
   return (
     <VStack space={3} mb={2}>
-      <HStack alignItems="center" justifyContent="space-between">
+      <HStack alignItems="center" justifyContent="space-between" px={1}>
         <HStack space={1} alignItems="center" alignContent="center">
           {loading ? <Spinner /> : null}
           <Heading fontSize={40}>Folders</Heading>

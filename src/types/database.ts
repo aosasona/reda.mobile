@@ -74,7 +74,7 @@ export interface FileModel {
 	size: number;
 	file_type?: FileType;
 	folder_id?: number;
-	current_cfi?: string;
+	current_cfi?: string; // should not be here, cannot revert now unfortunately
 	has_started: SQLBoolean;
 	has_finished: SQLBoolean;
 	is_starred: SQLBoolean;
@@ -113,6 +113,7 @@ export interface FolderModel {
 export interface CombinedFileResultType {
 	id: number;
 	file_id: MetadataModel["file_id"];
+	meta_id: MetadataModel["id"];
 	name: FileModel["name"];
 	image: MetadataModel["image"];
 	current_cfi: FileModel["current_cfi"];

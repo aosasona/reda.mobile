@@ -48,24 +48,13 @@ export default function MainStack({ migrationComplete, onNavReady }: MainStackPr
 
   return (
     <SafeAreaProvider>
-      <StatusBar
-        animated={true}
-        style={colorMode === "dark" ? "light" : "dark"}
-      />
-
+      <StatusBar animated={true} style={colorMode === "dark" ? "light" : "dark"} />
       <NavigationContainer onReady={onNavReady}>
-        {!state?.isSignedIn && state?.useBiometrics ? (
+        {!state?.isSignedIn && state?.useBiometrics ?
           <Stack.Navigator {...navigationConfig(colorMode)}>
-            <Stack.Screen
-              name={screens.LOCKSCREEN.screenName}
-              component={LockScreen}
-              options={{
-                headerTitle: screens.LOCKSCREEN.screenTitle,
-                headerShown: false,
-              }}
-            />
+            <Stack.Screen name={screens.LOCKSCREEN.screenName} component={LockScreen} options={{ headerTitle: screens.LOCKSCREEN.screenTitle, headerShown: false }} />
           </Stack.Navigator>
-        ) :
+          :
           <Stack.Navigator {...navigationConfig(colorMode)}>
             <Stack.Screen name="Tabs" component={TabsStack} options={{ headerShown: false }} />
             <Stack.Screen name={screens.READ_DOCUMENT.screenName} component={Read} options={{ headerShown: false }} />

@@ -120,7 +120,7 @@ export default function ImportScreen() {
 					}}
 				/>
 
-				<Box w="92%" bg="muted.300" _dark={{ bg: "muted.900" }} _text={{ color: "muted.500", fontWeight: "medium", fontSize: "xs", _dark: { color: "muted.500" } }} mx="auto" mt="auto" mb={10} px={4} py={3} rounded="md">
+				<Box w="92%" bg="muted.200" _dark={{ bg: "muted.900", borderColor: "muted.600" }} borderWidth={1} borderColor="muted.300" _text={{ color: "muted.500", fontWeight: "medium", fontSize: "xs", _dark: { color: "muted.500" } }} mx="auto" mt="auto" mb={10} px={4} py={3} rounded="md">
 					Disclaimer: This app uses OpenLibrary API data for online search functionality and they exclusively own the rights to the data.
 				</Box>
 			</View>

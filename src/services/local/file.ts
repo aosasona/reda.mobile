@@ -8,7 +8,7 @@ import { deleteFileFromFS } from "../../lib/file/ops";
 import { CombinedFileResultType, FileModel, MetadataModel, QueryFilter } from "../../types/database";
 
 
-const FETCH_QUERY_FIELDS = `f.id, f.name, "${DEFAULT_REDA_DIRECTORY}" || f.path as path, f.folder_id, f.current_cfi, f.file_type, f.size, f.has_started, f.has_finished, f.is_downloaded, f.is_starred, m.image, m.description, m.author, m.table_of_contents, m.subjects, m.first_publish_year, m.chapters, m.current_page, m.total_pages, m.created_at, m.updated_at`;
+const FETCH_QUERY_FIELDS = `f.id, f.name, "${DEFAULT_REDA_DIRECTORY}" || f.path as path, f.folder_id, f.current_cfi, f.file_type, f.size, f.has_started, f.has_finished, f.is_downloaded, f.is_starred, m.id as meta_id, m.file_id, m.image, m.description, m.author, m.table_of_contents, m.subjects, m.first_publish_year, m.chapters, m.current_page, m.total_pages, m.created_at, m.updated_at`;
 
 export function extractResults(data: SQLResultSet | null): CombinedFileResultType[] {
   return data?.rows._array || ([] as any[]);
@@ -16,23 +16,17 @@ export function extractResults(data: SQLResultSet | null): CombinedFileResultTyp
 
 
 export async function getOne(id: number): Promise<CombinedFileResultType | null> {
-  const query = `SELECT ${FETCH_QUERY_FIELDS} FROM files f INNER JOIN metadata m ON f.id = m.file_id WHERE f.id = ?;`;
+  const query = `SELECT ${FETCH_QUERY_FIELDS} FROM files f LEFT JOIN metadata m ON f.id = m.file_id WHERE f.id = ?;`;
   const result = (await executeQuery(query, [id])) as SQLResultSet | null;
   const res = result?.rows._array || ([] as any[]);
   return res[0];
 }
 
 
-export async function getAll(
-  filter: QueryFilter = {
-    limit: 25,
-    sort_by: "created_at",
-    sort_order: "DESC",
-  }
-): Promise<CombinedFileResultType[]> {
+export async function getAll(filter: QueryFilter = { limit: 25, sort_by: "created_at", sort_order: "DESC" }): Promise<CombinedFileResultType[]> {
   const { limit, sort_by, sort_order } = filter;
 
-  const query = `SELECT ${FETCH_QUERY_FIELDS} FROM files f INNER JOIN metadata m ON f.id = m.file_id ORDER BY f.${sort_by} ${sort_order} LIMIT ?;`;
+  const query = `SELECT ${FETCH_QUERY_FIELDS} FROM files f LEFT JOIN metadata m ON f.id = m.file_id ORDER BY f.${sort_by} ${sort_order} LIMIT ?;`;
 
   const result = (await executeQuery(query, [limit])) as SQLResultSet | null;
   return extractResults(result);
@@ -42,7 +36,7 @@ export async function getAll(
 export async function getStarred(filter: QueryFilter = { limit: 25, sort_by: "updated_at", sort_order: "DESC", }): Promise<CombinedFileResultType[] | null> {
   const { limit, sort_by, sort_order } = filter;
 
-  const query = `SELECT ${FETCH_QUERY_FIELDS} FROM files f INNER JOIN metadata m ON f.id = m.file_id WHERE f.is_starred = 1 ORDER BY ${sort_by != "name" ? "m" : "f"}.${sort_by} ${sort_order} LIMIT ?;`;
+  const query = `SELECT ${FETCH_QUERY_FIELDS} FROM files f LEFT JOIN metadata m ON f.id = m.file_id WHERE f.is_starred = 1 ORDER BY ${sort_by != "name" ? "m" : "f"}.${sort_by} ${sort_order} LIMIT ?;`;
   const result = (await executeQuery(query, [limit])) as SQLResultSet | null;
   return extractResults(result);
 }
@@ -51,8 +45,16 @@ export async function getStarred(filter: QueryFilter = { limit: 25, sort_by: "up
 export async function getContinueReading(filter: QueryFilter = { limit: 25, sort_by: "updated_at", sort_order: "DESC", }): Promise<CombinedFileResultType[]> {
   const { limit, sort_by, sort_order } = filter;
 
-  const query = `SELECT ${FETCH_QUERY_FIELDS} FROM files f INNER JOIN metadata m ON f.id = m.file_id WHERE has_started = 1 ORDER BY ${sort_by != "name" ? "m" : "f"}.${sort_by} ${sort_order} LIMIT ?;`;
+  const query = `SELECT ${FETCH_QUERY_FIELDS} FROM files f LEFT JOIN metadata m ON f.id = m.file_id WHERE has_started = 1 ORDER BY ${sort_by != "name" ? "m" : "f"}.${sort_by} ${sort_order} LIMIT ?;`;
   const result = (await executeQuery(query, [limit])) as SQLResultSet | null;
+  return extractResults(result);
+}
+
+
+export async function getByFolder(folder_id: number | undefined): Promise<CombinedFileResultType[]> {
+  if (!folder_id) return [];
+  const query = `SELECT ${FETCH_QUERY_FIELDS} FROM files f LEFT JOIN metadata m ON f.id = m.file_id WHERE folder_id = ? ORDER BY f.name ASC, f.created_at ASC;`;
+  const result = (await executeQuery(query, [folder_id])) as SQLResultSet | null;
   return extractResults(result);
 }
 
@@ -84,7 +86,7 @@ export async function deleteFile(id: number, navigation: NavigationProp<any>, go
 export async function search(keyword: string, filter: QueryFilter = { limit: 100, sort_by: "created_at", sort_order: "ASC", }): Promise<CombinedFileResultType[]> {
   const { limit, sort_by, sort_order } = filter;
 
-  const query = `SELECT ${FETCH_QUERY_FIELDS} FROM files f INNER JOIN metadata m ON f.id = m.file_id WHERE f.name LIKE ? OR m.description LIKE ? OR m.subjects LIKE ? OR m.author LIKE ? ORDER BY f.${sort_by} ${sort_order} LIMIT ?;`;
+  const query = `SELECT ${FETCH_QUERY_FIELDS} FROM files f LEFT JOIN metadata m ON f.id = m.file_id WHERE f.name LIKE ? OR m.description LIKE ? OR m.subjects LIKE ? OR m.author LIKE ? ORDER BY f.${sort_by} ${sort_order} LIMIT ?;`;
 
   const result = (await executeQuery(query, [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`, `%${keyword}%`, limit,])) as SQLResultSet | null;
   let res = result?.rows._array || ([] as any[]);

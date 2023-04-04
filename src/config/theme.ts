@@ -74,6 +74,11 @@ export const componentsConfig = {
 			size: isAndroid ? "lg" : "md",
 		},
 	},
+	Modal: {
+		baseStyle: {
+			_backdrop: { opacity: 0.7 },
+		}
+	},
 	ModalContent: {
 		baseStyle: {
 			width: "85%"

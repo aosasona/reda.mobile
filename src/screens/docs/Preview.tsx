@@ -15,7 +15,7 @@ import {
 	Text,
 	View,
 } from "native-base";
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { Alert, RefreshControl, useWindowDimensions } from "react-native";
 import PreviewHeader from "../../components/page/preview/PreviewHeader";
 import { PreviewHeaderRight } from "../../components/page/preview/PreviewHeaderRight";
@@ -41,8 +41,8 @@ export default function Preview({ route, navigation }: ScreenProps) {
 	const [showFoldersModal, setShowFoldersModal] = useState<boolean>(false)
 
 	const { width } = useWindowDimensions();
-	const { thumb, fallback } = useThumbnail(data?.image, data?.path);
 	const [page, onScroll] = useScrollThreshold(width * 0.75);
+	const { thumb, fallback } = useThumbnail(data?.image, data?.path);
 
 	useFocusEffect(
 		useCallback(() => {
@@ -190,26 +190,52 @@ export default function Preview({ route, navigation }: ScreenProps) {
 					</Box>
 				</Box>
 			</ScrollView>
-			<FoldersModal currentFolder={data?.folder_id} visible={showFoldersModal} toggleVisible={() => setShowFoldersModal(false)}
-				setCurrentFolder={setFolderName} />
+			<FoldersModal
+				fileId={data.id}
+				currentFolder={data?.folder_id}
+				visible={showFoldersModal}
+				toggleVisible={() => setShowFoldersModal(false)}
+				setCurrentFolderName={setFolderName}
+			/>
 		</View>
 	);
 }
 
-function FoldersModal({ visible, toggleVisible, currentFolder, setCurrentFolder }: { currentFolder?: number, visible: boolean; toggleVisible: () => void, setCurrentFolder: Dispatch<SetStateAction<string>> }) {
+function FoldersModal({ fileId, visible, toggleVisible, currentFolder, setCurrentFolderName }: { fileId?: number, currentFolder?: number, visible: boolean; toggleVisible: () => void, setCurrentFolderName: Dispatch<SetStateAction<string>> }) {
 	const { height } = useWindowDimensions()
+	const [loading, setLoading] = useState<boolean>(false)
+	const [selectedIdx, setSelectedIdx] = useState<number | null>(null)
 	const [folders, setFolders] = useState<{ name: string; folder_id: number }[]>([])
+
+	useLayoutEffect(() => {
+		if (!currentFolder) return;
+		const currentFolderIdx = folders.findIndex(fol => fol.folder_id == currentFolder)
+		setSelectedIdx(currentFolderIdx)
+	}, [currentFolder, visible])
 
 	useEffect(() => {
 		if (visible) {
 			(async function() {
 				const allFolders = await DatabaseOps.select<FolderModel>("folders", { select: ["name", "folder_id"] })
-				if (allFolders.ok) {
-					setFolders(allFolders.data as any)
-				}
+				if (allFolders.ok) { setFolders(allFolders.data as any); }
 			})()
 		}
 	}, [visible])
+
+	async function handleSave() {
+		try {
+			if (selectedIdx == null || !fileId) return;
+			setLoading(true)
+			setCurrentFolderName(folders[selectedIdx].name)
+			await LocalFileActions.addToFolder(fileId, folders[selectedIdx].folder_id)
+		} catch (e) {
+			console.error("Preview.tsx: ", e)
+			Alert.alert("Error", "Unable to complete operation")
+		} finally {
+			setLoading(false)
+			toggleVisible()
+		}
+	}
 
 	return (
 		<Modal isOpen={visible} onClose={toggleVisible}>
@@ -217,16 +243,16 @@ function FoldersModal({ visible, toggleVisible, currentFolder, setCurrentFolder 
 				<Modal.CloseButton />
 				<Modal.Header>Move to folder</Modal.Header>
 				<Modal.Body maxH={height * 0.5}>
-					<Radio.Group name="folder" value={`${currentFolder}`}>
+					<Radio.Group name="current_folder" value={`${selectedIdx}`} onChange={val => setSelectedIdx(parseInt(val))}>
 						{folders?.map((folder, idx) => (
-							<Box mb={2} key={idx}>
-								<Radio size="sm" value={`${folder.folder_id}`}>{folder.name}</Radio>
+							<Box my={2} key={idx}>
+								<Radio size="sm" value={`${idx}`}>{folder.name}</Radio>
 							</Box>
 						))}
 					</Radio.Group>
 				</Modal.Body>
 				<Modal.Footer>
-					<Button {...ButtonProps} _text={{ fontSize: "sm", fontWeight: "semibold" }} px={5} py={3}>Move</Button>
+					<Button {...ButtonProps} onPress={handleSave} _text={{ fontSize: "sm", fontWeight: "semibold" }} isLoading={loading} px={5} py={3}>Move</Button>
 				</Modal.Footer>
 			</Modal.Content>
 		</Modal>

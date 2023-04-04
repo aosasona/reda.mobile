@@ -44,7 +44,7 @@ export default function Read({ route, navigation }: ScreenProps) {
 	const { colorMode } = useColorMode();
 
 	return (
-		<CustomSafeAreaView>
+		<CustomSafeAreaView forceInset={{ bottom: "never" }}>
 			<View height={height} flex={1} justifyContent="flex-start" alignItems="center" _dark={{ bg: "dark.900" }} px={0} >
 				<Reader
 					page={pageData.current}

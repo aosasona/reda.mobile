@@ -28,11 +28,7 @@ export default function SearchCard({ data, navigation }: SearchCardProps) {
 	};
 
 	return (
-		<Pressable
-			w={width}
-			_pressed={{ opacity: 0.6 }}
-			onPress={navigateToDocumentPage}
-		>
+		<Pressable w={width} _pressed={{ opacity: 0.6 }} onPress={navigateToDocumentPage}>
 			<MenuView actions={actions} onPressAction={handleMenuEventPress} shouldOpenOnLongPress >
 				<HStack w="full" bg="transparent" space={width * 0.02}>
 					<Box w={width * 0.15}>

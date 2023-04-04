@@ -71,4 +71,5 @@ export async function saveCurrentPage(id: number, currentPageNumber: number) {
 }
 
 export async function addToFolder(file_id: number, folder_id: number) {
+  await DatabaseOps.update<FileModel>({ table: "files", identifier: "id" }, file_id, { folder_id })
 }
