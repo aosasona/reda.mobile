@@ -1,4 +1,4 @@
-import { Entypo, Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Entypo, Feather, Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import constants from "expo-constants";
 import {
 	Box,
@@ -93,12 +93,17 @@ export default function Settings({ navigation }: ScreenProps) {
 						</PressableSettings>
 
 						<PressableSettings onPress={() => Web.openBrowserPage("https://github.com/aosasona/reda-mobile").then()}>
-							<IconText as={Ionicons} name="logo-github" text="GitHub" />
+							<IconText as={Ionicons} name="logo-github" text="Source Code" />
 							<Icon as={Feather} name="arrow-up-right" size={4} />
 						</PressableSettings>
 
 						<PressableSettings onPress={() => Web.openBrowserPage("https://twitter.com/useredaapp").then()}>
 							<IconText as={Ionicons} name="help-outline" text="Help" />
+							<Icon as={Feather} name="arrow-up-right" size={4} />
+						</PressableSettings>
+
+						<PressableSettings onPress={() => Web.openBrowserPage("https://github.com/sponsors/aosasona/").then()}>
+							<IconText as={MaterialCommunityIcons} name="hand-coin-outline" text="Sponsor me on GitHub" />
 							<Icon as={Feather} name="arrow-up-right" size={4} />
 						</PressableSettings>
 					</SettingsSection>

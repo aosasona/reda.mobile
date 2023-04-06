@@ -1,9 +1,9 @@
 import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
-import { Box, Button, Heading, HStack, Icon, IconButton, Input, KeyboardAvoidingView, Modal, Pressable, Spinner, Text, View, VStack } from "native-base";
+import { Box, Button, Heading, HStack, Icon, IconButton, Input, Modal, Pressable, Spinner, Text, View, VStack } from "native-base";
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
-import { Alert, RefreshControl, useWindowDimensions } from "react-native";
+import { Alert, RefreshControl, useWindowDimensions, Vibration } from "react-native";
 import CustomSafeAreaView from "../../components/custom/CustomSafeAreaView";
 import EmptySection from "../../components/reusables/EmptySection";
 import SearchInput from "../../components/reusables/SearchInput";
@@ -16,6 +16,7 @@ import { showToast } from "../../lib/notification";
 import { LocalFolderService } from "../../services/local";
 import { Folder } from "../../types/folder";
 import { ScreenProps } from "../../types/general";
+import * as Haptics from "expo-haptics"
 
 
 interface FolderScreenHeaderProps {
@@ -31,6 +32,13 @@ interface NewFolderModalProps {
   triggerReload: () => Promise<void>;
 }
 
+interface FolderActionModalProps {
+  data: { id: number; name: string } | null;
+  visible: boolean;
+  onClose: () => void;
+  triggerReload: () => Promise<void>;
+}
+
 export default function FoldersScreen({ navigation }: ScreenProps) {
   const { width } = useWindowDimensions()
   const [search, setSearch] = useState<string>("")
@@ -41,6 +49,7 @@ export default function FoldersScreen({ navigation }: ScreenProps) {
   const [showNewFolderModal, setShowNewFolderModal] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(true)
   const [refreshing, setRefreshing] = useState<boolean>(false)
+  const [actionFolder, setActionFolder] = useState<FolderActionModalProps["data"]>(null)
 
   const [page, onScroll] = useScrollThreshold(40);
 
@@ -57,6 +66,7 @@ export default function FoldersScreen({ navigation }: ScreenProps) {
   }, [page])
 
   useEffect(() => {
+    if (search == "") return setSearchResult([])
     const res = folders.filter(folder => folder?.name?.toLowerCase()?.includes(search));
     setSearchResult(res);
   }, [search])
@@ -79,8 +89,18 @@ export default function FoldersScreen({ navigation }: ScreenProps) {
   function renderItem({ item }: { item: Folder }) {
     const size = bytesToHumanFormat(item.total_size, item.total_size < 999000000 ? "MB" : "GB")
     const folderMeta = `${item.files_count} item${item.files_count == 0 || item.files_count > 1 ? "s" : ""}${item.files_count > 0 ? " (" + size + ")" : ""}`
+
+    function openFolderSettings() {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+      setActionFolder(item?.folder_id ? { id: item.folder_id, name: item.name } : null)
+    }
+
     return (
-      <Pressable _pressed={{ opacity: 0.6 }} onPress={() => navigation.navigate(screens.FOLDERCONTENT.screenName, { data: item })}>
+      <Pressable
+        _pressed={{ opacity: 0.6 }}
+        onPress={() => navigation.navigate(screens.FOLDERCONTENT.screenName, { data: item })}
+        onLongPress={openFolderSettings}
+      >
         <VStack key={`${item.folder_id}-${item.created_at}`} alignItems="center" space={0.5} mb={3}>
           <Icon as={MaterialIcons} name="folder" size={width / 3.25} color="blue.400" />
           <VStack alignItems="center" space={1}>
@@ -114,6 +134,7 @@ export default function FoldersScreen({ navigation }: ScreenProps) {
         />
       </View>
       <NewFolderModal visible={showNewFolderModal} onClose={() => setShowNewFolderModal(false)} triggerReload={load} />
+      <FolderActionModal data={actionFolder} visible={!!actionFolder} onClose={() => setActionFolder(null)} triggerReload={load} />
     </CustomSafeAreaView>
   );
 }
@@ -122,7 +143,6 @@ export default function FoldersScreen({ navigation }: ScreenProps) {
 
 
 export function FolderScreenHeader({ search, loading, setSearch, showNewFolderModal }: FolderScreenHeaderProps) {
-
   return (
     <VStack space={3} mb={2}>
       <HStack alignItems="center" justifyContent="space-between" px={1}>
@@ -135,7 +155,7 @@ export function FolderScreenHeader({ search, loading, setSearch, showNewFolderMo
           <IconButton icon={<Icon as={AntDesign} name="pluscircleo" size={6} color="mute.900" _dark={{ color: "muted.50" }} />} onPress={showNewFolderModal} _pressed={{ opacity: 0.5 }} p={0} m={0} />
         </HStack>
       </HStack>
-      <SearchInput search={search} setSearch={setSearch} />
+      <SearchInput search={search} setSearch={setSearch} placeholder="my awesome folder" />
     </VStack>
   )
 }
@@ -152,30 +172,99 @@ function NewFolderModal({ visible, onClose, triggerReload }: NewFolderModalProps
       await LocalFolderService.create(folderName)
       showToast("Success", `${folderName} folder created!`)
       await triggerReload()
+      onClose()
     } catch (e: unknown) {
       console.error("Folders.tsx: ", e)
-      showToast("Error", e instanceof CustomException ? e.message : "Something went wrong!", "error")
+      Alert.alert("Error", e instanceof CustomException ? e.message : "Something went wrong!")
     } finally {
       setloading(false)
       setFolderName("")
-      onClose()
     }
   }
 
   return (
-    <KeyboardAvoidingView>
-      <Modal isOpen={visible} onClose={onClose}>
-        <Modal.Content>
-          <Modal.CloseButton />
-          <Modal.Header>New folder</Modal.Header>
-          <Modal.Body>
-            <Input {...InputProps} placeholder="Folder name" value={folderName} onChangeText={setFolderName} rounded={6} />
-          </Modal.Body>
-          <Modal.Footer>
-            <Button {...ButtonProps} isLoading={loading} _text={{ fontSize: "sm", fontWeight: "semibold" }} onPress={createFolder} px={5} py={3}>Save</Button>
-          </Modal.Footer>
-        </Modal.Content>
-      </Modal>
-    </KeyboardAvoidingView>
+    <Modal isOpen={visible} onClose={onClose}>
+      <Modal.Content>
+        <Modal.CloseButton />
+        <Modal.Header>New folder</Modal.Header>
+        <Modal.Body>
+          <Input {...InputProps} placeholder="Folder name" value={folderName} onChangeText={setFolderName} rounded={6} px={1} _light={{ px: 2 }} autoComplete="off" autoFocus autoCapitalize="words" enablesReturnKeyAutomatically />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button {...ButtonProps} isLoading={loading} _text={{ fontSize: "sm", fontWeight: "semibold" }} onPress={createFolder} px={5} py={3}>Create</Button>
+        </Modal.Footer>
+      </Modal.Content>
+    </Modal>
+  )
+}
+
+function FolderActionModal({ data, visible, onClose, triggerReload }: FolderActionModalProps) {
+  const [folderName, setFolderName] = useState<string>("")
+  const [loading, setloading] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (data) {
+      return setFolderName(data.name)
+    }
+    return setFolderName("")
+  }, [visible])
+
+  async function renameFolder() {
+    try {
+      setloading(true)
+      if (!folderName || !data) return;
+      await LocalFolderService.rename(data?.id, folderName)
+      await triggerReload()
+      onClose()
+    } catch (e: unknown) {
+      console.error("Folders.tsx: ", e)
+      Alert.alert("Error", e instanceof CustomException ? e.message : "Something went wrong!")
+    } finally {
+      setloading(false)
+    }
+  }
+
+  async function deleteFolder() {
+    try {
+      if (!data) return;
+      await LocalFolderService.deleteFolder(data?.id)
+      await triggerReload()
+    } catch (e: unknown) {
+      console.error("Folders.tsx: ", e)
+      Alert.alert("Error", e instanceof CustomException ? e.message : "Something went wrong!")
+    } finally {
+      onClose()
+    }
+  }
+
+  function confirmFolderDeletion() {
+    Alert.alert("Confirm action", "Are you sure you want to delete this folder?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Confirm",
+        style: "destructive",
+        onPress: async function() {
+          await deleteFolder()
+        }
+      },
+    ])
+  }
+
+  return (
+    <Modal isOpen={visible} onClose={onClose}>
+      <Modal.Content>
+        <Modal.CloseButton />
+        <Modal.Header>Folder settings</Modal.Header>
+        <Modal.Body>
+          <Input {...InputProps} placeholder="Folder name" value={folderName} onChangeText={setFolderName} autoComplete="off" enablesReturnKeyAutomatically autoFocus autoCorrect rounded={6} px={1} _light={{ px: 2 }} />
+        </Modal.Body>
+        <Modal.Footer>
+          <HStack alignItems="center" space="lg">
+            <IconButton icon={<Icon as={Ionicons} name="ios-trash-outline" size={6} color="red.500" />} _pressed={{ opacity: 0.5 }} onPress={confirmFolderDeletion} p={0} m={0} />
+            <Button {...ButtonProps} isLoading={loading} _text={{ fontSize: "sm", fontWeight: "semibold" }} onPress={renameFolder} px={5} py={3}>Save</Button>
+          </HStack>
+        </Modal.Footer>
+      </Modal.Content>
+    </Modal>
   )
 }

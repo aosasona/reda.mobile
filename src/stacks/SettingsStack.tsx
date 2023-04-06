@@ -14,44 +14,29 @@ export default function SettingsStack() {
 	const { colorMode } = useColorMode();
 	return (
 		<Stack.Navigator {...navigationConfig(colorMode)}>
-			<Stack.Screen
-				name={screens.SETTINGS.screenName}
-				component={Settings}
-				options={{
-					headerTitle: screens.SETTINGS.screenTitle,
-					headerShown: true,
-				}}
-			/>
-			<Stack.Screen
-				name={screens.APPEARANCE_SETTINGS.screenName}
-				component={Appearance}
+			<Stack.Screen name={screens.SETTINGS.screenName} component={Settings} options={{ headerTitle: screens.SETTINGS.screenTitle, headerShown: true, }} />
+			<Stack.Screen name={screens.APPEARANCE_SETTINGS.screenName} component={Appearance}
 				options={{
 					headerTitle: screens.APPEARANCE_SETTINGS.screenTitle,
 					headerShown: true,
-					headerBackTitle: "Settings",
+					headerBackTitle: "Settings"
 				}}
 			/>
-			<Stack.Screen
-				name={screens.SECURITY_SETTINGS.screenName}
-				component={Security}
+			<Stack.Screen name={screens.SECURITY_SETTINGS.screenName} component={Security}
 				options={{
 					headerTitle: screens.SECURITY_SETTINGS.screenTitle,
 					headerShown: true,
 					headerBackTitle: "Settings",
 				}}
 			/>
-			<Stack.Screen
-				name={screens.NOTIFICATIONS_SETTINGS.screenName}
-				component={NotificationsPreference}
+			<Stack.Screen name={screens.NOTIFICATIONS_SETTINGS.screenName} component={NotificationsPreference}
 				options={{
 					headerTitle: screens.NOTIFICATIONS_SETTINGS.screenTitle,
 					headerShown: true,
 					headerBackTitle: "Settings",
 				}}
 			/>
-			<Stack.Screen
-				name={screens.BROWSER.screenName}
-				component={BrowserPage}
+			<Stack.Screen name={screens.BROWSER.screenName} component={BrowserPage}
 				options={{
 					headerTitle: screens.BROWSER.screenTitle,
 					headerShown: false,

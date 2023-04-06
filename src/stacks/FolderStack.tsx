@@ -10,9 +10,9 @@ const Stack = createNativeStackNavigator();
 export default function FolderStack() {
 	const { colorMode } = useColorMode();
 	return (
-		<Stack.Navigator {...navigationConfig(colorMode)}>
-			<Stack.Screen name={screens.FOLDERS.screenName} component={FoldersScreen} options={{ headerTitle: "", headerShown: true, }} />
-			<Stack.Screen name={screens.FOLDERCONTENT.screenName} component={FolderContent} options={{ headerTitle: "", headerShown: true }} />
+		<Stack.Navigator initialRouteName={screens.FOLDERS.screenName} {...navigationConfig(colorMode)}>
+			<Stack.Screen name={screens.FOLDERS.screenName} component={FoldersScreen} options={{ headerTitle: "", headerShown: true }} />
+			<Stack.Screen name={screens.FOLDERCONTENT.screenName} component={FolderContent} options={{ headerTitle: "", headerShown: true, headerBackVisible: true }} />
 		</Stack.Navigator>
 	);
 }

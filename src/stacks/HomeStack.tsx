@@ -8,9 +8,6 @@ import { navigationConfig } from "../config/screens";
 import screens from "../constants/screens";
 import { parseNotification } from "../lib/notification";
 import Category from "../screens/Category";
-import EditDetails from "../screens/docs/EditDetails";
-import Preview from "../screens/docs/Preview";
-import Read from "../screens/docs/Read";
 import Home from "../screens/Home";
 import Search from "../screens/Search";
 
@@ -35,52 +32,15 @@ export default function HomeStack() {
 
 	return (
 		<Stack.Navigator {...navigationConfig(colorMode)}>
-			<Stack.Screen
-				name={screens.HOME.screenName}
-				component={Home}
+			<Stack.Screen name={screens.HOME.screenName} component={Home}
 				options={{
 					headerTitle: screens.HOME.screenTitle,
 					headerShown: true,
 					header: (props) => <HomeHeader {...props} />,
 				}}
 			/>
-			<Stack.Screen
-				name={screens.SEARCH.screenName}
-				component={Search}
-				options={{
-					headerTitle: screens.SEARCH.screenTitle,
-					headerShown: false,
-				}}
-			/>
-			<Stack.Screen
-				name={screens.PREVIEW.screenName}
-				component={Preview}
-				options={{
-					headerShown: true,
-					headerTitle: "",
-					headerTintColor: "white",
-					headerTransparent: true,
-					headerStyle: {
-						backgroundColor: "transparent",
-					},
-				}}
-			/>
-			<Stack.Screen
-				name={screens.CATEGORY.screenName}
-				component={Category}
-				options={{
-					headerTitle: screens.CATEGORY.screenTitle,
-					headerShown: false,
-				}}
-			/>
-			<Stack.Screen
-				name={screens.EDIT_DETAILS.screenName}
-				component={EditDetails}
-				options={{
-					headerTitle: screens.EDIT_DETAILS.screenTitle,
-					headerShown: true,
-				}}
-			/>
+			<Stack.Screen name={screens.SEARCH.screenName} component={Search} options={{ headerTitle: screens.SEARCH.screenTitle, headerShown: false }} />
+			<Stack.Screen name={screens.CATEGORY.screenName} component={Category} options={{ headerTitle: screens.CATEGORY.screenTitle, headerShown: false }} />
 		</Stack.Navigator>
 	);
 }

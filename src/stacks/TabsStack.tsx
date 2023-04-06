@@ -28,14 +28,7 @@ export default function TabsStack() {
         name={tabs.IMPORT}
         component={ImportStack}
         options={{
-          tabBarIcon: ({ focused }) => (
-            <Icon
-              as={Feather}
-              name="plus"
-              size={6}
-              color={iconOptions(colorMode, focused)}
-            />
-          ),
+          tabBarIcon: ({ focused }) => (<Icon as={Feather} name="plus" size={6} color={iconOptions(colorMode, focused)} />),
           ...(screenOptions(colorMode) as any),
         }}
       />
@@ -44,14 +37,7 @@ export default function TabsStack() {
         name={tabs.FOLDERS}
         component={FolderStack}
         options={{
-          tabBarIcon: ({ focused }) => (
-            <Icon
-              as={Feather}
-              name="folder"
-              size={6}
-              color={iconOptions(colorMode, focused)}
-            />
-          ),
+          tabBarIcon: ({ focused }) => (<Icon as={Feather} name="folder" size={6} color={iconOptions(colorMode, focused)} />),
           ...(screenOptions(colorMode) as any),
         }}
       />
@@ -60,14 +46,7 @@ export default function TabsStack() {
         name={tabs.SETTINGS}
         component={SettingsStack}
         options={{
-          tabBarIcon: ({ focused }) => (
-            <Icon
-              as={Ionicons}
-              name="settings-outline"
-              size={6}
-              color={iconOptions(colorMode, focused)}
-            />
-          ),
+          tabBarIcon: ({ focused }) => (<Icon as={Ionicons} name="settings-outline" size={6} color={iconOptions(colorMode, focused)} />),
           ...(screenOptions(colorMode) as any),
         }}
       />

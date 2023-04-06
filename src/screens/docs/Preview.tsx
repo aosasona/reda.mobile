@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -8,25 +8,28 @@ import {
 	Heading,
 	HStack,
 	Icon,
+	IconButton,
 	Modal,
 	Pressable,
 	Radio,
 	ScrollView,
 	Text,
-	View,
 } from "native-base";
-import { Dispatch, SetStateAction, useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { Alert, RefreshControl, useWindowDimensions } from "react-native";
+import CustomSafeAreaView from "../../components/custom/CustomSafeAreaView";
 import PreviewHeader from "../../components/page/preview/PreviewHeader";
 import { PreviewHeaderRight } from "../../components/page/preview/PreviewHeaderRight";
 import { ButtonProps, DetailsProps, DividerProps } from "../../config/props";
 import screens from "../../constants/screens";
+import tabs from "../../constants/tabs";
 import useScrollThreshold from "../../hooks/useScroll";
 import useThumbnail from "../../hooks/useThumbnail";
 import { DatabaseOps } from "../../lib/database";
 import { bytesToHumanFormat } from "../../lib/misc";
 import { LocalFileActions, LocalFileService } from "../../services/local";
 import { CombinedFileResultType, FolderModel, SQLBoolean } from "../../types/database";
+import { Folder } from "../../types/folder";
 import { ScreenProps } from "../../types/general";
 
 export default function Preview({ route, navigation }: ScreenProps) {
@@ -39,6 +42,7 @@ export default function Preview({ route, navigation }: ScreenProps) {
 	const [folderName, setFolderName] = useState<string>("")
 	const [descriptionLines, setDescriptionLines] = useState<number>(5);
 	const [showFoldersModal, setShowFoldersModal] = useState<boolean>(false)
+	const [folder, setFolder] = useState<Folder>()
 
 	const { width } = useWindowDimensions();
 	const [page, onScroll] = useScrollThreshold(width * 0.75);
@@ -92,8 +96,11 @@ export default function Preview({ route, navigation }: ScreenProps) {
 	useEffect(() => {
 		if (!!data.folder_id) {
 			(async function() {
-				const folder = await DatabaseOps.selectOne<FolderModel>("folders", { select: ["name"], where: { fields: { folder_id: data?.folder_id } } })
-				if (folder.ok && folder.data) { setFolderName(folder?.data?.name || ""); }
+				const folder = await DatabaseOps.selectOne<FolderModel>("folders", { select: ["name", "folder_id"], where: { fields: { folder_id: data?.folder_id } } })
+				if (folder && folder?.ok && folder?.data) {
+					setFolderName(folder?.data?.name || "");
+					setFolder(folder.data as Folder);
+				}
 			})()
 		}
 	}, [data])
@@ -122,19 +129,15 @@ export default function Preview({ route, navigation }: ScreenProps) {
 	const filesizeInMB = bytesToHumanFormat(data?.size, "MB");
 
 	return (
-		<View flex={1}>
-			<ScrollView
-				px={0}
-				showsVerticalScrollIndicator={false}
-				scrollEventThrottle={60}
-				onScroll={onScroll}
+		<>
+			<ScrollView px={0} showsVerticalScrollIndicator={false} scrollEventThrottle={60} onScroll={onScroll}
 				refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} progressViewOffset={30} />}
 			>
 				<StatusBar style="light" />
 				<PreviewHeader source={thumb} defaultSource={fallback} data={data} />
 				<Box px={4} py={4}>
 					{folderName ?
-						<Pressable _pressed={{ opacity: 0.5 }} mt={1} mb={4}>
+						<Pressable _pressed={{ opacity: 0.5 }} onPress={() => navigation.navigate("Tabs", { screen: tabs.FOLDERS, params: { screen: screens.FOLDERCONTENT.screenName, params: { data: folder } } })} mt={1} mb={4}>
 							<HStack maxW="4/5" bg="muted.300" _dark={{ bg: "muted.900" }} alignItems="center" alignSelf="flex-start" space={2} py={2} px={3} rounded="md">
 								<Icon as={Feather} name="folder" color="muted.700" _dark={{ color: "muted.400" }} />
 								<Text maxW="5/6" color="muted.700" _dark={{ color: "muted.400" }}>{folderName}</Text>
@@ -184,7 +187,7 @@ export default function Preview({ route, navigation }: ScreenProps) {
 						<Text opacity={0.6} mt={2}>{data?.subjects}</Text>
 					</Box>
 
-					<Box opacity={0.4} mb={4}>
+					<Box opacity={0.4} mb={20}>
 						<Text fontSize={12}>{data?.path?.split("/").pop()}</Text>
 						<Text fontSize={12}>Added {data?.created_at}</Text>
 					</Box>
@@ -197,7 +200,7 @@ export default function Preview({ route, navigation }: ScreenProps) {
 				toggleVisible={() => setShowFoldersModal(false)}
 				setCurrentFolderName={setFolderName}
 			/>
-		</View>
+		</>
 	);
 }
 
@@ -207,20 +210,25 @@ function FoldersModal({ fileId, visible, toggleVisible, currentFolder, setCurren
 	const [selectedIdx, setSelectedIdx] = useState<number | null>(null)
 	const [folders, setFolders] = useState<{ name: string; folder_id: number }[]>([])
 
-	useLayoutEffect(() => {
-		if (!currentFolder) return;
+	useEffect(() => {
+		if (!currentFolder || !folders) return;
 		const currentFolderIdx = folders.findIndex(fol => fol.folder_id == currentFolder)
 		setSelectedIdx(currentFolderIdx)
-	}, [currentFolder, visible])
+	}, [currentFolder, visible, folders])
 
 	useEffect(() => {
 		if (visible) {
 			(async function() {
-				const allFolders = await DatabaseOps.select<FolderModel>("folders", { select: ["name", "folder_id"] })
+				const allFolders = await DatabaseOps.select<FolderModel>("folders", { select: ["name", "folder_id"], orderBy: { name: "ASC" } })
 				if (allFolders.ok) { setFolders(allFolders.data as any); }
 			})()
 		}
 	}, [visible])
+
+	function reset() {
+		setLoading(false)
+		toggleVisible()
+	}
 
 	async function handleSave() {
 		try {
@@ -232,8 +240,22 @@ function FoldersModal({ fileId, visible, toggleVisible, currentFolder, setCurren
 			console.error("Preview.tsx: ", e)
 			Alert.alert("Error", "Unable to complete operation")
 		} finally {
-			setLoading(false)
-			toggleVisible()
+			reset()
+		}
+	}
+
+	async function handleTotalRemoval() {
+		try {
+			if (!fileId) return;
+			setLoading(true)
+			setCurrentFolderName("")
+			setSelectedIdx(null)
+			await LocalFileActions.addToFolder(fileId, null)
+		} catch (e) {
+			console.error("Preview.tsx: ", e)
+			Alert.alert("Error", "Unable to complete operation")
+		} finally {
+			reset()
 		}
 	}
 
@@ -252,7 +274,17 @@ function FoldersModal({ fileId, visible, toggleVisible, currentFolder, setCurren
 					</Radio.Group>
 				</Modal.Body>
 				<Modal.Footer>
-					<Button {...ButtonProps} onPress={handleSave} _text={{ fontSize: "sm", fontWeight: "semibold" }} isLoading={loading} px={5} py={3}>Move</Button>
+					<HStack space="md" alignItems="center">
+						<IconButton icon={<Icon as={Ionicons} name="ios-remove-circle-outline" size={6} color="red.500" _dark={{ color: "red.500" }} />}
+							onPress={handleTotalRemoval}
+							isDisabled={!currentFolder}
+							_pressed={{ opacity: 0.5 }}
+							_disabled={{ opacity: 0.4 }}
+							p={0}
+							m={0}
+						/>
+						<Button {...ButtonProps} onPress={handleSave} _text={{ fontSize: "sm", fontWeight: "semibold" }} isLoading={loading} px={5} py={3}>Move</Button>
+					</HStack>
 				</Modal.Footer>
 			</Modal.Content>
 		</Modal>

@@ -1,6 +1,7 @@
+import { useFocusEffect } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
 import { Box, Divider, Flex, Heading, View } from "native-base";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Dimensions, RefreshControl } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import SearchCard from "../components/cards/SearchCard";
@@ -38,9 +39,12 @@ export default function Category({ route, navigation }: ScreenProps) {
 
 	const [page, onEvent] = useScrollThreshold(50);
 
-	useEffect(() => {
-		(async () => await fetchAllFiles())();
-	}, []);
+
+	useFocusEffect(
+		useCallback(() => {
+			(async () => await fetchAllFiles())();
+		}, [])
+	);
 
 	useEffect(() => runSearch(), [searchQuery]);
 
@@ -96,10 +100,11 @@ export default function Category({ route, navigation }: ScreenProps) {
 					ListHeaderComponent={<PageHeader data={{ title: category, searchQuery }} functions={{ setSearchQuery }} />}
 					ListFooterComponent={<Box my={5} />}
 					ListEmptyComponent={EmptySection}
-					ItemSeparatorComponent={() => <Divider opacity={0.3} my={2} p={0} />}
+					ItemSeparatorComponent={() => <Divider opacity={0.3} p={0} my={2} ml={16} />}
 					estimatedItemSize={100}
 					onScroll={onEvent}
 					refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchAllFiles} progressViewOffset={top} />}
+					showsVerticalScrollIndicator={false}
 				/>
 			</View>
 		</CustomSafeAreaView>

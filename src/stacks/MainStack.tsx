@@ -10,6 +10,8 @@ import { navigationConfig } from "../config/screens";
 import { isAndroid } from "../constants/core";
 import screens from "../constants/screens";
 import { AppContext } from "../context/app/AppContext";
+import EditDetails from "../screens/docs/EditDetails";
+import Preview from "../screens/docs/Preview";
 import Read from "../screens/docs/Read";
 import LockScreen from "../screens/LockScreen";
 import { syncLocalData } from "../services/local/startup";
@@ -36,7 +38,7 @@ export default function MainStack({ migrationComplete, onNavReady }: MainStackPr
   useEffect(() => {
     const appStateSubscription = AppState.addEventListener("change", (appState) => {
       if (appState == "active" && migrationComplete && !isAndroid) {
-        syncLocalData().then().catch();
+        syncLocalData().then().catch(console.error); // ignore errors
       }
     }
     );
@@ -58,6 +60,17 @@ export default function MainStack({ migrationComplete, onNavReady }: MainStackPr
           <Stack.Navigator {...navigationConfig(colorMode)}>
             <Stack.Screen name="Tabs" component={TabsStack} options={{ headerShown: false }} />
             <Stack.Screen name={screens.READ_DOCUMENT.screenName} component={Read} options={{ headerShown: false }} />
+            <Stack.Screen name={screens.EDIT_DETAILS.screenName} component={EditDetails} options={{ headerTitle: screens.EDIT_DETAILS.screenTitle, headerShown: true }} />
+            <Stack.Screen name={screens.PREVIEW.screenName} component={Preview} options={{
+              headerShown: true,
+              headerTitle: "",
+              headerTintColor: "white",
+              headerTransparent: true,
+              headerStyle: {
+                backgroundColor: "transparent",
+              },
+            }}
+            />
           </Stack.Navigator>
         }
       </NavigationContainer>

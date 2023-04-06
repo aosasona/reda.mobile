@@ -1,12 +1,4 @@
-import {
-	AspectRatio,
-	Box,
-	Flex,
-	Heading,
-	Progress,
-	Text,
-	VStack,
-} from "native-base";
+import { AspectRatio, Box, Flex, Heading, Progress, Text, VStack } from "native-base";
 import { ImageBackground } from "react-native";
 import { CombinedFileResultType } from "../../../types/database";
 
@@ -28,9 +20,7 @@ export default function PreviewHeader({ data, source, defaultSource, }: PreviewH
 				<Flex flex={1} justifyContent="space-between" alignItems="flex-start" px={4} pb={4}>
 					<Box mt="auto">
 						<VStack space={1}>
-							<Heading color="white" fontSize={40} noOfLines={3} shadow={4}>
-								{data?.name}
-							</Heading>
+							<Heading color="white" fontSize={40} noOfLines={3} shadow={4}>{data?.name}</Heading>
 							<Text color="muted.400" fontSize={13} fontWeight="medium" noOfLines={2} shadow={4}>
 								{data?.author?.toUpperCase() || ""}
 								{data?.first_publish_year ? `, ${data?.first_publish_year}` : ""}

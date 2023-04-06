@@ -55,7 +55,7 @@ export default function Search({ navigation }: ScreenProps) {
 						</Flex>
 					}
 					estimatedItemSize={250}
-					ItemSeparatorComponent={() => <Divider opacity={0.3} my={2} p={0} />}
+					ItemSeparatorComponent={() => <Divider opacity={0.3} p={0} my={2} ml={16} />}
 					scrollEventThrottle={60}
 					onScroll={onEvent}
 					showsVerticalScrollIndicator={false}

@@ -70,6 +70,6 @@ export async function saveCurrentPage(id: number, currentPageNumber: number) {
   }
 }
 
-export async function addToFolder(file_id: number, folder_id: number) {
-  await DatabaseOps.update<FileModel>({ table: "files", identifier: "id" }, file_id, { folder_id })
+export async function addToFolder(file_id: number, folder_id: number | null) {
+  await DatabaseOps.update<FileModel>({ table: "files", identifier: "id" }, file_id, { folder_id: folder_id as any }) // hate that I have to do this but it is the only way to set it to null for total removal
 }
