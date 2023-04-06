@@ -19,6 +19,7 @@ export default function SearchInput({ search, setSearch, placeholder = "search..
 			value={search}
 			autoCapitalize="none"
 			autoCorrect={true}
+			enablesReturnKeyAutomatically
 			px={2}
 			mx="auto"
 			InputRightElement={

@@ -17,7 +17,6 @@ import {
 } from "native-base";
 import { Dispatch, SetStateAction, useCallback, useEffect, useLayoutEffect, useState } from "react";
 import { Alert, RefreshControl, useWindowDimensions } from "react-native";
-import CustomSafeAreaView from "../../components/custom/CustomSafeAreaView";
 import PreviewHeader from "../../components/page/preview/PreviewHeader";
 import { PreviewHeaderRight } from "../../components/page/preview/PreviewHeaderRight";
 import { ButtonProps, DetailsProps, DividerProps } from "../../config/props";
@@ -32,6 +31,15 @@ import { CombinedFileResultType, FolderModel, SQLBoolean } from "../../types/dat
 import { Folder } from "../../types/folder";
 import { ScreenProps } from "../../types/general";
 
+interface FoldersModalProps {
+	fileId?: number;
+	currentFolder?: number;
+	visible: boolean;
+	toggleVisible: () => void;
+	setCurrentFolder: Dispatch<SetStateAction<Partial<Folder> | undefined>>
+	setCurrentFolderName: Dispatch<SetStateAction<string>>
+}
+
 export default function Preview({ route, navigation }: ScreenProps) {
 	const { data: initialData } = route.params;
 
@@ -40,9 +48,9 @@ export default function Preview({ route, navigation }: ScreenProps) {
 	const [refreshing, setRefreshing] = useState(false);
 	const [data, setData] = useState<CombinedFileResultType>(initialData);
 	const [folderName, setFolderName] = useState<string>("")
-	const [descriptionLines, setDescriptionLines] = useState<number>(5);
+	const [descriptionLines, setDescriptionLines] = useState<number>(5); // this was for expanding description
 	const [showFoldersModal, setShowFoldersModal] = useState<boolean>(false)
-	const [folder, setFolder] = useState<Folder>()
+	const [folder, setFolder] = useState<Partial<Folder>>()
 
 	const { width } = useWindowDimensions();
 	const [page, onScroll] = useScrollThreshold(width * 0.75);
@@ -198,13 +206,14 @@ export default function Preview({ route, navigation }: ScreenProps) {
 				currentFolder={data?.folder_id}
 				visible={showFoldersModal}
 				toggleVisible={() => setShowFoldersModal(false)}
+				setCurrentFolder={setFolder} // rrefactor this later to use just the folder state and no folder name
 				setCurrentFolderName={setFolderName}
 			/>
 		</>
 	);
 }
 
-function FoldersModal({ fileId, visible, toggleVisible, currentFolder, setCurrentFolderName }: { fileId?: number, currentFolder?: number, visible: boolean; toggleVisible: () => void, setCurrentFolderName: Dispatch<SetStateAction<string>> }) {
+function FoldersModal({ fileId, visible, toggleVisible, currentFolder, setCurrentFolderName, setCurrentFolder }: FoldersModalProps) {
 	const { height } = useWindowDimensions()
 	const [loading, setLoading] = useState<boolean>(false)
 	const [selectedIdx, setSelectedIdx] = useState<number | null>(null)
@@ -235,6 +244,7 @@ function FoldersModal({ fileId, visible, toggleVisible, currentFolder, setCurren
 			if (selectedIdx == null || !fileId) return;
 			setLoading(true)
 			setCurrentFolderName(folders[selectedIdx].name)
+			setCurrentFolder(folders[selectedIdx] as Partial<Folder>)
 			await LocalFileActions.addToFolder(fileId, folders[selectedIdx].folder_id)
 		} catch (e) {
 			console.error("Preview.tsx: ", e)

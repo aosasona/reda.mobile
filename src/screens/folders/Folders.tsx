@@ -188,7 +188,7 @@ function NewFolderModal({ visible, onClose, triggerReload }: NewFolderModalProps
         <Modal.CloseButton />
         <Modal.Header>New folder</Modal.Header>
         <Modal.Body>
-          <Input {...InputProps} placeholder="Folder name" value={folderName} onChangeText={setFolderName} rounded={6} px={1} _light={{ px: 2 }} autoComplete="off" autoFocus autoCapitalize="words" enablesReturnKeyAutomatically />
+          <Input {...InputProps} placeholder="Folder name" value={folderName} onChangeText={setFolderName} rounded={6} px={1} _light={{ px: 2 }} autoComplete="off" autoFocus={visible} autoCapitalize="words" enablesReturnKeyAutomatically />
         </Modal.Body>
         <Modal.Footer>
           <Button {...ButtonProps} isLoading={loading} _text={{ fontSize: "sm", fontWeight: "semibold" }} onPress={createFolder} px={5} py={3}>Create</Button>
@@ -256,7 +256,7 @@ function FolderActionModal({ data, visible, onClose, triggerReload }: FolderActi
         <Modal.CloseButton />
         <Modal.Header>Folder settings</Modal.Header>
         <Modal.Body>
-          <Input {...InputProps} placeholder="Folder name" value={folderName} onChangeText={setFolderName} autoComplete="off" enablesReturnKeyAutomatically autoFocus autoCorrect rounded={6} px={1} _light={{ px: 2 }} />
+          <Input {...InputProps} placeholder="Folder name" value={folderName} onChangeText={setFolderName} autoComplete="off" enablesReturnKeyAutomatically autoFocus={visible} autoCorrect rounded={6} px={1} _light={{ px: 2 }} />
         </Modal.Body>
         <Modal.Footer>
           <HStack alignItems="center" space="lg">
